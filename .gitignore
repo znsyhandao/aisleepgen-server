@@ -1,0 +1,70 @@
+# 虚拟环境
+newenv/
+newenv2/
+.venv/
+venv/
+env/
+aisleepgen-venv/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 日志
+*.log
+
+# 测试数据
+tests/
+benchmark/
+data/
+
+# 模型文件
+*.pth
+*.h5
+
+# 音频资源
+*.mp3
+*.flac
+*.wav
+
+# 配置文件
+.env
+.env.txt
+.envold
+.envold.txt
+.envoldhuawei.txt
+*.env
+
+# Docker
+docker/
+
+# 构建产物
+dist/
+build/
+*.egg-info/
+
+# 临时
+tmp/
+cache/
+*.whl
+*.bat
+
+# 配置文件备份
+*.bak
+*old*
+config*.py
+
+# 输出/报告
+output_*
+*report*.txt
+*report*.json
+*results*.txt
+
+# 操作系统
+Thumbs.db
+.DS_Store
+
+# 安全文件 (不放github)
+*.key
+cert.pem
