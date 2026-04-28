@@ -671,7 +671,7 @@ def _trend_analysis(profile):
 
 
 def _build_history_context(openid='default'):
-    """构建历史画像上下文，注入prompt"""
+    """构建历史画像上下文，注入prompt——含叙事对比"""
     profile = _load_user_profile(openid)
     if not profile['history']:
         return '', {}
@@ -687,7 +687,14 @@ def _build_history_context(openid='default'):
         last = today_entries[-1]
         entry_type = last.get('type', 'normal')
         prefix = '【今天 用户修正】' if entry_type == 'correction' else f'【今天 {today}】'
-        lines.append(f"{prefix}用户说：{last.get('user_said', '')}，评分{last.get('wm_score', '?')}")
+        # 从 conversation_summaries 中找回复摘要
+        summaries = profile.get('conversation_summaries', [])
+        my_reply = ''
+        for s in reversed(summaries):
+            if s.get('user', '') in last.get('user_said', ''):
+                my_reply = s.get('reply_preview', '')
+                break
+        lines.append(f"{prefix}用户说：{last.get('user_said', '')}，评分{last.get('wm_score', '?')}，我的回复摘要：{my_reply[:60]}")
 
     # 历史记录（最近3天）
     dates_shown = set()
@@ -697,7 +704,43 @@ def _build_history_context(openid='default'):
             dates_shown.add(d)
             entry_type = e.get('type', 'normal')
             label = f'【{d}】' if entry_type == 'normal' else f'【{d} 已修正】'
-            lines.append(f"{label}用户说：{e.get('user_said', '')}，评分{e.get('wm_score', '?')}")
+            # 从 conversation_summaries 中找回复摘要
+            my_reply_hist = ''
+            for s in reversed(summaries):
+                if s.get('user', '') in e.get('user_said', ''):
+                    my_reply_hist = s.get('reply_preview', '')
+                    break
+            lines.append(f"{label}用户说：{e.get('user_said', '')}，评分{e.get('wm_score', '?')}，我的回复摘要：{my_reply_hist[:60]}")
+
+    # === 对比叙事（核心改进） ===
+    if len(previous_entries) >= 1 or len(today_entries) >= 2:
+        # 拿到上次和这次的评分
+        scores = []
+        for entry in profile['history'][-3:]:
+            s = entry.get('wm_score', 0)
+            if s and s > 0:
+                scores.append((entry['date'], s, entry.get('user_said', '')[:30]))
+        if len(scores) >= 2:
+            last_score = scores[-2][1]
+            current_score = scores[-1][1]
+            delta = current_score - last_score
+            if delta > 5:
+                trend_note = f"评分对比：上次{scores[-2][0]} {last_score}分 → 这次{scores[-1][0]} {current_score}分，改善了+{delta:.0f}分。如果用户今天报告不同的情况，请提到这个进步并鼓励。"
+            elif delta < -5:
+                trend_note = f"评分对比：上次{scores[-2][0]} {last_score}分 → 这次{scores[-1][0]} {current_score}分，下降了{delta:.0f}分。请关注变化原因，不要指责用户。"
+            else:
+                trend_note = f"评分对比：上次{scores[-2][0]} {last_score}分 → 这次{scores[-1][0]} {current_score}分，基本稳定(±{abs(delta):.0f})。"
+            lines.append(trend_note)
+            # 跟踪上次建议是否被采纳
+            last_entry = profile['history'][-2] if len(profile['history']) >= 2 else profile['history'][-1]
+            last_advice = ''
+            for s in reversed(summaries):
+                if s.get('user', '') in last_entry.get('user_said', ''):
+                    last_advice = s.get('reply_preview', '')
+                    break
+            if last_advice:
+                lines.append(f"上次回复摘要: {last_advice[:80]}")
+                lines.append("如果用户今天反馈中提到尝试或没有尝试上次的建议，请基于这个信息做分析，而不是假定用户没看到。")
 
     # === 情绪减压记录 ===
     stress_log = profile.get('stress_log', [])
