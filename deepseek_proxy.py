@@ -2869,6 +2869,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         # 偏好学习(独立于世界模型，任何消息都处理)
         pref_data = {}
+        profile_local = {}
         if _HAS_DEEP_MODULE:
             try:
                 global _pref_engine
@@ -2889,6 +2890,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         # 构建结构化生物反馈数据（世界模型v3的核心差异化）
         biofeedback_data = None
+        wm_result = None
         if _HAS_DEEP_MODULE and 'wm' in locals() and wm:
             try:
                 # 确保full_data存在
@@ -2909,6 +2911,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         print(f'[Biofeedback] 已生成 {len(biofeedback_data["dates_available"])}天皮肤数据')
             except Exception as e:
                 print(f'[Biofeedback] 跳过: {e}')
+                wm_result = None
 
         # 构建历史画像上下文（含专家回顾数据）
         history_context, expert_history = _build_history_context(openid)
@@ -2975,7 +2978,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     scene_context += pref_ctx
             
             # ===== 🌟 极致睡眠评分：压力分层对比 =====
-            if wm_result and full_data and isinstance(full_data, dict):
+            if wm_result and isinstance(wm_result, dict):
                 try:
                     from architecture_inner_eye import make_extreme_bedtime_context
                     _stress = full_data.get('stress_level', 3) or 3
