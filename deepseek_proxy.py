@@ -2593,10 +2593,46 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         except:
                             pass
 
+                        # ===== 数据可信度标注（推理约束层） =====
+                        # 分析用户给的数据点，标注哪些维度有直接数据支撑
+                        user_fields_count = sum(1 for f in ['bedtime','wake_time','awake_times','total_duration','sleep_latency','deep_sleep_percent'] if full_data.get(f))
+                        if user_fields_count <= 2:
+                            data_adequacy = "数据不足(仅{})".format(user_fields_count)
+                            inference_limit = "严重: 大部分维度为推测，仅展示1-2个有数据支撑的维度"
+                        elif user_fields_count <= 4:
+                            data_adequacy = "数据一般({})".format(user_fields_count)
+                            inference_limit = "中等: 部分维度为估算，优先展示有数据支撑的维度"
+                        else:
+                            data_adequacy = "数据充分({})".format(user_fields_count)
+                            inference_limit = "低: 可展示大多数维度，但要标注估算项"
+
+                        # 为每个维度标注可信度类型
+                        dim_trust_notes = []
+                        for key in dim_order:
+                            dim = dims.get(key, {})
+                            if dim and dim.get('score') is not None:
+                                conf = dim.get('confidence', 0) * 100
+                                name = dim_names_map.get(key, key)
+                                if conf >= 70:
+                                    trust_note = "可信度较高"
+                                elif conf >= 40:
+                                    trust_note = "可信度中等(部分依据估算)"
+                                else:
+                                    trust_note = "可信度偏低(主要为推测)"
+                                dim_trust_notes.append(f"{name}: {trust_note}")
+
                         wm_context = f"""
-===== 世界模型分析数据(你必须基于这些真实数据做分析，不要自己编评分) =====
-综合评分: {total}/100 · 质量: {quality} · 置信度: {overall_conf_tag}
-维度详情:
+===== 世界模型分析数据(约束: 必须基于这些真实数据做分析，不要自创评分) =====
+【数据局限性】
+用户提供数据点: {user_fields_count}个({data_adequacy})
+推理约束: {inference_limit}
+⚠️ 评分不是医学诊断，是基于有限数据的估算，必须向用户说明这一点。
+
+综合评分: {total}/100 · 质量: {quality} · 全局置信度: {overall_conf_tag}
+维度可信度明细:
+{chr(10).join(dim_trust_notes)}
+
+维度评分详情:
 {chr(10).join(_dim_summary)}
 核心洞察: {insights.get('summary', '')}
 行动建议: {_ar_takeaway}
@@ -2604,7 +2640,6 @@ class ProxyHandler(BaseHTTPRequestHandler):
 减压方案: {_ar_relax.get('primary_therapy', '') if '_ar_relax' in dir() and _ar_relax else ''}
 循证文献数: {_ar_ev_count if '_ar_ev_count' in dir() else 0}
 置信范围: {'±' + str(insights.get('confidence_bounds', {}).get('margin_of_error', '10')) + ' / PSQI≈' + str(insights.get('confidence_bounds', {}).get('estimated_psqi_range', '?')) if insights.get('confidence_bounds', {}) else ''}
-注意: 如果有"7维评估"部分请引用上述真实评分，不要自创评分
 ==========================
 """
                     else:
@@ -3036,17 +3071,30 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         system_content = f"""你是眠小兔，一名睡眠健康顾问
 
-【三条黄金规则 - 必须遵守】
-规则1: 只有当用户当前消息中出现了具体的睡眠数据(入睡时间/起床时间/睡眠时长/醒来次数)时，才可以用评分模板展示当前评分。
-规则2: 不要因为用户当前消息中没有数据，就假定"我上次已经给过数据了所以这次也能评分"。当前消息没有数据→当前就不展示评分。历史评分可以在分析时引用回顾，但不能当作当前消息的评分。
-规则3: 当用户指出"你记错了""我说的不是这个"等纠正性语句时，以用户最新说法为准，承认之前的理解有误。{correction_note}
+【推理约束规则 - 必须遵守】
+规则1: 只有当用户当前消息中出现了具体的睡眠数据时，才用评分模板展示当前评分。
+规则2: 当前消息没有数据→不展示评分。历史评分可引用回顾，但不作为当前评分。
+规则3: 用户纠正时以最新说法为准。{correction_note}
 
-，当前日期是 {today_str}。对话风格温暖而不煽情，专业而不学究。回复要有结构，但不要让用户感觉在读模板。
+【数据可信度规则 - 必须遵守】
+规则A: 世界模型数据中包含【数据局限性】标注，根据用户提供的数据点数量决定推理深度：
+  - 数据不足(≤2个字段): 只展示1-2个有数据支撑的维度，其他维度说"数据不足，暂不展示"
+  - 数据一般(3-4个字段): 可展示有数据支撑的维度，标注哪些是估算项
+  - 数据充分(≥5个字段): 可展示全部维度，但仍标注估算项
+规则B: 每条结论必须标注可信度:
+  - "可信度高" = 有直接数据支撑且置信度高
+  - "基于估算" = 由少量数据推算，仅供参考
+  - "推测" = 没有数据支撑，仅为合理猜测
+规则C: 不要假装你"知道"用户没说过的事。不知道就说不知道。
+规则D: 评分展示要克制。数据少时少展示维度，数据多时再多展示。不要让人感觉"随便说两句就出了7个评分"。
 
-回复结构参考：
-1. 共情（一句足够，不要过度）
-2. 分析核心问题（抓住用户最困扰的点）
-3. 如果没有提供世界模型评分数据，不要自己编造评分，只给建议和分析
+，当前日期是 {today_str}。对话风格温暖而不煽情，专业而不学究。
+
+回复结构：
+1. 共情（一句足够）
+2. 基于数据做分析（引用评分时要带可信度说明）
+3. 明确标注哪些是确定结论，哪些是推测
+4. 建议要具体、可执行
 4. 如有世界模型数据，展示7维度评估（要整洁、一眼看清）
 5. 2-3条具体可执行的建议（每条带一句科学依据）
 6. 就医提示：只适用于连续失眠超3周或伴有严重身体不适的情况。用户第一次对话或仅描述轻微症状时，不要提就医。
