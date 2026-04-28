@@ -3068,6 +3068,10 @@ class ProxyHandler(BaseHTTPRequestHandler):
             correction_keywords = ['记错', '不是', '不对', '错了', '纠正', '更正', '修正', '其实', '搞错', '你弄错', '说错']
             has_correction_intent = any(w in user_message for w in correction_keywords)
 
+            # 批评反馈检测——用户说"不专业""不行""太差"等评价性批评
+            feedback_keywords = ['不专业', '不行', '太差', '不好', '没用', '不满意', '错误', '不准', '假', '忽悠', '垃圾', '水平低']
+            has_feedback_intent = any(w in user_message for w in feedback_keywords)
+
             # 提取当前消息中的新数据
             current_extracted = self._extract_sleep_data_from_text(user_message) or {}
 
@@ -3111,6 +3115,19 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     f"处理原则：先诚恳道歉。然后逐条复述系统之前理解的数据，询问哪条不对。\n"
                     f"不要问\"昨晚睡得怎么样\"——用户已经说过了。\n"
                     f"要问具体哪条数据不对，比如\"是我把入睡时间记成11点不对吗？\"\n"
+                )
+            elif has_feedback_intent and last_history:
+                # 用户对分析质量本身不满意（不是纠正数据），有历史评分数据
+                last_entry = last_history[-1] if last_history else {}
+                _last_msg = last_entry.get('user_said', '') or ''
+                _last_score = last_entry.get('wm_score', 0)
+                correction_note = (
+                    f"\n【用户对分析表达不满（非数据纠正）】\n"
+                    f"用户之前提供了数据: {_last_msg[:80]}\n"
+                    f"上次评分: {_last_score if _last_score else '暂无'}\n"
+                    f"处理原则：不要道歉过度，也不要问\"昨晚睡得怎么样\"——用户已经有数据了。\n"
+                    f"直接追问用户对哪个部分不满意：是评分偏高/偏低？还是建议不实用？还是分析角度不对？\n"
+                    f"回复模板：\"具体是哪方面让您不满意？是评分不太符合您的感受，还是建议不太适用？您告诉我，我来调整。\"\n"
                 )
         except Exception as e:
             print(f'[CorrectionCheck] 跳过: {e}')
