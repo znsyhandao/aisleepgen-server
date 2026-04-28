@@ -13,7 +13,7 @@ import time
 import re
 import threading
 import math
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, urlencode
 from datetime import datetime, timedelta
 
@@ -4211,7 +4211,7 @@ def main():
     print('[SelfHeal] 自愈系统已启动（每10分钟无声自检）')
 
     port = 8090
-    server = HTTPServer(('0.0.0.0', port), ProxyHandler)
+    server = ThreadingHTTPServer(('0.0.0.0', port), ProxyHandler)
     print(f'Server on http://localhost:{port}')
     print(f'  /health, /api/chat, /api/sleep-report, /api/meditation-plan')
 
