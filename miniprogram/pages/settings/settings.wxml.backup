@@ -1,0 +1,89 @@
+<!--pages/settings/settings.wxml - 基础版本-->
+<view class="container">
+  <view class="header">
+    <view class="header-left">
+      <button class="back-btn" bindtap="goBack" wx:if="{{showBackButton}}">‹ 返回</button>
+    </view>
+    <text class="title">设置</text>
+    <view class="header-right">
+      <button class="save-btn" bindtap="saveSettings">保存</button>
+    </view>
+  </view>
+  
+  <view class="content">
+    <!-- 通知设置 -->
+    <view class="section">
+      <text class="section-title">通知设置</text>
+      <view class="setting-item">
+        <text class="setting-label">每日提醒</text>
+        <switch checked="{{settings.notifications.dailyReminder}}" bindchange="toggleSetting" data-category="notifications" data-key="dailyReminder" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">每周报告</text>
+        <switch checked="{{settings.notifications.weeklyReport}}" bindchange="toggleSetting" data-category="notifications" data-key="weeklyReport" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">分数提醒</text>
+        <switch checked="{{settings.notifications.scoreAlert}}" bindchange="toggleSetting" data-category="notifications" data-key="scoreAlert" />
+      </view>
+    </view>
+    
+    <!-- 分析设置 -->
+    <view class="section">
+      <text class="section-title">分析设置</text>
+      <view class="setting-item">
+        <text class="setting-label">自动开始分析</text>
+        <switch checked="{{settings.analysis.autoStart}}" bindchange="toggleSetting" data-category="analysis" data-key="autoStart" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">保存原始数据</text>
+        <switch checked="{{settings.analysis.saveRawData}}" bindchange="toggleSetting" data-category="analysis" data-key="saveRawData" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">上传到云端</text>
+        <switch checked="{{settings.analysis.uploadToCloud}}" bindchange="toggleSetting" data-category="analysis" data-key="uploadToCloud" />
+      </view>
+    </view>
+    
+    <!-- 隐私设置 -->
+    <view class="section">
+      <text class="section-title">隐私设置</text>
+      <view class="setting-item">
+        <text class="setting-label">分享匿名数据</text>
+        <switch checked="{{settings.privacy.shareAnonymousData}}" bindchange="toggleSetting" data-category="privacy" data-key="shareAnonymousData" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">显示在排行榜</text>
+        <switch checked="{{settings.privacy.showInLeaderboard}}" bindchange="toggleSetting" data-category="privacy" data-key="showInLeaderboard" />
+      </view>
+    </view>
+    
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn secondary" bindtap="resetToDefault">恢复默认设置</button>
+      <button class="action-btn secondary" bindtap="clearCache">清除缓存</button>
+      <button class="action-btn primary" bindtap="checkUpdate">检查更新</button>
+    </view>
+    
+    <!-- 关于信息 -->
+    <view class="section">
+      <text class="section-title">关于</text>
+      <view class="about-item" bindtap="viewAbout">
+        <text class="about-label">版本信息</text>
+        <text class="about-value">{{appInfo.version}}</text>
+      </view>
+      <view class="about-item" bindtap="contactSupport">
+        <text class="about-label">联系支持</text>
+        <text class="about-value">›</text>
+      </view>
+    </view>
+    
+    <!-- 应用说明 -->
+    <view class="info-box">
+      <text class="info-title">📱 应用说明</text>
+      <text class="info-text">• 所有设置会自动保存</text>
+      <text class="info-text">• 清除缓存不会删除睡眠数据</text>
+      <text class="info-text">• 隐私设置保护您的个人信息</text>
+    </view>
+  </view>
+</view>

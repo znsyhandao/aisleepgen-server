@@ -1,0 +1,93 @@
+<view class="container">
+  
+  <!-- 头部 -->
+  <view class="header">
+    <button class="header-btn" bindtap="goBack" wx:if="{{showBackButton}}">‹</button>
+    <text class="header-title">冥想</text>
+    <view class="header-spacer"></view>
+  </view>
+  
+  <!-- 主卡片 -->
+  <view class="player-card" wx:if="{{meditationStatus !== 'completed'}}">
+    <text class="player-icon">{{meditationStatus === 'playing' ? '🧘' : meditationIcons[currentMeditation.typeId] || '🧘'}}</text>
+    <text class="player-title" wx:if="{{meditationStatus === 'idle'}}">{{currentMeditation.title}}</text>
+    <text class="player-desc" wx:if="{{meditationStatus === 'idle'}}">{{currentMeditation.description}}</text>
+    
+    <!-- 冥想进行中 -->
+    <view wx:if="{{meditationActive}}">
+      <!-- 呼吸引导 -->
+      <view class="guide-section">
+        <text class="guide-text">{{guideText || '放松，跟随呼吸...'}}</text>
+        <text class="guide-sub" wx:if="{{guideSub}}">{{guideSub}}</text>
+      </view>
+      
+      <!-- 计时 -->
+      <text class="timer-display">{{currentTimeStr}} / {{totalTimeStr}}</text>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progress}}%"></view>
+      </view>
+    </view>
+    
+    <!-- 控制按钮 -->
+    <view class="controls-row">
+      <button class="control-btn primary" wx:if="{{meditationStatus === 'idle'}}" bindtap="startMeditation">
+        <text class="control-btn-icon">▶</text>
+        <text class="control-btn-label">开始</text>
+      </button>
+      
+      <button class="control-btn" wx:if="{{meditationStatus === 'playing'}}" bindtap="pauseMeditation">
+        <text class="control-btn-icon">⏸</text>
+        <text class="control-btn-label">暂停</text>
+      </button>
+      
+      <button class="control-btn" wx:if="{{meditationStatus === 'paused'}}" bindtap="resumeMeditation">
+        <text class="control-btn-icon">▶</text>
+        <text class="control-btn-label">继续</text>
+      </button>
+      
+      <button class="control-btn" wx:if="{{meditationStatus !== 'idle'}}" bindtap="stopMeditation">
+        <text class="control-btn-icon">⏹</text>
+        <text class="control-btn-label">停止</text>
+      </button>
+    </view>
+  </view>
+  
+  <!-- 完成 -->
+  <view class="completion-section" wx:if="{{meditationStatus === 'completed'}}">
+    <text class="completion-icon">🧘</text>
+    <text class="completion-text">冥想完成</text>
+    <text class="completion-detail">已完成 {{totalTimeStr}} 的冥想练习</text>
+    <view class="controls-row" style="margin-top: 40rpx;">
+      <button class="control-btn primary" bindtap="stopMeditation">
+        <text class="control-btn-icon">✓</text>
+        <text class="control-btn-label">完成</text>
+      </button>
+    </view>
+  </view>
+  
+  <!-- 设置 -->
+  <view class="settings-section" wx:if="{{meditationStatus === 'idle'}}">
+    <text class="settings-label">设置</text>
+    
+    <view class="setting-row">
+      <text class="setting-row-label">背景</text>
+      <view class="sound-options">
+        <button class="sound-btn {{playerSettings.backgroundSound === 'rain' ? 'active' : ''}}" 
+                bindtap="changeBackgroundSound" data-sound="rain">🌧 雨</button>
+        <button class="sound-btn {{playerSettings.backgroundSound === 'ocean' ? 'active' : ''}}" 
+                bindtap="changeBackgroundSound" data-sound="ocean">🌊 海</button>
+        <button class="sound-btn {{playerSettings.backgroundSound === 'forest' ? 'active' : ''}}" 
+                bindtap="changeBackgroundSound" data-sound="forest">🌲 林</button>
+        <button class="sound-btn {{playerSettings.backgroundSound === 'music' ? 'active' : ''}}" 
+                bindtap="changeBackgroundSound" data-sound="music">🎵 乐</button>
+      </view>
+    </view>
+    
+    <view class="setting-row">
+      <text class="setting-row-label">音量</text>
+      <slider class="volume-slider" value="{{playerSettings.volume}}" min="0" max="100" bindchange="updateVolume" backgroundColor="rgba(255,255,255,0.1)" activeColor="#667eea" block-size="14"/>
+      <text class="player-desc" style="font-size:24rpx;color:rgba(255,255,255,0.4);margin:0;width:60rpx;text-align:right;">{{playerSettings.volume}}%</text>
+    </view>
+  </view>
+  
+</view>

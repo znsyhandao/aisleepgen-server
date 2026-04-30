@@ -1,0 +1,6 @@
+/* profile.wxss */
+.container {
+  padding: 40rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}

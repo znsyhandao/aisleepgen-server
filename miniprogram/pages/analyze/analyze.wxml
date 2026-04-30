@@ -1,0 +1,41 @@
+<!-- pages/analyze/analyze.wxml — 极简版 -->
+<view class="page">
+  
+  <!-- 核心：一个大按钮开始分析 -->
+  <view class="hero">
+    <view class="ring">
+      <text class="ring-score">{{lastScore}}</text>
+      <text class="ring-label">上次评分</text>
+    </view>
+    <button class="start-btn" bindtap="startAnalysis">
+      <text class="start-icon">+</text>
+      <text class="start-text">新分析</text>
+    </button>
+  </view>
+  
+  <!-- 最近记录：仅列表 -->
+  <view class="list" wx:if="{{records.length > 0}}">
+    <view class="list-item" 
+          wx:for="{{records}}" 
+          wx:key="index"
+          bindtap="viewDetail"
+          data-index="{{index}}">
+      <view class="item-left">
+        <text class="item-date">{{item.date}}</text>
+        <text class="item-dur">{{item.duration}}</text>
+      </view>
+      <view class="item-right">
+        <text class="item-score">{{item.score}}</text>
+        <text class="item-unit">分</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 无记录时的引导 -->
+  <view class="empty" wx:if="{{records.length === 0 && !loading}}">
+    <text class="empty-text">暂无睡眠分析记录</text>
+    <text class="empty-hint">点击上方按钮开始你的第一次分析</text>
+  </view>
+  
+</view>

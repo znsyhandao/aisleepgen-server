@@ -1,0 +1,67 @@
+<view class="page">
+  <!-- 粒子 Canvas -->
+  <canvas type="2d" id="particleCanvas" class="particle-layer"></canvas>
+  
+  <!-- 能量环 -->
+  <view class="ring-container">
+    <view class="ring-outer rotate1"></view>
+    <view class="ring-outer2 rotate2"></view>
+  </view>
+  
+  <!-- 核心光晕 -->
+  <view class="glow-layer"></view>
+
+  <!-- 关闭按钮 -->
+  <view class="close" catchtap="closeNow">
+    <text class="close-icon">✕</text>
+  </view>
+
+  <!-- 呼吸提示文字 -->
+  <view class="hint-text {{phase}}" wx:if="{{!done}}">
+    <text class="hint-label">{{hintText}}</text>
+  </view>
+
+  <!-- 主呼吸圆 -->
+  <view class="circle-wrap">
+    <view class="circle {{phase}}" style="transform: scale({{scale}});">
+      <view class="circle-glow {{phase}}"></view>
+    </view>
+    <view class="circle-center">
+      <text class="phase-text" style="color: hsla({{glowHue}}, {{glowSat}}%, 70%, 0.6); text-shadow: 0 0 20rpx hsla({{glowHue}}, {{glowSat}}%, 60%, 0.3);">{{phaseText}}</text>
+      <text class="count-text" style="text-shadow: 0 0 30rpx hsla({{glowHue}}, {{glowSat}}%, 60%, 0.2);">{{count}}</text>
+    </view>
+  </view>
+
+  <!-- 进度 -->
+  <view class="progress-row">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progressPct}}%;"></view>
+    </view>
+    <text class="progress-label">{{round}}/{{totalRounds}}</text>
+  </view>
+
+  <!-- 呼吸名称 -->
+  <view class="breath-name">{{breathName}}</view>
+
+  <!-- 声音控制 -->
+  <view class="sound-ctrl" bindtap="toggleSound">
+    <text class="sound-icon">{{soundOn ? '🔊' : '🔇'}}</text>
+  </view>
+
+  <!-- 控制按钮 -->
+  <view class="controls" wx:if="{{!done}}">
+    <view class="ctrl-btn" bindtap="toggle">
+      <text class="ctrl-icon">{{playing ? '⏸' : '▶'}}</text>
+    </view>
+  </view>
+
+  <!-- 完成状态 -->
+  <view class="complete-overlay {{done ? 'show' : ''}}" wx:if="{{done}}" catchtap="closeNow">
+    <view class="complete-circle">
+      <text class="complete-icon">🧘</text>
+    </view>
+    <text class="complete-title">练习完成</text>
+    <text class="complete-sub">身体放松了一些吗？回到聊天告诉我</text>
+    <view class="complete-btn" catchtap="closeNow">返回聊天</view>
+  </view>
+</view>

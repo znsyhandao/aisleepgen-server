@@ -1,0 +1,249 @@
+/* meditation.wxss - 閼昏鐏夌粋鍛壈妞嬪孩鐗?*/
+page {
+  background: #1B2838;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 0 28rpx;
+  background: linear-gradient(180deg, #1B2838 0%, #16213e 60%, #0f3460 100%);
+}
+
+/* 婢舵挳鍎?*/
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60rpx 0 20rpx;
+}
+
+.header-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5rpx;
+}
+
+.header-btn {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  font-size: 32rpx;
+  line-height: 72rpx;
+  text-align: center;
+  padding: 0;
+}
+
+.header-spacer { width: 72rpx; }
+
+/* 閸愩儲鍏傞崡锛勫 - 鐏炲懍鑵戦幘顓熸杹閸?*/
+.player-card {
+  background: rgba(255,255,255,0.06);
+  border-radius: 40rpx;
+  padding: 50rpx 36rpx;
+  margin: 20rpx 0 30rpx;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  text-align: center;
+}
+
+.player-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.player-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: white;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.player-desc {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.5);
+  display: block;
+  margin-bottom: 40rpx;
+}
+
+/* 閸涚厧鎯涘鏇烆嚤 */
+.guide-section {
+  min-height: 120rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20rpx 0;
+}
+
+.guide-text {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  display: block;
+  animation: breatheFade 1s ease;
+}
+
+.guide-sub {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.4);
+  margin-top: 12rpx;
+  display: block;
+  animation: breatheFade 1s ease;
+}
+
+@keyframes breatheFade {
+  from { opacity: 0; transform: translateY(10rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 鐠佲剝妞傞崳?*/
+.timer-display {
+  font-size: 56rpx;
+  font-weight: 200;
+  color: rgba(255,255,255,0.6);
+  display: block;
+  letter-spacing: 4rpx;
+  margin-bottom: 20rpx;
+}
+
+.progress-bar {
+  height: 4rpx;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2rpx;
+  overflow: hidden;
+  margin: 0 20rpx 40rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2rpx;
+  transition: width 0.3s linear;
+}
+
+/* 閹貉冨煑閹稿鎸?*/
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 24rpx;
+  margin: 20rpx 0;
+}
+
+.control-btn {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+.control-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.15); }
+.control-btn.primary { background: linear-gradient(135deg, #667eea, #764ba2); width: 140rpx; height: 140rpx; border-radius: 70rpx; }
+.control-btn.primary:active { transform: scale(0.92); }
+
+.control-btn-icon { font-size: 44rpx; display: block; }
+.control-btn-label { font-size: 20rpx; color: rgba(255,255,255,0.5); margin-top: 6rpx; display: block; }
+.control-btn.primary .control-btn-icon { font-size: 52rpx; }
+
+/* 鐎瑰本鍨氶悩鑸碘偓?*/
+.completion-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0;
+}
+
+.completion-icon {
+  font-size: 100rpx;
+  display: block;
+  margin-bottom: 24rpx;
+  animation: breatheScale 2s infinite;
+}
+
+@keyframes breatheScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.completion-text {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: white;
+  display: block;
+}
+
+.completion-detail {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.4);
+  margin-top: 12rpx;
+  display: block;
+}
+
+/* 鐠佸墽鐤嗛崠?*/
+.settings-section {
+  background: rgba(255,255,255,0.04);
+  border-radius: 28rpx;
+  padding: 32rpx;
+  margin-top: 20rpx;
+  margin-bottom: 60rpx;
+}
+
+.settings-label {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 2rpx;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.setting-row-label {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.7);
+  width: 100rpx;
+  flex-shrink: 0;
+}
+
+.sound-options {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.sound-btn {
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 40rpx;
+  padding: 12rpx 22rpx;
+  color: rgba(255,255,255,0.6);
+  font-size: 24rpx;
+  transition: all 0.2s;
+  line-height: initial;
+}
+.sound-btn.active {
+  background: rgba(102,126,234,0.3);
+  border-color: #667eea;
+  color: white;
+}
+
+.volume-slider { flex: 1; margin: 0 16rpx; }

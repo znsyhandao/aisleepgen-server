@@ -1,0 +1,194 @@
+<!-- pages/report/report.wxml - 专业睡眠报告 -->
+<view class="container">
+  
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-left">
+      <view class="header-btn" bindtap="goBack" wx:if="{{showBackButton}}">
+        <text class="back-text">‹ 返回</text>
+      </view>
+    </view>
+    <text class="title">睡眠报告</text>
+    <view class="header-right">
+      <view class="header-btn" bindtap="favoriteReport">
+        <text class="icon-text">⭐</text>
+      </view>
+      <view class="header-btn" bindtap="shareReport" wx:if="{{canShare}}">
+        <text class="icon-text">↗️</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 加载 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-ring"></view>
+    <text class="loading-text">正在生成报告...</text>
+  </view>
+  
+  <!-- 内容 -->
+  <scroll-view class="report-scroll" scroll-y wx:if="{{showReport}}">
+    
+    <!-- ===== 评分大卡片 ===== -->
+    <view class="score-hero-card">
+      <!-- 光晕 -->
+      <view class="hero-glow"></view>
+      
+      <view class="source-badge">{{reportData.sourceName || reportData.type || '睡眠分析'}}</view>
+      
+      <view class="hero-score-area">
+        <view class="hero-ring">
+          <view class="hero-ring-bg"></view>
+          <view class="hero-ring-fill" 
+                style="--score: {{reportData.score}}; 
+                       --color: {{reportData.score >= 85 ? '#4CAF50' : reportData.score >= 75 ? '#667eea' : reportData.score >= 65 ? '#FF9800' : '#F44336'}}">
+            <text class="hero-score-num">{{scoreAnimateValue || reportData.score}}</text>
+            <text class="hero-score-unit">分</text>
+          </view>
+        </view>
+        <text class="hero-quality {{reportData.quality === '优秀' ? 'excellent' : reportData.quality === '良好' ? 'good' : 'average'}}">
+          {{reportData.quality}}
+        </text>
+      </view>
+      
+      <view class="hero-meta-row">
+        <view class="hero-meta-item">
+          <text class="meta-icon">🛌</text>
+          <text class="meta-value">{{reportData.duration}}</text>
+          <text class="meta-label">睡眠时长</text>
+        </view>
+        <view class="hero-meta-divider"></view>
+        <view class="hero-meta-item">
+          <text class="meta-icon">📅</text>
+          <text class="meta-value">{{reportData.date || reportData.time}}</text>
+          <text class="meta-label">分析时间</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 6维雷达图 ===== -->
+    <view class="section">
+      <text class="section-title">六维睡眠画像</text>
+      <view class="radar-container">
+        <!-- 使用CSS多边形实现雷达图 -->
+        <view class="radar-chart">
+          <view class="radar-grid">
+            <view class="grid-line l1"></view>
+            <view class="grid-line l2"></view>
+            <view class="grid-line l3"></view>
+          </view>
+          <!-- 标签 -->
+          <view class="radar-label tl">{{radarData[0].label}}</view>
+          <view class="radar-label tc">{{radarData[1].label}}</view>
+          <view class="radar-label tr">{{radarData[2].label}}</view>
+          <view class="radar-label bl">{{radarData[3].label}}</view>
+          <view class="radar-label bc">{{radarData[4].label}}</view>
+          <view class="radar-label br">{{radarData[5].label}}</view>
+          <!-- 数值三角形（简化为六边形点阵） -->
+          <view class="radar-points">
+            <view class="rpoint" wx:for="{{radarData}}" wx:key="label" 
+                  style="--angle: {{index * 60}}deg; --value: {{item.value}}">
+              <text class="rpoint-value">{{item.value}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 维度详情 -->
+      <view class="radar-details">
+        <view class="radar-detail-item" wx:for="{{radarData}}" wx:key="label">
+          <text class="rd-label">{{item.label}}</text>
+          <view class="rd-bar-bg">
+            <view class="rd-bar-fill" style="width: {{item.value}}%; 
+                  background: {{item.value >= 85 ? '#4CAF50' : item.value >= 75 ? '#667eea' : item.value >= 65 ? '#FF9800' : '#F44336'}}">
+            </view>
+          </view>
+          <text class="rd-value">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 睡眠阶段 ===== -->
+    <view class="section">
+      <text class="section-title">睡眠阶段分布</text>
+      <view class="stages-row">
+        <view class="stage-item" wx:for="{{reportData.sleepStages}}" wx:key="name">
+          <view class="stage-color-dot" style="background: {{item.color}};"></view>
+          <text class="stage-name">{{item.name}}</text>
+          <text class="stage-value">{{item.value}}%</text>
+        </view>
+      </view>
+      <view class="stages-bar">
+        <view class="stage-segment" wx:for="{{reportData.sleepStages}}" wx:key="name"
+              style="width: {{item.value}}%; background: {{item.color}};"></view>
+      </view>
+    </view>
+
+    <!-- ===== 详细指标 ==== -->
+    <view class="section">
+      <text class="section-title">详细指标</text>
+      <view class="metrics-grid">
+        <view class="metric-card" bindtap="viewDetail" data-key="deepSleep">
+          <text class="metric-label">深睡时长</text>
+          <text class="metric-value">{{reportData.details.deepSleep}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="remSleep">
+          <text class="metric-label">REM睡眠</text>
+          <text class="metric-value">{{reportData.details.remSleep}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="sleepEfficiency">
+          <text class="metric-label">睡眠效率</text>
+          <text class="metric-value">{{reportData.details.sleepEfficiency}}%</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="sleepLatency">
+          <text class="metric-label">入睡时间</text>
+          <text class="metric-value">{{reportData.details.sleepLatency}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== AI详细分析 ===== -->
+    <view class="section" wx:if="{{reportData.detailedAnalysis}}">
+      <view class="section-header-row">
+        <text class="section-title">AI分析</text>
+        <text class="section-badge" wx:if="{{reportData.isAIGenerated}}">AI生成</text>
+      </view>
+      <text class="ai-analysis-content">{{reportData.detailedAnalysis}}</text>
+    </view>
+
+    <!-- ===== 个性化建议 ===== -->
+    <view class="section">
+      <text class="section-title">💡 改善建议</text>
+      <view class="suggestions">
+        <view class="suggestion-item" wx:for="{{reportData.suggestions}}" wx:key="index">
+          <view class="sug-index">{{index + 1}}</view>
+          <text class="sug-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 操作按钮 ===== -->
+    <view class="bottom-actions">
+      <button class="action-btn primary" open-type="share">
+        <text>🤝 分享报告</text>
+      </button>
+      <button class="action-btn secondary" bindtap="copyReport">
+        <text>📋 复制文本</text>
+      </button>
+      <button class="action-btn secondary" bindtap="viewHistory">
+        <text>📊 历史记录</text>
+      </button>
+    </view>
+
+    <!-- 报告说明 -->
+    <view class="report-footer">
+      <text class="footer-text">本报告基于你的睡眠数据分析生成，仅供参考。</text>
+      <text class="footer-text">如有睡眠困扰，建议咨询专业医生。</text>
+    </view>
+    
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+  
+</view>

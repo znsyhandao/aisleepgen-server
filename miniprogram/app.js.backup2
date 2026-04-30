@@ -1,0 +1,164 @@
+// AISleepGen 微信小程序 - 修复版（无云开发）
+App({
+  onLaunch: function () {
+    console.log('AISleepGen 小程序启动 - 修复版');
+    
+    // 简化初始化，避免云开发问题
+    this.safeInit();
+  },
+  
+  onShow: function () {
+    console.log('小程序显示');
+  },
+  
+  onHide: function () {
+    console.log('小程序隐藏');
+  },
+  
+  // 安全的初始化
+  safeInit: function() {
+    try {
+      // 检查登录状态
+      const token = wx.getStorageSync('token');
+      if (token) {
+        this.globalData.isLoggedIn = true;
+        // 安全地获取用户信息
+        try {
+          const userInfoStr = wx.getStorageSync('userInfo');
+          if (userInfoStr) {
+            this.globalData.userInfo = JSON.parse(userInfoStr);
+          }
+        } catch (e) {
+          console.warn('用户信息解析失败:', e);
+          this.globalData.userInfo = null;
+        }
+      } else {
+        this.globalData.isLoggedIn = false;
+      }
+      
+      console.log('初始化完成，登录状态:', this.globalData.isLoggedIn);
+    } catch (error) {
+      console.error('初始化失败:', error);
+    }
+  },
+  
+  // 全局数据
+  globalData: {
+    isLoggedIn: false,
+    userInfo: null,
+    apiBaseUrl: 'https://api.aisleepgen.com',
+    version: '1.0.0',
+    config: {
+      enableNotifications: true,
+      theme: 'light',
+      language: 'zh-CN'
+    }
+  },
+  
+  // 显示加载提示
+  showLoading: function(title = '加载中...') {
+    wx.showLoading({
+      title: title,
+      mask: true
+    });
+  },
+  
+  // 隐藏加载提示
+  hideLoading: function() {
+    wx.hideLoading();
+  },
+  
+  // 显示成功提示
+  showSuccess: function(title, duration = 1500) {
+    wx.showToast({
+      title: title,
+      icon: 'success',
+      duration: duration
+    });
+  },
+  
+  // 显示错误提示
+  showError: function(title, duration = 2000) {
+    wx.showToast({
+      title: title,
+      icon: 'error',
+      duration: duration
+    });
+  },
+  
+  // 安全的JSON解析
+  safeJsonParse: function(str, defaultValue = null) {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.warn('JSON解析失败:', e);
+      return defaultValue;
+    }
+  },
+  
+  // 安全的网络请求（简化版）
+  request: function(options) {
+    const { url, method = 'GET', data = {}, header = {} } = options;
+    
+    return new Promise((resolve, reject) => {
+      // 模拟请求，避免真实网络问题
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: {
+            message: '模拟请求成功',
+            timestamp: Date.now()
+          }
+        });
+      }, 500);
+    });
+  },
+  
+  // 用户登录（模拟版）
+  login: function() {
+    return new Promise((resolve) => {
+      // 模拟登录过程
+      setTimeout(() => {
+        const mockUserInfo = {
+          nickName: '测试用户',
+          avatarUrl: 'https://example.com/avatar.jpg',
+          userId: 'test_001'
+        };
+        
+        wx.setStorageSync('token', 'mock_token_' + Date.now());
+        wx.setStorageSync('userInfo', JSON.stringify(mockUserInfo));
+        
+        this.globalData.isLoggedIn = true;
+        this.globalData.userInfo = mockUserInfo;
+        
+        resolve({
+          success: true,
+          token: 'mock_token',
+          userInfo: mockUserInfo
+        });
+      }, 1000);
+    });
+  },
+  
+  // 获取用户信息（模拟版）
+  getUserInfo: function() {
+    return new Promise((resolve) => {
+      const mockInfo = {
+        nickName: '睡眠守护者',
+        avatarUrl: 'https://example.com/avatar.png',
+        gender: 1,
+        country: '中国',
+        province: '北京',
+        city: '北京'
+      };
+      
+      resolve(mockInfo);
+    });
+  },
+  
+  // 检查更新（简化版）
+  checkUpdate: function() {
+    console.log('检查更新（模拟）');
+    return Promise.resolve({ hasUpdate: false });
+  }
+});

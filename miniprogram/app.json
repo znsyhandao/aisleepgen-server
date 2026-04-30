@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/onboarding/onboarding",
+    "pages/chat/chat",
+    "pages/index/index",
+    "pages/analyze/analyze",
+    "pages/report/report",
+    "pages/profile/profile",
+    "pages/settings/settings",
+    "pages/meditation/meditation",
+    "pages/history/history",
+    "pages/survey/survey",
+    "pages/breathing/breathing",
+    "pages/relaxation/relaxation",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#000",
+    "navigationBarTitleText": "AI 睡眠助手",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#000",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4A90E2",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "对话"
+      },
+      {
+        "pagePath": "pages/analyze/analyze",
+        "text": "趋势"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "requiredBackgroundModes": [
+    "audio"
+  ],
+  "sitemapLocation": "sitemap.json"
+}

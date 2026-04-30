@@ -1,0 +1,62 @@
+<view class="page" style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); min-height: 100vh; padding: 40rpx 30rpx; color: #e0e0ff;">
+  <!-- 标题 -->
+  <view class="header" style="text-align: center; margin-bottom: 50rpx;">
+    <text style="font-size: 48rpx; font-weight: bold; color: #fff; letter-spacing: 4rpx;">🌙 了解你的睡眠</text>
+    <text style="display: block; font-size: 28rpx; color: #8888bb; margin-top: 16rpx;">让我先了解你，才能给你最适合的陪伴</text>
+  </view>
+
+  <!-- 问题1：主要困扰 -->
+  <view class="question-card" style="background: rgba(255,255,255,0.06); border-radius: 24rpx; padding: 30rpx; margin-bottom: 30rpx; backdrop-filter: blur(10px); border: 1rpx solid rgba(255,255,255,0.08);">
+    <text style="font-size: 32rpx; font-weight: bold; color: #b8b8ff; display: block; margin-bottom: 20rpx;">你最困扰的是？</text>
+    <view class="options" style="display: flex; flex-wrap: wrap; gap: 16rpx;">
+      <view wx:for="{{issues}}" wx:key="*this" class="option-tag" style="padding: 14rpx 28rpx; border-radius: 40rpx; background: {{survey.main_issue === item.value ? 'rgba(100,120,255,0.35)' : 'rgba(255,255,255,0.05)'}}; border: 1rpx solid {{survey.main_issue === item.value ? '#8888ff' : 'rgba(255,255,255,0.1)'}}; color: {{survey.main_issue === item.value ? '#fff' : '#8888bb'}}; font-size: 28rpx;" bindtap="selectIssue" data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 问题2：作息类型 -->
+  <view class="question-card" style="background: rgba(255,255,255,0.06); border-radius: 24rpx; padding: 30rpx; margin-bottom: 30rpx; backdrop-filter: blur(10px); border: 1rpx solid rgba(255,255,255,0.08);">
+    <text style="font-size: 32rpx; font-weight: bold; color: #b8b8ff; display: block; margin-bottom: 20rpx;">你平时的作息是？</text>
+    <view class="options" style="display: flex; flex-wrap: wrap; gap: 16rpx;">
+      <view wx:for="{{sleepTypes}}" wx:key="*this" class="option-tag" style="padding: 14rpx 28rpx; border-radius: 40rpx; background: {{survey.sleep_type === item.value ? 'rgba(100,120,255,0.35)' : 'rgba(255,255,255,0.05)'}}; border: 1rpx solid {{survey.sleep_type === item.value ? '#8888ff' : 'rgba(255,255,255,0.1)'}}; color: {{survey.sleep_type === item.value ? '#fff' : '#8888bb'}}; font-size: 28rpx;" bindtap="selectSleepType" data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 问题3：压力程度 -->
+  <view class="question-card" style="background: rgba(255,255,255,0.06); border-radius: 24rpx; padding: 30rpx; margin-bottom: 30rpx; backdrop-filter: blur(10px); border: 1rpx solid rgba(255,255,255,0.08);">
+    <text style="font-size: 32rpx; font-weight: bold; color: #b8b8ff; display: block; margin-bottom: 20rpx;">最近压力大吗？</text>
+    <view class="options" style="display: flex; flex-wrap: wrap; gap: 16rpx;">
+      <view wx:for="{{stressLevels}}" wx:key="*this" class="option-tag" style="padding: 14rpx 28rpx; border-radius: 40rpx; background: {{survey.stress_level === item.value ? 'rgba(100,120,255,0.35)' : 'rgba(255,255,255,0.05)'}}; border: 1rpx solid {{survey.stress_level === item.value ? '#8888ff' : 'rgba(255,255,255,0.1)'}}; color: {{survey.stress_level === item.value ? '#fff' : '#8888bb'}}; font-size: 28rpx;" bindtap="selectStressLevel" data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 问题4：偏好声音 -->
+  <view class="question-card" style="background: rgba(255,255,255,0.06); border-radius: 24rpx; padding: 30rpx; margin-bottom: 30rpx; backdrop-filter: blur(10px); border: 1rpx solid rgba(255,255,255,0.08);">
+    <text style="font-size: 32rpx; font-weight: bold; color: #b8b8ff; display: block; margin-bottom: 20rpx;">喜欢哪种声音助眠？</text>
+    <view class="options" style="display: flex; flex-wrap: wrap; gap: 16rpx;">
+      <view wx:for="{{soundPrefs}}" wx:key="*this" class="option-tag" style="padding: 14rpx 28rpx; border-radius: 40rpx; background: {{survey.sound_pref === item.value ? 'rgba(100,120,255,0.35)' : 'rgba(255,255,255,0.05)'}}; border: 1rpx solid {{survey.sound_pref === item.value ? '#8888ff' : 'rgba(255,255,255,0.1)'}}; color: {{survey.sound_pref === item.value ? '#fff' : '#8888bb'}}; font-size: 28rpx;" bindtap="selectSoundPref" data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 问题5：练习时长偏好 -->
+  <view class="question-card" style="background: rgba(255,255,255,0.06); border-radius: 24rpx; padding: 30rpx; margin-bottom: 50rpx; backdrop-filter: blur(10px); border: 1rpx solid rgba(255,255,255,0.08);">
+    <text style="font-size: 32rpx; font-weight: bold; color: #b8b8ff; display: block; margin-bottom: 20rpx;">呼吸练习喜欢多久？</text>
+    <view class="options" style="display: flex; flex-wrap: wrap; gap: 16rpx;">
+      <view wx:for="{{durationPrefs}}" wx:key="*this" class="option-tag" style="padding: 14rpx 28rpx; border-radius: 40rpx; background: {{survey.duration_pref === item.value ? 'rgba(100,120,255,0.35)' : 'rgba(255,255,255,0.05)'}}; border: 1rpx solid {{survey.duration_pref === item.value ? '#8888ff' : 'rgba(255,255,255,0.1)'}}; color: {{survey.duration_pref === item.value ? '#fff' : '#8888bb'}}; font-size: 28rpx;" bindtap="selectDurationPref" data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-btn" style="text-align: center; margin-top: 20rpx;">
+    <button bindtap="submitSurvey" disabled="{{!allAnswered}}" style="width: 80%; background: {{allAnswered ? 'linear-gradient(135deg, #6666ff, #8888ff)' : 'rgba(255,255,255,0.1)'}}; color: {{allAnswered ? '#fff' : '#666680'}}; border: none; border-radius: 50rpx; padding: 24rpx; font-size: 34rpx; font-weight: bold;">开始探索睡眠 🚀</button>
+  </view>
+</view>

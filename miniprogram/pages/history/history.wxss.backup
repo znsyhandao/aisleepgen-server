@@ -1,0 +1,136 @@
+/* history.wxss */
+.container {
+  padding: 40rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.refresh-btn {
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+}
+
+.stats-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #4A90E2;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.loading {
+  text-align: center;
+  padding: 100rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.history-list {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.list-header {
+  display: flex;
+  background: #f8f9fa;
+  padding: 20rpx;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 2rpx solid #eee;
+}
+
+.header-item {
+  flex: 1;
+  text-align: center;
+}
+
+.record-item {
+  display: flex;
+  padding: 25rpx 20rpx;
+  border-bottom: 1rpx solid #eee;
+  align-items: center;
+}
+
+.record-item:active {
+  background: #f8f9fa;
+}
+
+.record-date, .record-score, .record-duration, .record-quality {
+  flex: 1;
+  text-align: center;
+  font-size: 26rpx;
+}
+
+.record-score.excellent {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.record-score.good {
+  color: #2196F3;
+}
+
+.record-score.average {
+  color: #FF9800;
+}
+
+.record-score.poor {
+  color: #F44336;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-state .hint {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+.tips {
+  margin-top: 40rpx;
+  padding: 20rpx;
+  background: #e8f4ff;
+  border-radius: 10rpx;
+  color: #4A90E2;
+  font-size: 24rpx;
+  text-align: center;
+}

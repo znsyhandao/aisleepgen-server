@@ -1,0 +1,106 @@
+﻿<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 鐢ㄦ埛淇℃伅 -->
+  <view class="user-info-section">
+    <image class="user-avatar" src="{{userInfo.avatarUrl}}"></image>
+    <view class="user-details">
+      <text class="user-name">{{userInfo.nickName}}</text>
+      <text class="user-id">ID: {{userInfo.userId}}</text>
+      <view class="user-tags">
+        <text class="user-tag">{{userInfo.memberLevel}}</text>
+        <text class="user-tag">鍔犲叆鏃堕棿: {{userInfo.joinDate}}</text>
+      </view>
+    </view>
+    <button class="edit-btn" bindtap="updateProfile">缂栬緫</button>
+  </view>
+
+  <!-- 缁熻鏁版嵁 -->
+  <view class="stats-section">
+    <view class="section-title">鐫＄湢缁熻</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalDays}}</text>
+        <text class="stat-label">鎬昏褰曞ぉ鏁?/text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.averageScore}}</text>
+        <text class="stat-label">骞冲潎璇勫垎</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.bestScore}}</text>
+        <text class="stat-label">鏈€浣宠瘎鍒?/text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.consistency}}%</text>
+        <text class="stat-label">鐫＄湢涓€鑷存€?/text>
+      </view>
+    </view>
+    <button class="view-stats-btn" bindtap="viewStatsDetail">鏌ョ湅璇︾粏缁熻</button>
+  </view>
+
+  <!-- 鎴愬氨绯荤粺 -->
+  <view class="achievements-section">
+    <view class="section-header">
+      <text class="section-title">鎴戠殑鎴愬氨</text>
+      <text class="section-subtitle">宸茶幏寰?{{achievedCount}}/{{totalAchievements}} 涓垚灏?/text>
+    </view>
+    <view class="achievements-grid">
+      <block wx:for="{{achievements}}" wx:key="id">
+        <view class="achievement-item" bindtap="viewAchievement" data-id="{{item.id}}">
+          <text class="achievement-icon">{{item.icon}}</text>
+          <text class="achievement-name">{{item.name}}</text>
+          <text class="achievement-status {{item.achieved ? 'achieved' : 'pending'}}">
+            {{item.achieved ? '宸茶幏寰? : (item.progress ? `杩涘害: ${item.progress}%` : '鏈幏寰?)}}
+          </text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 璁剧疆閫夐」 -->
+  <view class="settings-section">
+    <view class="section-title">璐﹀彿璁剧疆</view>
+    <view class="settings-list">
+      <block wx:for="{{settings}}" wx:key="id">
+        <view class="setting-item">
+          <text class="setting-icon">{{item.icon}}</text>
+          <text class="setting-name">{{item.name}}</text>
+          <switch class="setting-switch" checked="{{item.enabled}}" bindchange="toggleSetting" data-id="{{item.id}}" />
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 浼氬憳淇℃伅 -->
+  <view class="membership-section" wx:if="{{!isPremium}}">
+    <view class="section-title">鍗囩骇涓撲笟鐗?/view>
+    <view class="membership-features">
+      <block wx:for="{{membership.features}}" wx:key="index">
+        <view class="feature-item">
+          <text class="feature-icon">鉁?/text>
+          <text class="feature-text">{{item}}</text>
+        </view>
+      </block>
+    </view>
+    <button class="upgrade-btn" bindtap="upgradeMembership">
+      绔嬪嵆鍗囩骇 楼{{membership.upgradePrice}}/骞?    </button>
+  </view>
+
+  <!-- 鎿嶄綔鎸夐挳 -->
+  <view class="action-section">
+    <button class="action-btn" bindtap="viewOrderHistory">璁㈠崟璁板綍</button>
+    <button class="action-btn" bindtap="contactSupport">鑱旂郴瀹㈡湇</button>
+    <button class="action-btn" bindtap="clearData">娓呴櫎鏁版嵁</button>
+    <button class="action-btn logout-btn" bindtap="logout">閫€鍑虹櫥褰?/button>
+  </view>
+
+  <!-- 搴旂敤淇℃伅 -->
+  <view class="app-info">
+    <text class="app-version">鐗堟湰 {{appVersion}}</text>
+    <view class="app-links">
+      <text class="app-link" bindtap="shareApp">鍒嗕韩搴旂敤</text>
+      <text class="app-link" bindtap="feedback">鎰忚鍙嶉</text>
+      <text class="app-link" bindtap="aboutApp">鍏充簬鎴戜滑</text>
+    </view>
+  </view>
+</view>

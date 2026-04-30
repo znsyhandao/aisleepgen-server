@@ -1,0 +1,478 @@
+/* pages/report/report.wxss - 娑撴挷绗熼惈锛勬耿閹躲儱鎲?*/
+page {
+  background: #0f3460;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+}
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1B2838 0%, #16213e 100%);
+}
+
+/* ===== 婢舵挳鍎?===== */
+.header {
+  padding: 80rpx 24rpx 16rpx;
+  display: flex;
+  align-items: center;
+  background: rgba(15,15,35,0.85);
+  backdrop-filter: blur(30px);
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left, .header-right {
+  display: flex;
+  gap: 8rpx;
+  width: 140rpx;
+}
+.header-right { justify-content: flex-end; }
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+.header-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 32rpx;
+  background: rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header-btn:active { background: rgba(255,255,255,0.1); }
+.back-text { font-size: 26rpx; color: rgba(255,255,255,0.7); }
+.icon-text { font-size: 28rpx; }
+
+/* ===== 閸旂姾娴?===== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 300rpx 0;
+}
+.loading-ring {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid rgba(255,255,255,0.06);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 24rpx;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ===== 閹躲儱鎲￠崘鍛啇 ===== */
+.report-scroll {
+  padding: 0 24rpx;
+  height: calc(100vh - 160rpx);
+}
+
+/* ===== 鐠囧嫬鍨庢径褍宕遍悧?===== */
+.score-hero-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(52,73,220,0.06));
+  border: 0.5px solid rgba(102,126,234,0.15);
+  border-radius: 32rpx;
+  padding: 36rpx;
+  margin: 24rpx 0;
+}
+.hero-glow {
+  position: absolute;
+  width: 400rpx;
+  height: 400rpx;
+  top: -100rpx;
+  right: -80rpx;
+  background: radial-gradient(circle, rgba(102,126,234,0.08), transparent 70%);
+  pointer-events: none;
+}
+.source-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 20rpx;
+  padding: 6rpx 18rpx;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+}
+.hero-score-area {
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+.hero-ring {
+  display: inline-block;
+  width: 180rpx;
+  height: 180rpx;
+  position: relative;
+  margin-bottom: 16rpx;
+}
+.hero-ring-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 10rpx solid rgba(255,255,255,0.06);
+}
+.hero-ring-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.hero-ring-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 10rpx solid transparent;
+  background: conic-gradient(
+    var(--color) 0%,
+    var(--color) calc(var(--score) * 1%),
+    rgba(255,255,255,0.06) calc(var(--score) * 1%)
+  ) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: scoreAnim 1s ease-out forwards;
+}
+@keyframes scoreAnim {
+  from { background: conic-gradient(var(--color) 0%, rgba(255,255,255,0.06) 0%); }
+}
+.hero-score-num {
+  font-size: 64rpx;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -2rpx;
+}
+.hero-score-unit {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4rpx;
+}
+.hero-quality {
+  font-size: 28rpx;
+  padding: 6rpx 24rpx;
+  border-radius: 40rpx;
+  display: inline-block;
+}
+.hero-quality.excellent { background: rgba(76,175,80,0.15); color: #4CAF50; }
+.hero-quality.good { background: rgba(102,126,234,0.15); color: #667eea; }
+.hero-quality.average { background: rgba(255,152,0,0.15); color: #FF9800; }
+
+.hero-meta-row {
+  display: flex;
+  align-items: center;
+  padding-top: 20rpx;
+  border-top: 0.5px solid rgba(255,255,255,0.06);
+}
+.hero-meta-item {
+  flex: 1;
+  text-align: center;
+}
+.meta-icon { font-size: 28rpx; display: block; margin-bottom: 4rpx; }
+.meta-value { font-size: 26rpx; font-weight: 600; color: rgba(255,255,255,0.7); display: block; }
+.meta-label { font-size: 20rpx; color: rgba(255,255,255,0.3); margin-top: 4rpx; display: block; }
+.hero-meta-divider { width: 0.5px; height: 40rpx; background: rgba(255,255,255,0.08); }
+
+/* ===== 閸掑棗灏柅姘辨暏 ===== */
+.section {
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(255,255,255,0.05);
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+.section-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  display: block;
+  margin-bottom: 20rpx;
+}
+.section-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+.section-header-row .section-title {
+  margin-bottom: 0;
+}
+.section-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 18rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+}
+
+/* ===== 闂嗙柉鎻崶鎯у隘閸?===== */
+.radar-container {
+  margin-bottom: 20rpx;
+}
+.radar-chart {
+  width: 420rpx;
+  height: 420rpx;
+  margin: 0 auto;
+  position: relative;
+}
+.radar-grid {
+  position: absolute;
+  inset: 10rpx;
+}
+.grid-line {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 0.5px solid rgba(255,255,255,0.06);
+}
+.grid-line.l2 { inset: 60rpx; }
+.grid-line.l3 { inset: 120rpx; }
+/* 闂嗙柉鎻潪瀛樼垼缁?*/
+.radar-label {
+  position: absolute;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.4);
+  width: 80rpx;
+  text-align: center;
+}
+.radar-label.tl { top: -24rpx; left: 50%; transform: translateX(-50%); }
+.radar-label.tc { top: 50%; right: -70rpx; transform: translateY(-50%); }
+.radar-label.tr { bottom: -8rpx; right: 10rpx; }
+.radar-label.bl { top: 50%; left: -70rpx; transform: translateY(-50%); }
+.radar-label.bc { bottom: -8rpx; left: 10rpx; }
+.radar-label.br { bottom: 100rpx; left: 50%; transform: translateX(-50%); }
+
+.radar-points {
+  position: absolute;
+  inset: 0;
+}
+.rpoint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.rpoint::before {
+  content: '';
+  position: absolute;
+  width: 10rpx;
+  height: 10rpx;
+  background: #667eea;
+  border-radius: 50%;
+  box-shadow: 0 0 10rpx rgba(102,126,234,0.4);
+  transform: translate(-50%, -50%);
+}
+.rpoint-value {
+  position: absolute;
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  margin-top: -20rpx;
+}
+
+/* 缂佹潙瀹崇拠锔藉剰閺?*/
+.radar-details {
+  margin-top: 20rpx;
+}
+.radar-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
+}
+.rd-label {
+  width: 100rpx;
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+}
+.rd-bar-bg {
+  flex: 1;
+  height: 12rpx;
+  background: rgba(255,255,255,0.06);
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+.rd-bar-fill {
+  height: 100%;
+  border-radius: 6rpx;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rd-value {
+  width: 40rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  text-align: right;
+}
+
+/* ===== 閻紕婀㈤梼鑸殿唽 ===== */
+.stages-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+.stage-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+.stage-color-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 4rpx;
+}
+.stage-name {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+}
+.stage-value {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+}
+.stages-bar {
+  display: flex;
+  height: 16rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+.stage-segment {
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ===== 鐠囷妇绮忛幐鍥ㄧ垼 ===== */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+.metric-card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 16rpx;
+  padding: 24rpx 20rpx;
+  text-align: center;
+  border: 0.5px solid rgba(255,255,255,0.04);
+  transition: all 0.2s;
+}
+.metric-card:active {
+  background: rgba(255,255,255,0.06);
+  transform: scale(0.97);
+}
+.metric-label {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.4);
+  display: block;
+  margin-bottom: 8rpx;
+}
+.metric-value {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  display: block;
+}
+.metric-hint {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.2);
+  margin-top: 6rpx;
+  display: block;
+}
+
+/* ===== AI閸掑棙鐎?===== */
+.ai-analysis-content {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* ===== 瀵ら缚顔?===== */
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+}
+.sug-index {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+  background: rgba(102,126,234,0.15);
+  color: #667eea;
+  font-size: 18rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+}
+.sug-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+
+/* ===== 閹垮秳缍旈幐澶愭尦 ===== */
+.bottom-actions {
+  display: flex;
+  gap: 16rpx;
+  margin: 30rpx 0;
+}
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 24rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16rpx;
+}
+.action-btn.primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4rpx 16rpx rgba(102,126,234,0.25);
+}
+.action-btn.secondary {
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.6);
+  border: 0.5px solid rgba(255,255,255,0.1);
+}
+
+/* ===== 妞や絻鍓?===== */
+.report-footer {
+  text-align: center;
+  padding: 20rpx 0;
+}
+.footer-text {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.2);
+  display: block;
+  line-height: 1.6;
+}
+
+.bottom-spacer {
+  height: 60rpx;
+}

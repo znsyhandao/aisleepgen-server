@@ -1,0 +1,153 @@
+/* pages/analyze/analyze.wxss 閳?閺嬩胶鐣濋悧?*/
+.page {
+  min-height: 100vh;
+  background: #0f3460;
+  padding: 0 40rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 閺嶇绺鹃崠鍝勭厵閿涙艾鐪虫稉顓犳殌閻?*/
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0 80rpx;
+}
+
+.ring {
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(74,144,226,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 60rpx;
+}
+
+.ring-score {
+  font-size: 64rpx;
+  font-weight: 200;
+  color: rgba(255,255,255,0.8);
+}
+
+.ring-label {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.3);
+  margin-top: 4rpx;
+}
+
+.start-btn {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background: rgba(74,144,226,0.12);
+  border: 2rpx solid rgba(74,144,226,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.start-btn:active {
+  opacity: 0.6;
+}
+
+.start-btn::after {
+  border: none;
+}
+
+.start-icon {
+  font-size: 56rpx;
+  color: #4A90E2;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+.start-text {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.6);
+}
+
+/* 閸掓銆?*/
+.list {
+  padding-bottom: 40rpx;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 0;
+  border-top: 1rpx solid rgba(255,255,255,0.06);
+}
+
+.list-item:active {
+  opacity: 0.6;
+}
+
+.item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.item-date {
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.8);
+}
+
+.item-dur {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.3);
+}
+
+.item-right {
+  display: flex;
+  align-items: baseline;
+  gap: 4rpx;
+}
+
+.item-score {
+  font-size: 36rpx;
+  font-weight: 300;
+  color: #4A90E2;
+}
+
+.item-unit {
+  font-size: 22rpx;
+  color: rgba(74,144,226,0.5);
+}
+
+.arrow {
+  font-size: 32rpx;
+  color: rgba(255,255,255,0.15);
+  margin-left: 12rpx;
+}
+
+/* 缁岃櫣濮搁幀?*/
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 200rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.3);
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.15);
+  margin-top: 12rpx;
+}

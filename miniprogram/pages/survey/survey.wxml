@@ -1,0 +1,188 @@
+<!-- survey.wxml - AI睡眠评估 -->
+<view class="container">
+
+  <view class="header">
+    <view class="header-left">
+      <button class="back-btn" bindtap="goBack" wx:if="{{showBackButton}}">返回</button>
+    </view>
+    <text class="title">AI睡眠评估</text>
+    <view class="header-right"></view>
+  </view>
+
+  <!-- 欢迎页:一个大按钮 -->
+  <view class="content" wx:if="{{step === 0}}">
+    <view class="welcome">
+      <text class="welcome-icon">🌙</text>
+      <text class="welcome-title">开始你的睡眠评估</text>
+      <text class="welcome-desc">回答 7 个简单问题<br/>AI 为你生成专业睡眠报告</text>
+      <button class="big-start-btn" bindtap="startSurvey">开始评估 →</button>
+      <text class="skip-link" bindtap="goBack">不了，先不评估</text>
+    </view>
+  </view>
+
+  <!-- 问答页:一次一题,大按钮点击 -->
+  <view class="content" wx:if="{{step === 1}}">
+    <view class="quiz-container">
+      <!-- 进度条 -->
+      <view class="progress-row">
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{qIndex * 14}}%"></view>
+        </view>
+        <text class="progress-text">{{qIndex}}/7</text>
+      </view>
+
+      <!-- Q1: 几点上床 -->
+      <view class="question-card" wx:if="{{qIndex === 1}}">
+        <text class="q-icon">🛏️</text>
+        <text class="q-text">昨晚几点上床睡觉的？</text>
+        <view class="q-options">
+          <view class="option-btn" bindtap="answerTime" data-type="bed" data-val="21:00">9点前</view>
+          <view class="option-btn" bindtap="answerTime" data-type="bed" data-val="22:00">10点左右</view>
+          <view class="option-btn" bindtap="answerTime" data-type="bed" data-val="23:00">11点左右</view>
+          <view class="option-btn" bindtap="answerTime" data-type="bed" data-val="00:00">12点后</view>
+          <view class="option-btn" bindtap="answerTime" data-type="bed" data-val="01:00">凌晨1点后</view>
+        </view>
+      </view>
+
+      <!-- Q2: 几点醒 -->
+      <view class="question-card" wx:if="{{qIndex === 2}}">
+        <text class="q-icon">☀️</text>
+        <text class="q-text">今早几点醒来的？</text>
+        <view class="q-options">
+          <view class="option-btn" bindtap="answerTime" data-type="wake" data-val="05:00">5点左右</view>
+          <view class="option-btn" bindtap="answerTime" data-type="wake" data-val="06:00">6点左右</view>
+          <view class="option-btn" bindtap="answerTime" data-type="wake" data-val="07:00">7点左右</view>
+          <view class="option-btn" bindtap="answerTime" data-type="wake" data-val="08:00">8点左右</view>
+          <view class="option-btn" bindtap="answerTime" data-type="wake" data-val="09:00">9点后</view>
+        </view>
+      </view>
+
+      <!-- Q3: 入睡时长 -->
+      <view class="question-card" wx:if="{{qIndex === 3}}">
+        <text class="q-icon">⏱️</text>
+        <text class="q-text">从上床到真正睡着,大概多久？</text>
+        <view class="q-options">
+          <view class="option-btn" bindtap="answerValue" data-key="sleepLatency" data-val="5">很快,不到10分钟</view>
+          <view class="option-btn" bindtap="answerValue" data-key="sleepLatency" data-val="15">10-20分钟</view>
+          <view class="option-btn" bindtap="answerValue" data-key="sleepLatency" data-val="30">半小时左右</view>
+          <view class="option-btn" bindtap="answerValue" data-key="sleepLatency" data-val="60">超过1小时</view>
+        </view>
+      </view>
+
+      <!-- Q4: 夜里醒几次 -->
+      <view class="question-card" wx:if="{{qIndex === 4}}">
+        <text class="q-icon">🌙</text>
+        <text class="q-text">夜里醒了几次？</text>
+        <view class="q-options">
+          <view class="option-btn" bindtap="answerValue" data-key="awakeTimes" data-val="0">没醒,睡得很香</view>
+          <view class="option-btn" bindtap="answerValue" data-key="awakeTimes" data-val="1">醒了1次</view>
+          <view class="option-btn" bindtap="answerValue" data-key="awakeTimes" data-val="2">2-3次</view>
+          <view class="option-btn" bindtap="answerValue" data-key="awakeTimes" data-val="4">4次以上</view>
+        </view>
+      </view>
+
+      <!-- Q5: 醒来感觉 -->
+      <view class="question-card" wx:if="{{qIndex === 5}}">
+        <text class="q-icon">😊</text>
+        <text class="q-text">早上醒来感觉怎么样？</text>
+        <view class="q-options">
+          <view class="option-btn" bindtap="answerValue" data-key="feeling" data-val="energetic">精力充沛</view>
+          <view class="option-btn" bindtap="answerValue" data-key="feeling" data-val="refreshed">神清气爽</view>
+          <view class="option-btn" bindtap="answerValue" data-key="feeling" data-val="normal">一般般</view>
+          <view class="option-btn" bindtap="answerValue" data-key="feeling" data-val="tired">有点累</view>
+          <view class="option-btn" bindtap="answerValue" data-key="feeling" data-val="very_tired">非常疲惫</view>
+        </view>
+      </view>
+
+      <!-- Q6: 压力 -->
+      <view class="question-card" wx:if="{{qIndex === 6}}">
+        <text class="q-icon">😰</text>
+        <text class="q-text">最近压力大吗？</text>
+        <view class="q-options stress-options">
+          <view class="stress-btn {{quickData.stressLevel === 1 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="1">1</view>
+          <view class="stress-btn {{quickData.stressLevel === 2 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="2">2</view>
+          <view class="stress-btn {{quickData.stressLevel === 3 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="3">3</view>
+          <view class="stress-btn {{quickData.stressLevel === 4 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="4">4</view>
+          <view class="stress-btn {{quickData.stressLevel === 5 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="5">5</view>
+          <view class="stress-btn {{quickData.stressLevel === 6 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="6">6</view>
+          <view class="stress-btn {{quickData.stressLevel === 7 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="7">7</view>
+          <view class="stress-btn {{quickData.stressLevel === 8 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="8">8</view>
+          <view class="stress-btn {{quickData.stressLevel === 9 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="9">9</view>
+          <view class="stress-btn {{quickData.stressLevel === 10 ? 'active' : ''}}" bindtap="answerValue" data-key="stressLevel" data-val="10">10</view>
+        </view>
+        <view class="stress-labels">
+          <text>无压力</text>
+          <text>压力爆表</text>
+        </view>
+      </view>
+
+      <!-- Q7: 看屏幕 -->
+      <view class="question-card" wx:if="{{qIndex === 7}}">
+        <text class="q-icon">📱</text>
+        <text class="q-text">睡前有没有看手机或电脑屏幕？</text>
+        <view class="q-options two-options">
+          <view class="option-btn big yes" bindtap="answerScreen" data-answer="true">看了 📱</view>
+          <view class="option-btn big no" bindtap="answerScreen" data-answer="false">没看 😴</view>
+        </view>
+      </view>
+
+      <!-- 生成报告按钮 -->
+      <view class="submit-area" wx:if="{{qIndex >= 8}}">
+        <button class="generate-btn" bindtap="submitQuick">✨ 生成我的AI睡眠报告</button>
+      </view>
+
+      <!-- 加载中 -->
+      <view class="loading-box" wx:if="{{generating}}">
+        <view class="loading-animation">
+          <view class="ldot"></view>
+          <view class="ldot"></view>
+          <view class="ldot"></view>
+        </view>
+        <text class="loading-text">AI正在分析你的睡眠数据...</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 报告页 -->
+  <view class="content report-view" wx:if="{{step === 5}}">
+    <scroll-view scroll-y class="report-scroll">
+      <view class="report-header">
+        <text class="report-type">{{report.type}}</text>
+        <text class="report-date">{{report.date}}</text>
+      </view>
+
+      <view class="summary-chips">
+        <view class="chip"><text>🛌 {{report.surveyData.bedtime || '--'}}上床</text></view>
+        <view class="chip"><text>☀️ {{report.surveyData.wake_time || '--'}}起床</text></view>
+        <view class="chip"><text>⏱️ {{report.surveyData.sleep_latency || 0}}分钟入睡</text></view>
+        <view class="chip"><text>🌙 醒{{report.surveyData.awake_times || 0}}次</text></view>
+      </view>
+
+      <view class="score-card">
+        <text class="score-value">{{report.score}}</text>
+        <text class="score-tag">综合评分</text>
+        <text class="quality-tag">{{report.quality}}</text>
+      </view>
+
+      <view class="section" wx:if="{{report.detailedAnalysis}}">
+        <text class="section-title">AI分析报告</text>
+        <text class="ai-text">{{report.detailedAnalysis}}</text>
+      </view>
+
+      <view class="section" wx:if="{{report.suggestions}}">
+        <text class="section-title">改善建议</text>
+        <view wx:for="{{report.suggestions}}" wx:key="*this" class="suggestion-row">
+          <text class="sug-num">{{index + 1}}.</text>
+          <text class="sug-text">{{item}}</text>
+        </view>
+      </view>
+
+      <view class="action-buttons">
+        <button class="action-btn primary" open-type="share">分享到朋友</button>
+        <button class="action-btn secondary" bindtap="copyReport">复制报告</button>
+        <button class="action-btn secondary" bindtap="doAnotherAnalysis">重新评估</button>
+      </view>
+    </scroll-view>
+  </view>
+
+</view>

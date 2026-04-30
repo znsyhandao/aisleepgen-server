@@ -1,0 +1,116 @@
+<!--pages/meditation/meditation.wxml - 基础版本-->
+<view class="container">
+  <view class="header">
+    <view class="header-left">
+      <button class="back-btn" bindtap="goBack" wx:if="{{showBackButton}}">‹ 返回</button>
+    </view>
+    <text class="title">冥想练习</text>
+    <view class="header-right">
+      <button class="icon-btn" bindtap="setReminder">⏰</button>
+    </view>
+  </view>
+  
+  <view class="content">
+    <!-- 当前冥想 -->
+    <view class="current-meditation">
+      <text class="section-title">当前冥想</text>
+      <view class="meditation-card">
+        <text class="meditation-title">{{currentMeditation.title}}</text>
+        <text class="meditation-desc">{{currentMeditation.description}}</text>
+        <view class="meditation-meta">
+          <text class="meta-item">时长: {{formatTime(currentMeditation.duration)}}</text>
+          <text class="meta-item">类别: {{currentMeditation.category}}</text>
+          <text class="meta-item">指导: {{currentMeditation.instructor}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 播放器 -->
+    <view class="player-section">
+      <view class="player-status">
+        <text class="status-text" wx:if="{{meditationStatus === 'idle'}}">准备开始</text>
+        <text class="status-text" wx:if="{{meditationStatus === 'playing'}}">冥想中...</text>
+        <text class="status-text" wx:if="{{meditationStatus === 'paused'}}">已暂停</text>
+        <text class="status-text" wx:if="{{meditationStatus === 'completed'}}">已完成</text>
+      </view>
+      
+      <view class="progress-section">
+        <text class="time-current">{{formatTime(currentTime)}}</text>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{progress}}%"></view>
+        </view>
+        <text class="time-total">{{formatTime(totalTime)}}</text>
+      </view>
+      
+      <view class="player-controls">
+        <button class="control-btn" bindtap="stopMeditation" wx:if="{{meditationStatus !== 'idle'}}">⏹️</button>
+        <button class="control-btn" bindtap="pauseMeditation" wx:if="{{meditationStatus === 'playing'}}">⏸️</button>
+        <button class="control-btn" bindtap="resumeMeditation" wx:if="{{meditationStatus === 'paused'}}">▶️</button>
+        <button class="control-btn primary" bindtap="startMeditation" wx:if="{{meditationStatus === 'idle' || meditationStatus === 'completed'}}">开始冥想</button>
+      </view>
+    </view>
+    
+    <!-- 冥想列表 -->
+    <view class="section">
+      <text class="section-title">冥想库</text>
+      <view class="meditation-list">
+        <view class="meditation-item" 
+              wx:for="{{meditations}}" 
+              wx:key="id"
+              bindtap="selectMeditation"
+              data-id="{{item.id}}">
+          <view class="item-left">
+            <text class="item-title">{{item.title}}</text>
+            <text class="item-desc">{{item.description}}</text>
+            <view class="item-meta">
+              <text class="meta-tag">{{item.category}}</text>
+              <text class="meta-time">{{formatTime(item.duration)}}</text>
+            </view>
+          </view>
+          <view class="item-right">
+            <button class="favorite-btn" bindtap="toggleFavorite" data-id="{{item.id}}" catchtap>
+              {{item.favorite ? '❤️' : '🤍'}}
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 设置 -->
+    <view class="section">
+      <text class="section-title">播放设置</text>
+      <view class="setting-item">
+        <text class="setting-label">音量</text>
+        <slider value="{{playerSettings.volume}}" min="0" max="100" bindchange="updateVolume" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">背景音</text>
+        <view class="sound-options">
+          <button class="sound-btn {{playerSettings.backgroundSound === 'rain' ? 'active' : ''}}" 
+                  bindtap="changeBackgroundSound" data-sound="rain">🌧️ 雨声</button>
+          <button class="sound-btn {{playerSettings.backgroundSound === 'waves' ? 'active' : ''}}" 
+                  bindtap="changeBackgroundSound" data-sound="waves">🌊 海浪</button>
+          <button class="sound-btn {{playerSettings.backgroundSound === 'forest' ? 'active' : ''}}" 
+                  bindtap="changeBackgroundSound" data-sound="forest">🌲 森林</button>
+        </view>
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">引导声音</text>
+        <view class="voice-options">
+          <button class="voice-btn {{playerSettings.guidanceVoice === 'female' ? 'active' : ''}}" 
+                  bindtap="changeGuidanceVoice" data-voice="female">👩 女声</button>
+          <button class="voice-btn {{playerSettings.guidanceVoice === 'male' ? 'active' : ''}}" 
+                  bindtap="changeGuidanceVoice" data-voice="male">👨 男声</button>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 使用提示 -->
+    <view class="info-box">
+      <text class="info-title">💡 冥想提示</text>
+      <text class="info-text">• 选择舒适的姿势和环境</text>
+      <text class="info-text">• 跟随引导声音放松身心</text>
+      <text class="info-text">• 每天坚持练习效果更佳</text>
+    </view>
+  </view>
+</view>

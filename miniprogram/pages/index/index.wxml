@@ -1,0 +1,97 @@
+<!-- pages/index/index.wxml — AI智能体时代版 -->
+<view class="page">
+
+  <view class="glow-bg"></view>
+
+  <!-- 管家提醒横幅 -->
+  <view class="butler-bar" wx:if="{{butlerAlert}}" bindtap="doButlerAction">
+    <text class="butler-icon">{{butlerAlert.icon}}</text>
+    <view class="butler-text">
+      <text class="butler-msg">{{butlerAlert.message}}</text>
+      <text class="butler-hint" wx:if="{{butlerAlert.actionHint}}">{{butlerAlert.actionHint}} →</text>
+    </view>
+  </view>
+
+  <!-- 商业智能简报 -->
+  <view class="brief-bar" wx:if="{{showBrief}}" bindtap="toggleBrief">
+    <text class="brief-icon">📡</text>
+    <text class="brief-text">{{briefTitle}}</text>
+    <text class="brief-arrow">{{briefArrowText}}</text>
+  </view>
+  <view class="brief-detail" wx:if="{{showBriefDetail}}">
+    <view class="brief-item" wx:for="{{briefItems}}" wx:key="index">
+      <text class="brief-item-title">{{item.title}}</text>
+      <text class="brief-item-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <!-- 问候 -->
+  <view class="header">
+    <text class="greeting">{{greeting}}</text>
+    <text class="date">{{dateStr}}</text>
+  </view>
+
+  <!-- 评分卡片 -->
+  <view class="score-card" bindtap="goToReport">
+    <view class="score-circle">
+      <view class="circle-bg"></view>
+      <text class="score-num">{{lastScore}}</text>
+      <text class="score-label">分</text>
+    </view>
+    <text class="score-title">昨晚睡眠</text>
+    <text class="score-sub">{{lastDuration}} · {{lastQuality}}</text>
+    <view class="streak-badge">
+      <text class="streak-fire">🔥</text>
+      <text class="streak-text">已连续记录 {{streakDays}} 天</text>
+    </view>
+  </view>
+
+  <!-- 周趋势 -->
+  <view class="chart-card" wx:if="{{showChart}}">
+    <view class="chart-header">
+      <text class="chart-title">本周睡眠趋势</text>
+      <text class="chart-avg">平均 {{weekAvg}} 分</text>
+    </view>
+    <view class="chart">
+      <view class="bar-group" wx:for="{{chartData}}" wx:key="index">
+        <view class="bar-track">
+          <view class="bar-fill" style="height: {{barHeight(item.value)}}%"></view>
+        </view>
+        <text class="bar-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能入口 -->
+  <view class="actions">
+    <view class="action" bindtap="goToPage" data-page="survey">
+      <view class="action-icon" style="background: linear-gradient(135deg, #E8D5F5, #C4A1DE);">
+        <text class="action-emoji">📝</text>
+      </view>
+      <text class="action-name">睡眠记录</text>
+    </view>
+    <view class="action" bindtap="goToPage" data-page="chat">
+      <view class="action-icon" style="background: linear-gradient(135deg, #FFE0E6, #FFB3C1);">
+        <text class="action-emoji">💬</text>
+      </view>
+      <text class="action-name">AI陪伴</text>
+    </view>
+    <view class="action" bindtap="goToPage" data-page="meditation">
+      <view class="action-icon" style="background: linear-gradient(135deg, #D4F0F0, #A8E6CF);">
+        <text class="action-emoji">🧘</text>
+      </view>
+      <text class="action-name">冥想放松</text>
+    </view>
+    <view class="action" bindtap="goToPage" data-page="history">
+      <view class="action-icon" style="background: linear-gradient(135deg, #FDEBD0, #FAD7A0);">
+        <text class="action-emoji">📊</text>
+      </view>
+      <text class="action-name">睡眠趋势</text>
+    </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">今晚，好好睡一觉 💤</text>
+  </view>
+
+</view>

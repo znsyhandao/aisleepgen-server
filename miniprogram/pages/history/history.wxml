@@ -1,0 +1,135 @@
+<!--pages/history/history.wxml - 基础版本-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-left">
+      <button class="back-btn" bindtap="goBack" wx:if="{{showBackButton}}">‹ 返回</button>
+    </view>
+    <text class="title">历史记录</text>
+    <view class="header-right">
+      <button class="icon-btn" bindtap="refreshData">🔄</button>
+      <button class="icon-btn" bindtap="exportData">📤</button>
+    </view>
+  </view>
+  
+  <!-- 统计数据 -->
+  <view class="stats-section">
+    <text class="section-title">睡眠统计</text>
+    <view class="stats-grid">
+      <view class="stat-item" bindtap="viewStatsDetail">
+        <text class="stat-value">{{stats.totalRecords}}</text>
+        <text class="stat-label">总记录</text>
+      </view>
+      <view class="stat-item" bindtap="viewStatsDetail">
+        <text class="stat-value">{{stats.averageScore}}</text>
+        <text class="stat-label">平均分</text>
+      </view>
+      <view class="stat-item" bindtap="viewStatsDetail">
+        <text class="stat-value">{{stats.bestScore}}</text>
+        <text class="stat-label">最佳</text>
+      </view>
+      <view class="stat-item" bindtap="viewStatsDetail">
+        <text class="stat-value">{{stats.totalDuration}}h</text>
+        <text class="stat-label">总时长</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 筛选条件 -->
+  <view class="filters-section">
+    <text class="section-title">筛选条件</text>
+    <view class="filter-options">
+      <view class="filter-group">
+        <text class="filter-label">时间范围:</text>
+        <view class="filter-buttons">
+          <button class="filter-btn {{filters.dateRange === 'week' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="dateRange" data-value="week">本周</button>
+          <button class="filter-btn {{filters.dateRange === 'month' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="dateRange" data-value="month">本月</button>
+          <button class="filter-btn {{filters.dateRange === 'year' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="dateRange" data-value="year">今年</button>
+          <button class="filter-btn {{filters.dateRange === 'all' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="dateRange" data-value="all">全部</button>
+        </view>
+      </view>
+      
+      <view class="filter-group">
+        <text class="filter-label">排序方式:</text>
+        <view class="filter-buttons">
+          <button class="filter-btn {{filters.sortBy === 'date' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="sortBy" data-value="date">日期</button>
+          <button class="filter-btn {{filters.sortBy === 'score' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="sortBy" data-value="score">评分</button>
+          <button class="filter-btn {{filters.sortBy === 'duration' ? 'active' : ''}}" 
+                  bindtap="updateFilter" data-key="sortBy" data-value="duration">时长</button>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 历史记录列表 -->
+  <view class="history-section">
+    <view class="section-header">
+      <text class="section-title">分析记录</text>
+      <text class="record-count">{{historyRecords.length}} 条记录</text>
+    </view>
+    
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    
+    <view class="empty-state" wx:if="{{showEmpty}}">
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">暂无历史记录</text>
+      <text class="empty-hint">开始一次睡眠分析来创建记录</text>
+    </view>
+    
+    <view class="history-list" wx:if="{{showList}}">
+      <view class="history-item" 
+            wx:for="{{historyRecords}}" 
+            wx:key="id"
+            bindtap="viewRecordDetail"
+            data-index="{{index}}">
+        <view class="item-left">
+          <text class="item-date">{{item.date}}</text>
+          <text class="item-time">{{item.time}}</text>
+          <text class="item-type">{{item.type}}</text>
+        </view>
+        
+        <view class="item-right">
+          <view class="score-badge {{item.quality === '优秀' ? 'excellent' : item.quality === '良好' ? 'good' : 'average'}}">
+            <text class="score-value">{{item.score}}</text>
+            <text class="score-label">分</text>
+          </view>
+          <text class="item-duration">{{item.duration}}</text>
+          <button class="delete-btn" bindtap="deleteRecord" data-index="{{index}}" catchtap>×</button>
+        </view>
+      </view>
+    </view>
+    
+    <view class="load-more" wx:if="{{showLoadMore}}">
+      <button class="load-more-btn" bindtap="loadMore">加载更多</button>
+    </view>
+  </view>
+  
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="action-btn primary" bindtap="exportData">
+      <text class="btn-icon">📥</text>
+      <text class="btn-text">导出数据</text>
+    </button>
+    <button class="action-btn secondary" bindtap="refreshData">
+      <text class="btn-icon">🔄</text>
+      <text class="btn-text">刷新</text>
+    </button>
+  </view>
+  
+  <!-- 使用提示 -->
+  <view class="info-box">
+    <text class="info-title">💡 使用提示</text>
+    <text class="info-text">• 点击记录查看详细分析结果</text>
+    <text class="info-text">• 使用筛选条件快速找到特定记录</text>
+    <text class="info-text">• 导出数据可用于长期跟踪和分析</text>
+    <text class="info-text">• 定期查看历史记录了解睡眠趋势</text>
+  </view>
+</view>

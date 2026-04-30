@@ -1,0 +1,22 @@
+﻿<!--pages/history/history.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">history 页面</text>
+    <button class="back-btn" bindtap="goBack" wx:if="{{showBackButton}}">返回</button>
+  </view>
+  
+  <view class="content">
+    <text>这是 history 页面，功能正在开发中...</text>
+    
+    <view class="features">
+      <text class="section-title">计划功能</text>
+      <view class="feature-list">
+        <view class="feature-item">📊 数据可视化</view>
+        <view class="feature-item">🔍 详细分析</view>
+        <view class="feature-item">📈 趋势报告</view>
+      </view>
+    </view>
+    
+    <button class="home-btn" bindtap="goBack">回到首页</button>
+  </view>
+</view>
