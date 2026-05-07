@@ -379,11 +379,25 @@ def handle_chat(data):
             f'如果用户接受了，回复结束后请在最后一行单独加"【干预已接受】"。'
         )
 
+    # 构建最近对话摘要（防止断片）
+    _recent_conv = ''
+    if history and len(history) > 0:
+        _recent_turns = history[-4:]
+        _conv_lines = []
+        for _m in _recent_turns:
+            _role = _m.get('role', 'user')
+            _content = _m.get('content', '')
+            if len(_content) > 200:
+                _content = _content[:200] + '...'
+            _conv_lines.append(f'{_role}: {_content}')
+        _recent_conv = '\n'.join(_conv_lines)
+
     sc = build_system_content(
         correction_note=correction_note,
         score_calibration_hint=score_hint,
         today_str=today,
         history_context=history_context,
+        recent_conversation=_recent_conv,
         wm_context=wm_context,
         scene_context=scene_text,
         tone_adjust_inject=style_adjust,

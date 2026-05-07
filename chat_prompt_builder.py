@@ -31,6 +31,7 @@ def build_system_content(
     emotion_prefix='',
     intervention_hint='',
     body_context='',
+    recent_conversation='',
 ):
     """构建 system_content 提示词
 
@@ -142,6 +143,8 @@ def build_system_content(
 - 纠正比历史记录更重要
 
 {history_context}
+
+{recent_conversation}
 
 {dashboard_section}"""
 
