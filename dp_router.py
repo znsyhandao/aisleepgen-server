@@ -808,7 +808,19 @@ def handle_update_profile(data):
         updates = data
     if openid and updates:
         def modifier(p):
-            p.update(updates)
+            # 合并 latest
+            if 'latest' in updates:
+                p['latest'] = updates['latest']
+            # 追加 history（不是覆盖）
+            if 'history' in updates and isinstance(updates['history'], list):
+                if 'history' not in p:
+                    p['history'] = []
+                for entry in updates['history']:
+                    p['history'].append(entry)
+            # 其他字段直接更新
+            for k, v in updates.items():
+                if k not in ('latest', 'history'):
+                    p[k] = v
             return p
         _px._atomic_write_profile(openid, modifier)
 
