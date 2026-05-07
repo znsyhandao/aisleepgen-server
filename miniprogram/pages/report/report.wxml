@@ -38,9 +38,7 @@
       <view class="hero-score-area">
         <view class="hero-ring">
           <view class="hero-ring-bg"></view>
-          <view class="hero-ring-fill" 
-                style="--score: {{reportData.score}}; 
-                       --color: {{reportData.score >= 85 ? '#4CAF50' : reportData.score >= 75 ? '#667eea' : reportData.score >= 65 ? '#FF9800' : '#F44336'}}">
+          <view class="hero-ring-fill" style="--score:{{reportData.score}};--color:{{reportData.score >= 85 ? '#4CAF50' : reportData.score >= 75 ? '#667eea' : reportData.score >= 65 ? '#FF9800' : '#F44336'}}">
             <text class="hero-score-num">{{scoreAnimateValue || reportData.score}}</text>
             <text class="hero-score-unit">分</text>
           </view>
@@ -85,8 +83,7 @@
           <view class="radar-label br">{{radarData[5].label}}</view>
           <!-- 数值三角形（简化为六边形点阵） -->
           <view class="radar-points">
-            <view class="rpoint" wx:for="{{radarData}}" wx:key="label" 
-                  style="--angle: {{index * 60}}deg; --value: {{item.value}}">
+            <view class="rpoint" wx:for="{{radarData}}" wx:key="label" style="--angle:{{index * 60}}deg;--value:{{item.value}}">
               <text class="rpoint-value">{{item.value}}</text>
             </view>
           </view>
@@ -97,8 +94,7 @@
         <view class="radar-detail-item" wx:for="{{radarData}}" wx:key="label">
           <text class="rd-label">{{item.label}}</text>
           <view class="rd-bar-bg">
-            <view class="rd-bar-fill" style="width: {{item.value}}%; 
-                  background: {{item.value >= 85 ? '#4CAF50' : item.value >= 75 ? '#667eea' : item.value >= 65 ? '#FF9800' : '#F44336'}}">
+            <view class="rd-bar-fill" style="width:{{item.value}}%;background:{{item.value >= 85 ? '#4CAF50' : item.value >= 75 ? '#667eea' : item.value >= 65 ? '#FF9800' : '#F44336'}}">
             </view>
           </view>
           <text class="rd-value">{{item.value}}</text>
@@ -117,9 +113,9 @@
         </view>
       </view>
       <view class="stages-bar">
-        <view class="stage-segment" wx:for="{{reportData.sleepStages}}" wx:key="name"
-              style="width: {{item.value}}%; background: {{item.color}};"></view>
+        <view class="stage-segment" wx:for="{{reportData.sleepStages}}" wx:key="name" style="width:{{item.value}}%;background:{{item.color}};"></view>
       </view>
+      <text class="stage-note">⚠️ 30秒精度限制，浅睡期(N1)与清醒信号特征接近，合并展示</text>
     </view>
 
     <!-- ===== 详细指标 ==== -->
@@ -165,6 +161,27 @@
         <view class="suggestion-item" wx:for="{{reportData.suggestions}}" wx:key="index">
           <view class="sug-index">{{index + 1}}</view>
           <text class="sug-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== v7.2 NUEVO: 诊断书卡片 ===== -->
+    <view class="section" wx:if="{{hasDiagnosisData}}">
+      <text class="section-title">📋 AI诊断书</text>
+      <view class="diagnosis-hero">
+        <text class="diagnosis-grade-badge diagnosis-badge-{{diagnosisGrade}}">{{diagnosisGrade}}</text>
+        <text class="diagnosis-grade-label">{{diagnosisGradeLabel}}</text>
+      </view>
+      <view class="diagnosis-metrics">
+        <view class="diagnosis-metric" wx:for="{{[['综合评分','diagnosisScore'],['近3天均值','diagnosisMetrics.recent_average'],['总体均值','diagnosisMetrics.overall_average']]}}" wx:key="index">
+          <text class="dm-label">{{item[0]}}</text>
+          <text class="dm-value">{{item[1]}}</text>
+        </view>
+      </view>
+      <view class="suggestions" wx:if="{{diagnosisAdvice.length > 0}}">
+        <view class="suggestion-item" wx:for="{{diagnosisAdvice}}" wx:for-item="adv" wx:key="index">
+          <view class="sug-index">{{index + 1}}</view>
+          <text class="sug-text">{{adv.detail}}</text>
         </view>
       </view>
     </view>

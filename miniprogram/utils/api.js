@@ -10,7 +10,7 @@ try {
   isDevTools = _sys.platform === 'devtools';
 } catch(e) {}
 
-const API_BASE = isDevTools ? 'http://localhost:8090' : 'https://neonotebook.tail55f441.ts.net:8090';
+const API_BASE = 'http://172.16.234.137:8090';
 
 // 检查是否为预览模式（手机访问），自动获取局域网IP
 var DEVICE_IP = '';
@@ -376,6 +376,130 @@ function selfHeal() {
   return _request(API_BASE + '/api/self-heal', {}, 'POST', 10000);
 }
 
+
+/**
+ * 订阅消息（用户授权后保存订阅关系）
+ * @param {Array} templateIds - 用户同意的模板ID列表
+ * @param {string} type - 订阅类型（sleep_tip / daily_brief / alert）
+ * @returns {Promise<Object>}
+ */
+function subscribeMsg(templateIds, type) {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/subscribe-msg', {
+    openid: openid,
+    template_ids: templateIds,
+    type: type || 'sleep_tip',
+  }, 'POST', 10000);
+}
+
+/**
+ * 获取/设置推送偏好
+ * @param {Object} settings - 推送设置（可选，不传则获取）
+ * @returns {Promise<Object>}
+ */
+function getPushSettings() {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/push-settings', {
+    openid: openid,
+    action: 'get',
+  }, 'POST', 10000);
+}
+
+function updatePushSettings(settings) {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/push-settings', {
+    openid: openid,
+    action: 'set',
+    settings: settings,
+  }, 'POST', 10000);
+}
+
+/**
+ * 获取待推送消息
+ * @returns {Promise<Object>} { push: [...], count: number }
+ */
+function getPendingPush() {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/pending-push', {
+    openid: openid,
+    action: 'get',
+  }, 'POST', 10000);
+}
+
+/**
+ * 标记推送已读
+ */
+function markPushRead(pushId) {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/pending-push', {
+    openid: openid,
+    action: 'read',
+    push_id: pushId,
+  }, 'POST', 5000);
+}
+
+/**
+ * 标记推送已接受
+ */
+function markPushAccepted(pushId) {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/pending-push', {
+    openid: openid,
+    action: 'accepted',
+    push_id: pushId,
+  }, 'POST', 5000);
+}
+
+
+/**
+ * 启动陪伴模式
+ * @param {string} protocol - 引导协议 (4-7-8 / breathing_light / body_scan)
+ * @param {string} message - 用户说的内容
+ * @returns {Promise<Object>}
+ */
+function startCompanion(protocol, message) {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/companion/start', {
+    openid: openid,
+    protocol: protocol || '4-7-8',
+    message: message || '',
+  }, 'POST', 10000);
+}
+
+/**
+ * 更新陪伴状态
+ * @param {Object} feedback - { movement_detected: bool, time_elapsed: number, user_cancel: bool }
+ * @returns {Promise<Object>}
+ */
+function updateCompanion(feedback) {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/companion/update', {
+    openid: openid,
+    feedback: feedback || {},
+  }, 'POST', 10000);
+}
+
+/**
+ * 获取陪伴状态
+ * @returns {Promise<Object>}
+ */
+function getCompanionStatus() {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/companion/status', {
+    openid: openid,
+  }, 'POST', 5000);
+}
+
+/**
+ * 停止陪伴
+ */
+function stopCompanion() {
+  var openid = _getOpenid();
+  return _request(API_BASE + '/api/companion/stop', {
+    openid: openid,
+  }, 'POST', 5000);
+}
+
 module.exports = {
   API_BASE: API_BASE,
   AUDIO_BASE: AUDIO_BASE,
@@ -400,4 +524,159 @@ module.exports = {
   getEmotionTimeline: getEmotionTimeline,
   getConversationSummaries: getConversationSummaries,
   selfHeal: selfHeal,
+  subscribeMsg: subscribeMsg,
+  getPushSettings: getPushSettings,
+  updatePushSettings: updatePushSettings,
+  getPendingPush: getPendingPush,
+  markPushRead: markPushRead,
+  markPushAccepted: markPushAccepted,
+  startCompanion: startCompanion,
+  updateCompanion: updateCompanion,
+  getCompanionStatus: getCompanionStatus,
+  stopCompanion: stopCompanion,
+  
+  // ===== v7.2 新API =====
+  
+  /**
+   * 获取图表数据（趋势线/饼图/柱状图/热力图/雷达图）
+   * @returns {Promise<Object>} chart data
+   */
+  getChartData: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/chart/data', { openid: openid }, 'POST', 15000);
+  },
+
+  /**
+   * 睡前预判：预测今晚睡眠质量
+   * @returns {Promise<Object>} prediction + report_text
+   */
+  getSiegePredict: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/siege/predict', { openid: openid }, 'POST', 15000);
+  },
+
+  /**
+   * 睡眠诊断书
+   * @returns {Promise<Object>} diagnosis + card_text
+   */
+  getSiegeDiagnosis: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/siege/diagnosis', { openid: openid }, 'POST', 15000);
+  },
+
+  /**
+   * 睡眠快照（预判+诊断一次调用）
+   * @returns {Promise<Object>} prediction + diagnosis
+   */
+  getSiegeSnapshot: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/siege/snapshot', { openid: openid }, 'POST', 20000);
+  },
+
+  /**
+   * 自动睡眠日记
+   * @returns {Promise<Object>} diary + short_text
+   */
+  getAutoDiary: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/diary/auto', { openid: openid }, 'POST', 15000);
+  },
+
+  /**
+   * 三层记忆检索
+   * @returns {Promise<Object>} recall_text
+   */
+  getMemoryRecall: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/memory/recall', { openid: openid }, 'POST', 10000);
+  },
+
+  /**
+   * 记忆睡前整理
+   * @returns {Promise<Object>} consolidate result
+   */
+  consolidateMemory: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/memory/consolidate', { openid: openid }, 'POST', 10000);
+  },
+
+  /**
+   * Agent感知：查看当前情境信号
+   * @returns {Promise<Object>} signals + actions
+   */
+  getAgentPerceive: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/agent/perceive', { openid: openid }, 'POST', 10000);
+  },
+
+  /**
+   * 运行一次Agent循环
+   * @returns {Promise<Object>} cycle result
+   */
+  runAgentCycle: function() {
+    return _request(API_BASE + '/api/agent/cycle', {}, 'POST', 30000);
+  },
+
+  /**
+   * 音频分析
+   * @param {string} wavPath - 可选，指定WAV文件路径
+   * @returns {Promise<Object>} audio result + pomdp observation
+   */
+  analyzeAudio: function(wavPath) {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/audio/analyze', {
+      openid: openid,
+      wav_path: wavPath || null,
+    }, 'POST', 30000);
+  },
+
+  /**
+   * 手环数据提取
+   * @param {string} mode - 'auto' 或 'known'
+   * @returns {Promise<Object>} ring data + pomdp observation
+   */
+  extractRingData: function(mode) {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/ring/extract', {
+      openid: openid,
+      mode: mode || 'known',
+    }, 'POST', 10000);
+  },
+
+  /**
+   * 多源数据融合
+   * @returns {Promise<Object>} assimilated data
+   */
+  assimilateSleepData: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/sleep/assimilate', { openid: openid }, 'POST', 30000);
+  },
+
+  /**
+   * 增强版早间推送（预览不发送）
+   * @returns {Promise<Object>} enhanced morning content
+   */
+  getEnhancedMorning: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/push/enhanced/morning', { openid: openid }, 'POST', 15000);
+  },
+
+  /**
+   * 增强版晚间推送（预览不发送）
+   * @returns {Promise<Object>} enhanced evening content
+   */
+  getEnhancedEvening: function() {
+    var openid = _getOpenid();
+    return _request(API_BASE + '/api/push/enhanced/evening', { openid: openid }, 'POST', 15000);
+  },
+
+  /**
+   * 通用请求（用于沉浸式引导等新功能）
+   */
+  request: function(path, data) {
+    var openid = _getOpenid();
+    data = data || {};
+    data.openid = data.openid || openid;
+    return _request(API_BASE + path, data, 'POST', 30000);
+  },
 };
