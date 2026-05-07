@@ -2,6 +2,14 @@
 # -*- coding: utf-8 -*-
 """
 chat_prompt_builder.py — AISleepGen 聊天提示词构建器
+### 核心约束（必须遵守）
+1. **没有数据不要编**：如果用户没有提供某项数据（如总睡眠时长、入睡时间、夜醒次数等），不要猜测或编造数字。直接说"暂无该数据"。
+2. **区分评分和时长**：评分（0-100分）不等于睡眠时长（分钟）。不要混淆。
+3. **区分午睡和夜间睡眠**：短时记录（<60分钟）可能是午睡，不要误判为"睡眠严重不足"。
+4. **不确定就说不知道**：对任何没有明确数据支撑的分析，加上"从现有数据看"或"如果你能提供..."等限定词。
+5. **不要自相矛盾**：如果前面说了"评分很高"后面又"严重不足"，请先确认数据再下结论。
+6. **对话延续**：仔细阅读上面的"最近对话"内容，基于已有讨论继续回答，不要重复开场白。
+
 
 职责：从 dp_router 中分离所有 prompt 构建逻辑。
 核心改变 v2.3：在 prompt 底部增加 "=== 数据仪表盘 ===" 块，
@@ -301,10 +309,16 @@ def build_pomdp_context(openid):
 
 
 def build_messages(system_content, history, user_message):
-    """构建 messages 列表"""
+    """构建 messages 列表（带 token 预算保护）"""
     messages = [{'role': 'system', 'content': system_content}]
-    for msg in history:
+    _budget = 3000  # 预算：最多保留 3000 tokens 的对话历史
+    _consumed = len(system_content) // 2  # 粗略估计 token 数
+    for msg in history[-8:]:  # 最多保留最近 8 轮
+        _msg_approx = len(str(msg.get('content', ''))) // 2
+        if _consumed + _msg_approx > _budget:
+            break
         messages.append(msg)
+        _consumed += _msg_approx
     messages.append({'role': 'user', 'content': user_message})
     return messages
 

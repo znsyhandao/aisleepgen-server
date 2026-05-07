@@ -35,7 +35,7 @@ def _extract_trends(openid='default'):
     profile = _load_user_profile(openid)
     history = profile.get('history', [])
     if not history:
-        return {}
+        return {'total_records': 0, '_no_data': True}
 
     # 按日期排序
     sorted_h = sorted(history, key=lambda x: x.get('date', ''))
@@ -58,14 +58,16 @@ def _extract_trends(openid='default'):
     # 2. 睡眠时长趋势
     duration = [e.get('total_duration', 0) for e in sorted_h if e.get('total_duration', 0) > 0]
     duration_trend = {}
-    if len(duration) >= 2:
-        avg = sum(duration) / len(duration)
-        recent_3d = duration[-3:] if len(duration) >= 3 else duration
+    night_dur = [d for d in duration if d >= 60]
+    night_dur_for_trend = night_dur if len(night_dur) >= 2 else duration
+    if len(night_dur_for_trend) >= 2:
+        avg = sum(night_dur_for_trend) / len(night_dur_for_trend)
+        recent_3d = night_dur_for_trend[-3:] if len(night_dur_for_trend) >= 3 else night_dur_for_trend
         avg_recent = sum(recent_3d) / len(recent_3d)
         delta = avg_recent - avg
         duration_trend = {
             'avg': round(avg, 1), 'recent_3d_avg': round(avg_recent, 1),
-            'min': min(duration), 'max': max(duration),
+            'min': min(night_dur_for_trend), 'max': max(night_dur_for_trend),
             'direction': 'up' if delta > 30 else ('down' if delta < -30 else 'stable'),
         }
 
@@ -133,7 +135,9 @@ def _extract_trends(openid='default'):
         }
 
     # 7. 风险检测
-    deprivation_risk = len([d for d in duration if d < 360]) >= 3  # 连续3天<6小时
+    # 排除午睡（<60分钟）后检测睡眠不足
+    night_duration = [d for d in duration if d >= 60]
+    deprivation_risk = len([d for d in night_duration if d < 360]) >= 3  # 连续3天<6小时
     # 起床时间波动
     wake_times = []
     for e in sorted_h:
@@ -202,6 +206,8 @@ def _build_history_context(openid='default'):
         lines.append(f"⚠ 连续3天睡眠不足6小时, 建议调整作息")
 
     ctx = '\n'.join(lines)
+    if not lines:
+        ctx = '[暂无数据] 用户还没有足够的睡眠记录，无法生成趋势分析。'
     if ctx:
         ctx = f"\n===== 睡眠趋势分析 =====\n{ctx}\n========================\n"
 
