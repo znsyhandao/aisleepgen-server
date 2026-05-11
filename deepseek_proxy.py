@@ -5428,7 +5428,7 @@ def upgrade_member(openid, tier, order_no='', period='month'):
         'old_level': old_level,
     })
     
-    _save_user_profile(openid, profile)
+    _save_user_profile(profile, openid)
     return profile
 
 
