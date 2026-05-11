@@ -364,7 +364,20 @@ def _load_user_profile(openid='default'):
     return profile
 
 def _save_user_profile(profile, openid='default'):
-    """保存指定用户的画像"""
+    """保存指定用户的画像
+    
+    参数顺序: save_user_profile(PROFILE, OPENID) — profile在前，openid在后。
+    调用时保持 (profile, openid) 顺序，不要传反。
+    """
+    # 运行时防御：传反了立刻报错
+    assert isinstance(profile, dict), (
+        f'save_user_profile: profile必须是dict，收到{type(profile).__name__}。'
+        f' 提示: 调用顺序是 save(profile, openid) — 不是 (openid, profile)！'
+    )
+    assert isinstance(openid, str), (
+        f'save_user_profile: openid必须是str，收到{type(openid).__name__}。'
+        f' 提示: 调用顺序是 save(profile, openid) — 不是 (openid, profile)！'
+    )
     all_profiles = _load_all_profiles()
     all_profiles[openid] = profile
     _save_all_profiles(all_profiles)
