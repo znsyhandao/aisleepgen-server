@@ -506,7 +506,7 @@ def get_smart_recommendation(openid):
     profile['openid'] = openid
     record_recommendation(profile, scenario, tier, variant, price, message)
     from deepseek_proxy import _save_user_profile
-    _save_user_profile(openid, profile)
+    _save_user_profile(profile, openid)
 
     return result
 
