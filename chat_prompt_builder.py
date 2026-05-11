@@ -40,6 +40,7 @@ def build_system_content(
     intervention_hint='',
     body_context='',
     recent_conversation='',
+    cognitive_analysis=None,  # ★ AGM 认知三角分析结果
 ):
     """构建 system_content 提示词
 
@@ -185,7 +186,46 @@ def build_system_content(
 第三轮：有2-3个数据后才能做初步分析。
 
 数据不足时不要多次道歉或说"数据不足"。自然过渡引导即可。
+
+★ 重要：回复末尾必须输出用户信念提取（用户不可见，系统解析用）：
+---AGM_BELIEFS---
+[
+  {"text": "用户相信的具体命题", "strength": 0~1}
+]
+---CONTEXT---
+[
+  {"type": "social|lifestyle|medical", "value": "提取的原文", "inferred": true}
+]
+---END---
+信念和上下文必须从对话中自然推导，不瞎编。没有可提取的上下文则输出空数组 []。
+
+★★ 认知三角分析结果（AGM 系统实时推理）：
+当 {dashboard_section} 中包含 cognitive_analysis 段时，
+你收到的就是一个经过认知三角理论过滤的信念状态分析。
+用它指导你的回复策略——特别是当用户表现出信念固化或焦虑时。
+不要在回复中直接引用"认知三角"术语，改成自然语言。
+
 """
+
+    # ===== AGM 认知三角分析注入 =====
+    if cognitive_analysis:
+        _ca_parts = []
+        _ca = cognitive_analysis
+        if _ca.get('cognitive_triangle'):
+            _ca_parts.append('认知三角: ' + ' | '.join(_ca['cognitive_triangle']))
+        if _ca.get('message_analysis'):
+            _ma = _ca['message_analysis']
+            _intensity = _ma.get('negative_intensity', 0)
+            if _intensity > 0.5:
+                _ca_parts.append(f'消息负面强度: {_intensity:.0%}')
+            if _ma.get('positive_indicator'):
+                _ca_parts.append('用户消息中出现正向信号')
+            _ca_parts.append(f'关注焦点: {_ma.get("likely_focus", "未知")}')
+        if _ca.get('challenge_suggestions'):
+            _cs = _ca['challenge_suggestions'][0]
+            _ca_parts.append(f'可挑战信念: "{_cs["belief"]}" (固筑度{_cs["strength"]:.0%})')
+        if _ca_parts:
+            dashboard_parts.append('cognitive_analysis=' + ' || '.join(_ca_parts))
 
     return system_content
 
@@ -297,7 +337,32 @@ def build_pomdp_context(openid):
             _cog_text = _cog_summary(openid)
             if _cog_text:
                 parts.append(f'  - {_cog_text}')
-        except:
+        except Exception as _e:
+            _log.warning("[chat_prompt_builder] %s", _e)
+
+        # ★ v2.2: AGM 预测性信念上下文（T-3 轮趋势 + 挑战点前置）🔮
+        try:
+            from cognitive_belief import BeliefSystem as _agm_bs
+            _agm = _agm_bs(openid)
+            _trends = []
+            _recent_hist = _agm.history[-15:]
+            if len(_recent_hist) >= 3:
+                # 检查近 3 次交互中信念变化的方向
+                _cut_count = sum(1 for h in _recent_hist if h.get('type') == 'retract')
+                _insert_count = sum(1 for h in _recent_hist if h.get('type') == 'insert')
+                _strengthen_count = sum(1 for h in _recent_hist if h.get('type') == 'strengthen')
+                if _cut_count >= 3:
+                    _trends.append(f'近期切除{_cut_count}次信念——建议观察用户是否在改变认知')
+                if _insert_count >= _strengthen_count:
+                    _trends.append(f'近期吸纳{_insert_count}条新信念——用户对建议接受度好')
+                else:
+                    _trends.append(f'近期强化{_strengthen_count}条已有信念——用户正在固化已有认知')
+            _challenge = _agm.get_challenge_point()
+            if _challenge:
+                _trends.append(f'当前最可挑战: "{_challenge[0]}"({_challenge[1]:.0%})→"{_challenge[2]}"')
+            if _trends:
+                parts.append('  - [AGM预测] ' + '; '.join(_trends))
+        except Exception:
             pass
 
         if not ctx and not rl_text:
@@ -309,16 +374,60 @@ def build_pomdp_context(openid):
 
 
 def build_messages(system_content, history, user_message):
-    """构建 messages 列表（带 token 预算保护）"""
+    """构建 messages 列表。
+    遵循最佳实践：不预设 token 预算，信任模型 context window。
+    防御：
+      - 单条超长消息截断（>50000字符）
+      - 历史轮数过多时自动压缩旧轮（max_raw_rounds=40）
+        压缩后旧轮凝成一条摘要，保留近轮的完整上下文。
+    """
+    if not history:
+        history = []
+
+    MAX_RAW_ROUNDS = 40
+    SUMMARY_THRESHOLD = 60  # 超过60轮才压缩（留20轮缓冲）
+    SUMMARY_RESERVE = 20    # 保留最近20轮完整
+
+    if len(history) > SUMMARY_THRESHOLD:
+        # 旧轮（之外的部分）压缩成一条摘要
+        old_rounds = history[:-SUMMARY_RESERVE]
+        recent_rounds = history[-SUMMARY_RESERVE:]
+
+        # 摘要：只提取用户说了什么（不压缩系统回复，压缩后的信息天然损失小）
+        summary_lines = []
+        for msg in old_rounds:
+            role = msg.get('role', '')
+            content = str(msg.get('content', ''))[:200]
+            if role == 'user':
+                summary_lines.append(content[:120])
+            elif role == 'assistant':
+                summary_lines.append(f'→{content[:120]}')
+
+        # 生成1-3句摘要（只保留关键话题走向）
+        if len(summary_lines) > 20:
+            # 取首尾关键信息
+            head = summary_lines[:6]
+            tail = summary_lines[-6:]
+            summary = '【早期对话摘要】' + ' | '.join(head) + ' ... ' + ' | '.join(tail)
+        elif summary_lines:
+            summary = '【早期对话摘要】' + ' | '.join(summary_lines)
+        else:
+            summary = ''
+
+        if summary:
+            history = [{'role': 'system', 'content': summary}] + recent_rounds
+        else:
+            history = recent_rounds
+    elif len(history) > MAX_RAW_ROUNDS:
+        # 超过40轮但不到60轮：只保留最近40轮
+        history = history[-MAX_RAW_ROUNDS:]
+
     messages = [{'role': 'system', 'content': system_content}]
-    _budget = 3000  # 预算：最多保留 3000 tokens 的对话历史
-    _consumed = len(system_content) // 2  # 粗略估计 token 数
-    for msg in history[-8:]:  # 最多保留最近 8 轮
-        _msg_approx = len(str(msg.get('content', ''))) // 2
-        if _consumed + _msg_approx > _budget:
-            break
+    for msg in history:
+        _c = msg.get('content', '')
+        if isinstance(_c, str) and len(_c) > 50000:
+            msg = {**msg, 'content': _c[:50000] + '[...截断]'}
         messages.append(msg)
-        _consumed += _msg_approx
     messages.append({'role': 'user', 'content': user_message})
     return messages
 

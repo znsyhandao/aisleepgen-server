@@ -15,6 +15,8 @@ sys.path = [p for p in sys.path if 'openclaw' not in p.lower()]
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 os.environ['AISLEEPGEN_SKIP_MAIN'] = '1'
+BASE = os.path.dirname(os.path.abspath(__file__))
+EVIDENCE_UPDATE_INTERVAL = 86400 * 7  # 7天更新一次PubMed
 
 from dp_router import dispatch, ROUTES
 
@@ -118,15 +120,49 @@ async def benchmark():
     print('[Benchmark] 完成')
 
 
+EVIDENCE_UPDATE_INTERVAL = 86400 * 7  # 7天更新一次
+
+async def evidence_auto_updater():
+    """启动后异步定时拉取PubMed睡眠医学文献"""
+    while True:
+        try:
+            print('[EVIDENCE] 开始循证数据库更新...')
+            proc = await asyncio.create_subprocess_exec(
+                sys.executable, os.path.join(BASE, 'scripts', 'evidence_updater.py'), '--auto',
+                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=120)
+            if proc.returncode == 0:
+                print(f'[EVIDENCE] 更新完成')
+            else:
+                err = stderr.decode('utf-8', errors='replace')[:200]
+                print(f'[EVIDENCE] 更新异常: {err}')
+        except asyncio.TimeoutError:
+            print('[EVIDENCE] 更新超时')
+        except Exception as e:
+            print(f'[EVIDENCE] 更新失败: {e}')
+        await asyncio.sleep(EVIDENCE_UPDATE_INTERVAL)
+
+
 if __name__ == '__main__':
     print(f'[asyncio] AISleepGen 纯异步服务器')
     print(f'[asyncio] {len(ROUTES)} 条路由 | 线程池 100 | AI并发 200')
     print(f'[asyncio] http://localhost:8090')
-
+    
+    # 启动闭环智能体（后台线程，每30分钟对所有活跃用户执行一次闭环）
+    try:
+        from loop_agent import LoopAgent
+        loop_agent = LoopAgent(interval_minutes=30)
+        loop_agent.start()
+        print(f'[asyncio] 闭环智能体已启动 (30min间隔)')
+    except Exception as e:
+        print(f'[asyncio] 闭环智能体启动失败: {e}')
+    
     if '--benchmark' in sys.argv:
         asyncio.run(benchmark())
     else:
         async def main():
+            # 启动循证更新后台任务
+            asyncio.create_task(evidence_auto_updater())
             s = await asyncio.get_event_loop().create_server(
                 lambda: Proto(), '0.0.0.0', 8090)
             async with s: await s.serve_forever()

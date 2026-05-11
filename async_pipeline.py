@@ -280,6 +280,14 @@ def _run_deep_analysis(openid, message, history, profile):
         messages = build_messages(sc, history, message)
         reply = call_deepseek_api(messages)
 
+        # 用真实 openid 覆盖 token 追踪
+        if reply:
+            from ai_client import track_usage_with_openid, load_tier_config, get_tier_from_profile
+            _tier = load_tier_config(get_tier_from_profile(profile))
+            track_usage_with_openid(openid, _tier.get('model', 'deepseek-chat'),
+                                    len(str(messages)) // 2, len(reply) // 2,
+                                    (len(str(messages)) + len(reply)) // 2)
+
         # 投毒校验
         if reply:
             valid, _ = validate_reply(reply)

@@ -58,8 +58,22 @@ def _recover_from_backup():
 
 # ===== 以下为业务逻辑函数（保持原样，内部调用已指向 SQLite） =====
 
-def _log_intervention(openid,stress_type,pat,rounds=0,duration=0,completed=True,user_message=''):
+def _log_intervention(openid, stress_type, pat, rounds=0, duration=0, completed=True):
+    """记录干预事件到用户画像 + 活动日志（时序溯源用）"""
     try:
+        # ★ 活动日志：干预时序基线（指数3年不可挽回缺口2）
+        try:
+            _detail = "intervention_" + stress_type + "_" + pat
+            _detail += "_" + str(rounds) + "r_" + str(duration) + "s"
+            if completed:
+                _detail += "_done"
+            else:
+                _detail += "_interrupted"
+            import importlib
+            _dp_log = importlib.import_module("dp_router")._log_activity
+            _dp_log(openid, "intervention", _detail)
+        except Exception:
+            pass
         p=_load_user_profile(openid)
         if 'relax_log' not in p: p['relax_log']=[]
         if 'behavior_stats' not in p: p['behavior_stats']={'total_relax_sessions':0,'common_emotions':[]}
@@ -106,7 +120,8 @@ def _handle_intervention_complete(data):
             'timestamp':datetime.now().strftime('%Y-%m-%d %H:%M'),'pattern':data.get('pattern'),
             'rounds':data.get('rounds'),'duration':data.get('duration'),
             'completed':data.get('completed')},'_pending_review':True})
-    except: pass
+    except Exception as _e:
+        _log.warning('record_intervention failed: %s', _e)
     return {'success':True,'recorded':True}
 
 def _update_user_profile(ed,wmr,msg,openid='default'):
@@ -166,7 +181,7 @@ def _update_user_profile(ed,wmr,msg,openid='default'):
 
 def _safe_update_profile(ed,wmr,msg,openid):
     try: _update_user_profile(ed,wmr,msg,openid)
-    except: pass
+    except Exception as _e: _log.warning('_safe_update_profile failed: %s', _e)
 
 def _extract_features(profile,msg,stress_type=''):
     f=[0.0]*8

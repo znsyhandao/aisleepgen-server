@@ -24,8 +24,6 @@ import random
 from collections import defaultdict
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
-import logging
-_ai_log = logging.getLogger('aisleepgen.world_model')
 
 # ============================================================
 # 循证干预库 - 每条建议标注文献来源
@@ -1180,58 +1178,18 @@ class WorldModelEngine:
         ), reverse=True)
         return matched[:5]
 
-    def comprehensive_analysis(self, sleep_data, today_str: str = '') -> Dict:
+    def comprehensive_analysis(self, sleep_data: Dict, today_str: str = '') -> Dict:
         skin_data = load_skin_features()
         if not today_str:
             today_str = datetime.now().strftime('%Y%m%d')
         skin_context = build_skin_context(skin_data, today_str)
-        # 兼容 str/dict 参数
-        if isinstance(sleep_data, str):
-            data = {'_raw_text': sleep_data}
-        elif isinstance(sleep_data, dict):
-            data = dict(sleep_data)
-        else:
-            data = {}
+        data = dict(sleep_data)
         data['skin_context'] = skin_context
 
-        # ===== v7.5: DeepSeek-enhanced 世界模型推理 =====
-        # 如果外部已注入 _ds_wm_result（在dp_router中异步调DeepSeek后注入到sleep_data），直接使用
-        # 不要在 comprehensive_analysis 内部调 DeepSeek（会阻塞整个调用链）
-        _ds_wm_result = data.get('_ds_wm_result', None)
-
-        # ===== 数据充分度检查（v7.4: 扩展neural_extractor字段） =====
-        _traditional_fields = sum(1 for k in ['bedtime','wake_time','sleep_latency','awake_times','total_duration','stress_level'] if data.get(k))
-        _neural_fields = sum(1 for k in ['has_pain','drink','awake_cause','mood','snore_related','pain_area','meal','sleep_quality'] if data.get(k))
-        _known_fields = _traditional_fields + _neural_fields
-        _data_insufficient = _known_fields <= 1  # 0-1个字段才判数据不足
+        # ===== 数据充分度检查 =====
+        _known_fields = sum(1 for k in ['bedtime','wake_time','sleep_latency','awake_times','total_duration','stress_level'] if sleep_data.get(k))
+        _data_insufficient = _known_fields <= 2  # 只有bedtime+wake+awake → 不足以评分
         _insufficient_fields = _known_fields
-
-        # ===== v7.4: Neural Extractor 字段注入 =====
-        # 将 neural_extractor 的结构化字段注入到 raw_text 中，
-        # 使所有10位专家能自动消费这些数据
-        _neural_injections = []
-        if data.get('has_pain'):
-            area = data.get('pain_area', '身体')
-            _neural_injections.append(f'{area}不舒服')
-        if data.get('drink') == 'alcohol':
-            _neural_injections.append('喝了酒')
-        if data.get('awake_cause'):
-            _neural_injections.append(f"因为{data['awake_cause']}醒来")
-        if data.get('snore_related'):
-            _neural_injections.append('打鼾')
-        if data.get('mood'):
-            _neural_injections.append(f"情绪{data['mood']}")
-        if data.get('sleep_quality'):
-            _neural_injections.append(f"睡眠质量{data['sleep_quality']}")
-        if data.get('meal'):
-            _neural_injections.append(f"吃了{data['meal']}")
-        if _neural_injections:
-            _inj_str = '，'.join(_neural_injections)
-            raw = data.get('_raw_text', '') or ''
-            if raw:
-                data['_raw_text'] = raw + '。' + _inj_str
-            else:
-                data['_raw_text'] = _inj_str
         if _data_insufficient:
             data['_data_warning'] = f'数据不够完整(仅{_known_fields}个字段)，各专家应降低置信度并标注数据不足'
 
@@ -1297,16 +1255,12 @@ class WorldModelEngine:
             except Exception as e:
                 round2[name] = round1[name]  # 降级到第一轮
 
-        # 初始化汇总变量（提前定义，供数据不充分块使用）
-        all_findings = []
-        all_risks = []
-
         # ===== 数据不充分时的降权处理 =====
         if _data_insufficient:
             for name in round2:
                 r = round2[name]
                 r['confidence'] = min(r.get('confidence', 0.5), 0.35)
-                r['score'] = 0.5 + (r.get('score', 0.5) - 0.5) * 0.3  # 向0.5拉拢（0-1范围，中心点0.5）
+                r['score'] = 50 + (r.get('score', 50) - 50) * 0.3  # 向50拉拢
                 r['findings'].insert(0, f'数据仅{_insufficient_fields}个字段，评分偏低仅供参考')
             if not all_risks:
                 all_risks = ['数据有限，建议连续记录3天后查看完整分析']
@@ -1319,7 +1273,9 @@ class WorldModelEngine:
         ) / max(total_weight, 0.01)
         avg_confidence = sum(r.get('confidence', 0) for r in round2.values()) / len(self.experts)
 
-        # 汇总findings（已提前声明all_findings, all_risks）
+        # 汇总findings
+        all_findings = []
+        all_risks = []
         for name, result in round2.items():
             specialty = result.get('specialty', name)
             for f in result.get('findings', []):
@@ -1395,35 +1351,8 @@ class WorldModelEngine:
         all_therapies = list(dict.fromkeys(all_therapies))  # 去重
         chronotype = round2.get('Chronobiologist', {}).get('chronotype', 'unknown')
 
-        # ===== v7.4:         # ===== v7.5: æ©å±ä¿®æ­£å å­ï¼å¨æè¸é¦éç½®ï¼ =====
-        # ä» world_model_config.json å è½½å¨æéç½®ï¼å¦ææ²¡æåç¨é»è®¤å¼
-        _wm_config = None
-        _wm_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'world_model_config.json')
-        if os.path.exists(_wm_config_path):
-            try:
-                with open(_wm_config_path, 'r', encoding='utf-8') as _cf:
-                    _wm_config = json.load(_cf)
-            except Exception:
-                pass
-        _penalties = (_wm_config or {}).get('penalties', {})
-        _alcohol_penalty = _penalties.get('alcohol', 0.06)
-        _alcohol_awake_penalty = _penalties.get('alcohol_with_awake', 0.10)
-        _digestive_penalty = _penalties.get('digestive_discomfort', 0.04)
-        _digestive_awake_penalty = _penalties.get('digestive_with_frequent_awake', 0.09)
-        _pain_base_penalty = _penalties.get('pain_base', 0.08)
-        _extra_penalty = 0.0
-
-        # éç²¾ä¿®æ­£
-        if isinstance(sleep_data, dict) and sleep_data.get('drink') == 'alcohol':
-            _extra_penalty += _alcohol_penalty
-            if sleep_data.get('awake_times', 0) >= 2:
-                _extra_penalty += (_alcohol_awake_penalty - _alcohol_penalty)
-        # æ¶åä¸éä¿®æ­£
-        if isinstance(sleep_data, dict) and sleep_data.get('awake_cause') in ('æ¶åä¸é', 'stomach'):
-            _extra_penalty += _digestive_penalty
-            if sleep_data.get('awake_times', 0) >= 3:
-                _extra_penalty += (_digestive_awake_penalty - _digestive_penalty)
-        # ç¼çä¿®æ­£å å­ (PSQI C5æåå¯¹é½)
+        # ===== 疼痛修正因子 (PSQI C5成分对齐) =====
+        # 疼痛场景下，WM加权平均偏乐观，需加输出层修正
         pain_penalty = 0.0
         pain_data = sleep_data.get('pain', False) if isinstance(sleep_data, dict) else False
         if pain_data:
@@ -1434,10 +1363,25 @@ class WorldModelEngine:
             total_dur = sleep_data.get('total_duration', 480) if isinstance(sleep_data, dict) else 480
             total_bed = total_dur + awake_dur + sleep_lat
             eff = total_dur / max(total_bed, 1)
-            # ç¼çåºç¡æ£å: ä»éç½®è¯»åï¼é»è®¤0.08
-            pain_penalty = _pain_base_penalty
-        total_penalty = min(pain_penalty + _extra_penalty, 0.35)
-        adjusted_score = weighted_score * (1.0 - total_penalty)
+            # 疼痛基础扣分: 有明显疼痛 → 0.08~0.15
+            pain_penalty = 0.08
+            # 睡眠效率过低 → 加扣
+            if eff < 0.75:
+                pain_penalty += 0.07
+            elif eff < 0.85:
+                pain_penalty += 0.03
+            # 夜醒频繁 → 加扣
+            if awake_times >= 3:
+                pain_penalty += 0.05
+            elif awake_times >= 2:
+                pain_penalty += 0.02
+            # 自学习校准：使用从feedback学到的疼痛修正基数
+            _cal = getattr(WorldModelEngine, '_calibration', None)
+            if _cal and isinstance(_cal, dict):
+                _learned_penalty = _cal.get('pain_penalty_base', 0.08)
+                pain_penalty = pain_penalty * (_learned_penalty / 0.08)  # 等比缩放
+            pain_penalty = min(pain_penalty, 0.25)  # 上限25%
+        adjusted_score = weighted_score * (1.0 - pain_penalty)
 
         # ===== 置信区间报告 =====
         # 基于PSQI验证得到的斯皮尔曼ρ=0.92，极端场景误差±25%
@@ -1477,12 +1421,6 @@ class WorldModelEngine:
                 'summary': all_findings[:6],
                 'risk_flags': list({json.dumps(r, sort_keys=True, ensure_ascii=False): r for r in all_risks}.values()),
                 'pain_adjusted': bool(pain_penalty > 0),
-                'extra_penalty': round(_extra_penalty, 3),
-                'penalty_breakdown': {
-                    'pain': round(pain_penalty, 3),
-                    'alcohol': 0.06 if (isinstance(sleep_data, dict) and sleep_data.get('drink') == 'alcohol') else 0,
-                    'digestive': 0.04 if (isinstance(sleep_data, dict) and sleep_data.get('awake_cause') in ('消化不适', 'stomach')) else 0,
-                } if _extra_penalty > 0 else {},
                 'pain_penalty': round(pain_penalty, 3),
                 'evidence_cited': sum(r.get('evidence_cited', 0) for r in round2.values()),
                 'evidence_total': sum(r.get('evidence_total', 0) for r in round2.values()),
@@ -1526,160 +1464,12 @@ class WorldModelEngine:
                 'risk_count': len(_er.get('risk_flags', [])),
                 'findings_count': len(_er.get('findings', [])),
             }
-
-        # ===== v7.5.1: DeepSeek-enhanced 注入（去掉混合评分，只保留推理文本） =====
-        if _ds_wm_result:
-            _ds_findings = _ds_wm_result.get('findings', [])
-            if _ds_findings:
-                _f_texts = []
-            _ds_quality = _ds_wm_result.get('quality', '')
-            if _ds_quality and _ds_quality in ('优秀', '良好', '一般', '较差'):
-                result['quality'] = _ds_quality
-            if _ds_findings:
-                _f_texts = []
-                for f_item in _ds_findings:
-                    if isinstance(f_item, dict):
-                        expert = f_item.get('expert', '')
-                        finding = f_item.get('finding', '')
-                        _f_texts.append(f'【DeepSeek-{expert}】{finding}')
-                if _f_texts:
-                    result['insights']['deepseek_findings'] = _f_texts
-                    # 合并到 summary 前部
-                    result['insights']['summary'] = _f_texts[:3] + result['insights']['summary'][:4]
-            _ds_risks = _ds_wm_result.get('risk_flags', [])
-            if _ds_risks and isinstance(_ds_risks, list):
-                existing_risks = result['insights']['risk_flags']
-                for r_item in _ds_risks:
-                    if isinstance(r_item, str) and r_item not in existing_risks:
-                        existing_risks.insert(0, r_item)
-                result['insights']['risk_flags'] = existing_risks[:6]
-            result['deepseek_enhanced'] = True
-
-        # ===== 用户画像感知修正（由deepseek_proxy注入） =====
-        _user_perception = data.get('_user_perception', '')
-        _recent_durs = data.get('_recent_durations', [])
-        if _user_perception == 'tends_to_be_strict':
-            # 用户曾多次反馈评分偏高 → 降权：让总分更有区分度
-            result['total_score'] = max(30, min(95, result['total_score'] - 5))
-            result['adjustment_note'] = '评分已根\n据用户反馈校准（-5，用户对评分偏严格）'
-        elif _user_perception == 'tends_to_be_lenient':
-            result['total_score'] = max(30, min(95, result['total_score'] + 5))
-            result['adjustment_note'] = '评分已根据用户反馈校准（+5，用户对评分偏宽松）'
-        if len(_recent_durs) >= 3:
-            _min_dur = min(_recent_durs)
-            _max_dur = max(_recent_durs)
-            if _max_dur - _min_dur <= 60:
-                # 用户时长稳定
-                result['duration_stability'] = 'stable'
-            else:
-                result['duration_stability'] = 'unstable'
-
-        # ===== 第三轮：分歧校验 =====
-        # 找出得分差距最大的两对专家，标记分歧供前端展示
-        _scores_round2 = {n: round2[n].get('score', 0.5) for n in round2}
-        _sorted_by_score = sorted(_scores_round2.items(), key=lambda x: x[1])
-        _min_expert = _sorted_by_score[0]
-        _max_expert = _sorted_by_score[-1]
-        _disagreement = round(abs(_max_expert[1] - _min_expert[1]), 3)
-
-        _disputes = []
-        if _disagreement > 0.15:
-            _disputes.append({
-                'experts': [_min_expert[0], _max_expert[0]],
-                'gap': _disagreement,
-                'low_score': _min_expert[1],
-                'high_score': _max_expert[1],
-                'note': f'{_min_expert[0]} vs {_max_expert[0]} 评分差距 {_disagreement:.2f}，建议人工复核',
-            })
-        # 检查风险判断分歧
-        _risk_experts = {n: round2[n].get('risk_level', 'low') for n in round2}
-        _high_risk_count = sum(1 for v in _risk_experts.values() if v == 'high')
-        _low_risk_count = sum(1 for v in _risk_experts.values() if v == 'low')
-        if _high_risk_count >= 2 and _low_risk_count >= 2:
-            _disputes.append({
-                'type': 'risk_disagreement',
-                'high_risk_experts': [n for n, v in _risk_experts.items() if v == 'high'],
-                'low_risk_experts': [n for n, v in _risk_experts.items() if v == 'low'],
-                'note': f'风险判断分歧：{_high_risk_count}位专家认为高风险，{_low_risk_count}位认为低风险',
-            })
-
-        result['expert_disagreement'] = _disputes
-        if _disputes:
-            result['needs_review'] = True
-
-        # ===== 第三轮：专家辩论折衷（当分歧超过阈值时） =====
-        if _disagreement > 0.05 or len(_disputes) > 0:
-            result['expert_debate'] = WorldModelEngine._debate_synthesize(
-                round2, _min_expert, _max_expert, _disagreement
-            )
-            # 将辩论折衷分作为额外的参考分数
-            if 'debate_score' in result.get('expert_debate', {}):
-                result['debate_adjusted_score'] = result['expert_debate']['debate_score']
-
         return result
 
 
     @staticmethod
-    def _debate_synthesize(round2, min_expert_pair, max_expert_pair, disagreement):
-        """专家辩论折衷机制
-        当分歧专家评分差距 > 0.15 时，基于双方论据质量和置信度自动折衷。
-        返回结构化的辩论记录与折衷评分。
-        """
-        low_name, low_score = min_expert_pair
-        high_name, high_score = max_expert_pair
-        low_r = round2.get(low_name, {})
-        high_r = round2.get(high_name, {})
-
-        # 收集双方论据
-        low_reasoning = low_r.get('findings', [])
-        high_reasoning = high_r.get('findings', [])
-
-        # 获取双方置信度
-        low_conf = low_r.get('confidence', 0.3)
-        high_conf = high_r.get('confidence', 0.3)
-
-        # 辩论质量评分：置信度加权决定折衷分
-        total_conf = low_conf + high_conf
-        if total_conf > 0:
-            # 置信度更高的专家权重更大
-            debate_score = (low_score * low_conf + high_score * high_conf) / total_conf
-        else:
-            debate_score = (low_score + high_score) / 2
-
-        # 生成辩论记录
-        debate_log = []
-        # 低分专家的论据摘要
-        for f in low_reasoning[:3]:
-            debate_log.append({
-                'speaker': low_name,
-                'argument': f[:200],
-                'position': 'conservative',
-                'confidence': round(low_conf, 2),
-            })
-        # 高分专家的反驳论据
-        for f in high_reasoning[:3]:
-            debate_log.append({
-                'speaker': high_name,
-                'argument': f[:200],
-                'position': 'optimistic',
-                'confidence': round(high_conf, 2),
-            })
-
-        return {
-            'debate_score': round(debate_score * 100, 1),
-            'consensus_confidence': round(total_conf / 2, 2) if total_conf > 0 else 0.3,
-            'debate_log': debate_log,
-            'disagreement_gap': round(disagreement, 2),
-            'weighting': {
-                low_name: round(low_conf / total_conf, 3) if total_conf > 0 else 0.5,
-                high_name: round(high_conf / total_conf, 3) if total_conf > 0 else 0.5,
-            },
-            'note': f'{low_name}({low_score:.2f}) vs {high_name}({high_score:.2f}) 辩论后折衷分 {round(debate_score*100,1)}',
-        }
-
-    @staticmethod
     def _build_actionable_takeaway(round2, all_findings, all_risks):
-        """从会诊结果生成可操作的行动建议"""
+        """从会诊结果生成可操作的行动建议（优先输出可执行方案）"""
         # 优先级1: 减压专家的疗法推荐 → 最可执行
         sr = round2.get('StressRelaxation', {})
         sr_therapies = sr.get('recommended_therapies', [])
@@ -1879,18 +1669,28 @@ if __name__ == '__main__':
     print("=== 睡眠世界模型 v4.1 测试 ===")
     engine = WorldModelEngine()
     test = {'feeling':'tired','bedtime':'23:30','wake_time':'06:00','sleep_latency':45,'awake_times':3,'awake_duration':60,'total_duration':390,'stress_level':7,'snore_related':True,'screen_time':30,'pain':True,'pain_area':'腰'}
-    # 以下证据库条目（暂未命名变量）
-
-if __name__ == "__main__":
-    import sys
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-    except:
-        pass
-    print("=== Sleep World Model v4.1 Self-Test ===")
-    engine = WorldModelEngine()
-    test = {"feeling":"tired","bedtime":"23:30","wake_time":"06:00","sleep_latency":45,"awake_times":3}
-    result = engine.comprehensive_analysis(test)
-    print("Score:", result.get("total_score"))
-    print("Quality:", result.get("quality"))
-    print("OK")
+    result = engine.comprehensive_analysis(test, today_str='20260425')
+    print("版本: " + result.get('version', '4.1'))
+    print("综合评分: " + str(result['total_score']))
+    print("质量等级: " + result['quality'])
+    print("交叉会诊: " + str(result['analysis'].get('cross_consultation_used', False)))
+    print()
+    print('六个维度评分:')
+    for dim, info in result['analysis']['dimensions'].items():
+        s = info.get('score', 0.5)
+        print('  ' + dim + ': ' + f'{s:.2f}')
+    print()
+    s = result['insights']['summary'][:6]
+    print('主要发现:')
+    for f in s:
+        print('  ' + f)
+    print()
+    print('推荐疗法: ' + str(result['action_plan']['recommended_therapies']))
+    print()
+    print('循证来源: ')
+    for td in result['action_plan']['therapy_details']:
+        print('  ' + td)
+    print()
+    print('Chronotype: ' + result['action_plan'].get('chronotype', 'unknown'))
+    print()
+    print('皮肤生物反馈: ' + ('有' if result['skin_biofeedback']['available'] else '无'))

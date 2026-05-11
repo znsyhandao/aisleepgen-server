@@ -1,10 +1,11 @@
 """
-AISleepGen DeepSeek API 代理服务器 — AI智能体时代版
+AISleepGen DeepSeek API 代理服务器 - AI智能体时代版
 为微信小程序提供DeepSeek API调用中转 + 主动管家 + 商业智能
 启动: python deepseek_proxy.py
 """
 
 import json
+import sys
 import os
 import urllib.request
 import urllib.error
@@ -23,7 +24,7 @@ from datetime import datetime, timedelta
 # 检测睡眠恶化趋势，自动触发干预建议
 class TrendEngine:
     """趋势检测引擎：分析用户画像中的历史数据，检测恶化趋势"""
-    
+
     ALERT_RULES = {
         'score_drop': {
             'condition': lambda scores: len(scores) >= 3 and all(s < scores[0] for s in scores[-3:]),
@@ -46,25 +47,25 @@ class TrendEngine:
             'message': '恭喜！连续{count}天睡眠质量优秀 🎉',
         },
     }
-    
+
     @staticmethod
     def analyze(profile, openid_prefix=''):
         """分析用户画像，返回活跃的告警"""
         history = profile.get('history', [])
         if len(history) < 2:
             return []
-        
+
         alerts = []
-        
+
         # 提取最近评分序列
         scores = [h.get('wm_score', 0) for h in history if h.get('wm_score', 0) > 0][-7:]
-        
+
         # 提取最近入睡数据
         last_entries = []
         for h in history[-7:]:
             ext = h.get('extracted', {}) or {}
             last_entries.append(ext)
-        
+
         # 检测各规则
         # 评分连续下降
         if len(scores) >= 3:
@@ -81,7 +82,7 @@ class TrendEngine:
                     'message': f'最近连续{drop_count}天评分有点波动，别着急，调整一下节奏能回来',
                     'data': {'count': drop_count, 'scores': scores[-drop_count:]},
                 })
-        
+
         # 入睡困难趋势
         insomnia_entries = [e for e in last_entries if e.get('sleep_latency') is not None and e.get('sleep_latency', 0) > 30]
         if len(insomnia_entries) >= 3:
@@ -92,7 +93,7 @@ class TrendEngine:
                 'data': {'count': len(insomnia_entries)},
                 'actions': ['start_breathing', 'meditation'],
             })
-        
+
         # 夜醒频繁
         awake_entries = [e for e in last_entries if e.get('awake_times') is not None and e.get('awake_times', 0) >= 2]
         if len(awake_entries) >= 3:
@@ -103,7 +104,7 @@ class TrendEngine:
                 'data': {'count': len(awake_entries)},
                 'actions': ['white_noise'],
             })
-        
+
         # 优秀趋势（正向反馈）
         good_scores = [s for s in scores[-5:] if s >= 80]
         if len(good_scores) >= 5:
@@ -113,9 +114,9 @@ class TrendEngine:
                 'message': f'🎉 近5次评分均达80+，继续保持！',
                 'data': {},
             })
-        
+
         return alerts
-    
+
     @staticmethod
     def get_daily_advice(profile):
         """根据画像生成每日一句建议"""
@@ -125,7 +126,7 @@ class TrendEngine:
             priority = {'warning': 0, 'info': 1, 'positive': 2}
             alerts.sort(key=lambda a: priority.get(a['level'], 3))
             return alerts[0]
-        
+
         # 无告警时返回默认鼓励
         return {
             'type': 'daily_tip',
@@ -138,7 +139,7 @@ class TrendEngine:
 # 返回AI行业动态、睡眠科技趋势
 class BizIntelEngine:
     """商业智能引擎：提供AI行业+睡眠科技的简短资讯"""
-    
+
     @staticmethod
     def get_daily_brief():
         """返回今日商业智能简报"""
@@ -154,7 +155,7 @@ class BizIntelEngine:
                 {'title': '规律作息', 'desc': '固定就寝时间比总睡眠时长更能预测健康', 'source': 'Sleep Health 2026'},
             ],
         }
-    
+
     @staticmethod
     def search(query):
         """搜索商业智能内容（模拟搜索，真实场景应调用搜索API）"""
@@ -169,22 +170,22 @@ class BizIntelEngine:
 # 3. 主动管家调度器（定时任务）
 class ButlerScheduler:
     """主动管家调度器：在每次交互时检测是否需要主动推送"""
-    
+
     @staticmethod
     def check(openid, profile):
         """检查当前是否需要主动推送"""
         # 1. 趋势检测
         alerts = TrendEngine.analyze(profile)
-        
+
         # 2. 智能问候（根据时间+上次活跃）
         member = profile.get('member', {})
         last_active_str = member.get('last_active', '')
-        
+
         # 3. 商业智能简报（每天一次）
         today = datetime.now().strftime('%Y-%m-%d')
         last_brief = profile.get('_last_brief_date', '')
         show_brief = last_brief != today
-        
+
         return {
             'alerts': alerts,
             'show_brief': show_brief,
@@ -198,6 +199,8 @@ WECHAT_SECRET = os.environ.get("AISLEEPGEN_WECHAT_SECRET", "")
 
 # 用户画像持久化存储
 USER_PROFILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_profile.json')
+PROFILE_BACKUP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profile_backups')
+MAX_BACKUPS = 5  # 保留最近5份备份
 
 def _load_all_profiles():
     """加载所有用户的画像数据。自动迁移旧版单用户格式。"""
@@ -206,7 +209,15 @@ def _load_all_profiles():
         try:
             with open(USER_PROFILE_PATH, 'r', encoding='utf-8') as f:
                 raw = json.load(f)
-            # 检测旧版格式：顶层字段混有旧字段名（即使存在其他key）
+        except (json.JSONDecodeError, Exception) as e:
+            print(f'[Profile] ⚠️ 文件损坏 ({e}), 尝试从备份恢复...')
+            recovered = _recover_from_backup()
+            if recovered is not None:
+                raw = recovered
+            else:
+                print('[Profile] ⚠️ 无可用备份, 使用空数据')
+                return {}
+        # 检测旧版格式：顶层字段混有旧字段名（即使存在其他key）
             if isinstance(raw, dict):
                 top_level_keys = set(raw.keys())
                 has_old_fields = bool(top_level_keys & default_keys)
@@ -228,12 +239,57 @@ def _load_all_profiles():
     return {}
 
 def _save_all_profiles(all_profiles):
-    """保存所有用户的画像数据"""
+    """保存所有用户的画像数据（写前自动备份）"""
     try:
+        _backup_profile()
         with open(USER_PROFILE_PATH, 'w', encoding='utf-8') as f:
             json.dump(all_profiles, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print(f'[Profile] 保存失败: {e}')
+
+
+def _backup_profile():
+    """写前备份 user_profile.json（保留最近5份）"""
+    if not os.path.exists(USER_PROFILE_PATH):
+        return
+    os.makedirs(PROFILE_BACKUP_DIR, exist_ok=True)
+    ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+    dst = os.path.join(PROFILE_BACKUP_DIR, f'profile_{ts}.json')
+    try:
+        import shutil
+        shutil.copy2(USER_PROFILE_PATH, dst)
+    except Exception as e:
+        print(f'[Backup] 备份失败: {e}')
+        return
+    # 清理旧备份
+    try:
+        backups = sorted([f for f in os.listdir(PROFILE_BACKUP_DIR) if f.startswith('profile_')])
+        while len(backups) > MAX_BACKUPS:
+            os.remove(os.path.join(PROFILE_BACKUP_DIR, backups.pop(0)))
+    except:
+        pass
+
+
+def _recover_from_backup():
+    """尝试从最近的备份恢复 profile 数据"""
+    if not os.path.exists(PROFILE_BACKUP_DIR):
+        return None
+    backups = sorted([f for f in os.listdir(PROFILE_BACKUP_DIR) if f.endswith('.json')], reverse=True)
+    for fn in backups[:MAX_BACKUPS]:
+        fp = os.path.join(PROFILE_BACKUP_DIR, fn)
+        try:
+            with open(fp, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            if isinstance(data, dict) and len(data) > 0:
+                # 恢复成功：覆盖损坏文件
+                import shutil
+                shutil.copy2(fp, USER_PROFILE_PATH)
+                print(f'[Backup] 从 {fn} 恢复成功')
+                return data
+        except:
+            continue
+    print('[Backup] ❌ 无可用备份')
+    return None
 
 def _get_default_profile():
     """创建一个新用户的默认画像（含会员系统字段）"""
@@ -242,9 +298,18 @@ def _get_default_profile():
         'latest': {},
         'total_sessions': 0,
         'stress_log': [],
+        'relax_log': [],  # 减压详细记录（替代旧的intervention_log）
         'behavior_stats': {
             'total_relax_sessions': 0,
-            'common_emotions': []
+            'total_completed_sessions': 0,   # 完整做完的
+            'total_interrupted_sessions': 0,  # 中途中断的
+            'total_relax_seconds': 0,          # 累计减压时长（秒）
+            'avg_relax_duration': 0,           # 平均每次减压时长
+            'relax_streak_days': 0,            # 连续减压天数
+            'stress_type_distribution': {},    # {工作压力: 10, 失眠焦虑: 5}
+            'last_relax_date': None,
+            'common_emotions': [],
+            'weekly_counts': [],               # [{week_start: "2026-04-21", count: 3}]
         },
         # 会员系统
         'member': {
@@ -262,7 +327,26 @@ def _get_default_profile():
             'avatar_url': '',
             'gender': 0,    # 0未知 1男 2女
             'age_range': '',
-        }
+        },
+        # 元学习参数（Phase 1: 数据结构）
+        'meta_params': {
+            'intervention_threshold': 0.5,       # 触发干预的置信度门槛
+            'breath_rounds_base': 3,             # 基础呼吸轮数
+            'breath_rounds_scale': 0.5,          # 压力增量对应的额外轮数
+            'preferred_pattern': '4-7-8',        # 偏好呼吸模式
+            'noise_preference': 'ocean',         # 偏好白噪音类型
+
+            'feature_vector': [0.0] * 8,         # 8维用户行为特征
+
+            'total_interactions': 0,             # 干预总次数
+            'response_rate': 0.0,                # 干预接受率
+            'completion_rate': 0.0,              # 呼吸练习完成率
+            'avg_hrv_change': 0.0,               # 平均HRV变化（预留）
+
+            '_pattern_scores': {},               # 各呼吸模式的完成分数（内部用）
+            'last_meta_update': None,            # 最后更新日期
+            'confidence': 0.3,                   # 对该用户的了解程度
+        },
     }
 
 def _load_user_profile(openid='default'):
@@ -271,7 +355,13 @@ def _load_user_profile(openid='default'):
     if openid not in all_profiles:
         all_profiles[openid] = _get_default_profile()
         _save_all_profiles(all_profiles)
-    return all_profiles[openid]
+    profile = all_profiles[openid]
+    # 兼容：旧用户缺少 meta_params → 自动填充默认值
+    if 'meta_params' not in profile:
+        from copy import deepcopy
+        default = _get_default_profile()
+        profile['meta_params'] = deepcopy(default['meta_params'])
+    return profile
 
 def _save_user_profile(profile, openid='default'):
     """保存指定用户的画像"""
@@ -405,6 +495,345 @@ def _safe_update_profile(extracted_data, wm_result, user_message, openid):
         print(f'[Profile] 保存失败(安全跳过): {e}')
 
 
+def _log_intervention(openid, stress_type, breath_pattern, rounds=0, duration=0, completed=True, user_message=''):
+    """记录减压干预详细日志
+    Args:
+        openid: 用户ID
+        stress_type: 压力类型（工作压力/失眠焦虑等）
+        breath_pattern: 呼吸模式（4-7-8/箱式呼吸等）
+        rounds: 完成了多少轮
+        duration: 持续秒数
+        completed: 是否完成（True=做完, False=中断）
+    """
+    try:
+        profile = _load_user_profile(openid)
+        # 初始化数据结构
+        if 'relax_log' not in profile:
+            profile['relax_log'] = []
+        if 'behavior_stats' not in profile:
+            profile['behavior_stats'] = {'total_relax_sessions': 0, 'common_emotions': []}
+        bs = profile['behavior_stats']
+        # 填充默认值
+        for k in ['total_completed_sessions','total_interrupted_sessions','total_relax_seconds',
+                   'avg_relax_duration','relax_streak_days','stress_type_distribution',
+                   'last_relax_date','weekly_counts']:
+            if k not in bs:
+                bs[k] = 0 if k not in ['stress_type_distribution','weekly_counts','last_relax_date'] else ({} if k == 'stress_type_distribution' else ([] if k == 'weekly_counts' else None))
+
+        now = datetime.now()
+        today = now.strftime('%Y-%m-%d')
+        now_str = now.strftime('%Y-%m-%d %H:%M')
+
+        # 记录详细log
+        entry = {
+            'timestamp': now_str,
+            'date': today,
+            'type': 'breathing',
+            'stress_type': stress_type,
+            'breath_pattern': breath_pattern,
+            'rounds_completed': rounds,
+            'duration_seconds': duration,
+            'completed': completed,
+        }
+        profile['relax_log'].append(entry)
+        # 保留最近200条
+        if len(profile['relax_log']) > 200:
+            profile['relax_log'] = profile['relax_log'][-200:]
+
+        # 更新统计
+        bs['total_relax_sessions'] = bs.get('total_relax_sessions', 0) + 1
+        if completed:
+            bs['total_completed_sessions'] = bs.get('total_completed_sessions', 0) + 1
+        else:
+            bs['total_interrupted_sessions'] = bs.get('total_interrupted_sessions', 0) + 1
+        bs['total_relax_seconds'] = bs.get('total_relax_seconds', 0) + duration
+        total_sessions = bs['total_relax_sessions']
+        total_secs = bs['total_relax_seconds']
+        bs['avg_relax_duration'] = round(total_secs / total_sessions, 1) if total_sessions > 0 else 0
+
+        # 压力类型分布
+        sdist = bs.get('stress_type_distribution', {})
+        if isinstance(sdist, dict):
+            sdist[stress_type] = sdist.get(stress_type, 0) + 1
+            bs['stress_type_distribution'] = sdist
+
+        # 连续减压天数
+        bs['last_relax_date'] = today
+        if 'relax_streak_days' in bs:
+            # 检查昨天是否也有记录
+            yesterday = (now - timedelta(days=1)).strftime('%Y-%m-%d')
+            last_relax = bs.get('last_relax_date') or ''
+            if last_relax == yesterday or last_relax == today:
+                bs['relax_streak_days'] = bs.get('relax_streak_days', 0) + 1
+            else:
+                bs['relax_streak_days'] = 1
+
+        # 周统计
+        week_start = (now - timedelta(days=now.weekday())).strftime('%Y-%m-%d')
+        wcounts = bs.get('weekly_counts', [])
+        found = False
+        for w in wcounts:
+            if w.get('week_start') == week_start:
+                w['count'] = w.get('count', 0) + 1
+                found = True
+                break
+        if not found:
+            wcounts.append({'week_start': week_start, 'count': 1})
+        if len(wcounts) > 12:  # 保留3个月
+            bs['weekly_counts'] = wcounts[-12:]
+
+        # 保存到根目录 user_profile.json（与 _load_user_profile 一致）
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, 'user_profile.json')
+        all_profiles = {}
+        if os.path.exists(path):
+            with open(path, 'r', encoding='utf-8') as f:
+                all_profiles = json.load(f)
+        all_profiles[openid] = profile
+        # 写入文件（不用 save_json，它不存在）
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(all_profiles, f, ensure_ascii=False, indent=2)
+        print(f'[RelaxLog] 已记录: {stress_type}, {breath_pattern}, rounds={rounds}, completed={completed}')
+        # 每次记录干预日志时触发元学习更新
+        try:
+            _meta_update(openid, {
+                'stress_type': stress_type,
+                'breath_pattern': breath_pattern,
+                'rounds': rounds,
+                'duration': duration,
+                'completed': completed,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                '_raw_message': user_message,
+            })
+        except Exception as e:
+            print(f'[MetaUpdate] 跳过: {e}')
+    except Exception as e:
+        print(f'[RelaxLog] 跳过: {e}')
+
+
+def _extract_features(profile, user_message, stress_type=''):
+    """从用户消息和画像中提取8维特征向量（Phase 2）
+
+    维度:
+        F1: 压力强度 (0-1) - 关键词密度/情绪强度
+        F2: 失眠倾向 (0-1) - 失眠相关词频率
+        F3: 焦虑唤醒 (0-1) - 焦虑躯体症状词
+        F4: 情绪极性 (0-1) - WorldModel feeling 得分
+        F5: 对话深度 (0-1) - 本轮对话轮数归一化
+        F6: 互动时段 (0-1) - 白天/深夜/凌晨
+        F7: 历史接受率 (0-1) - 过去干预的完成率
+        F8: 反馈一致性 (0-1) - 用户反馈与log匹配度
+    """
+    import re
+    features = [0.0] * 8
+
+    # F1: 压力强度 - 压力关键词密度
+    stress_words = ['压力', '累', '烦', '难受', '痛苦', '焦虑', '紧张', '不安', '担心', '崩溃']
+    matches = sum(1 for w in stress_words if w in user_message)
+    features[0] = min(1.0, matches / 5.0)
+
+    # F2: 失眠倾向
+    insomnia_words = ['睡不着', '失眠', '醒了', '醒来', '熬夜', '难入睡', '睡不好', '做梦', '噩梦']
+    matches_i = sum(1 for w in insomnia_words if w in user_message)
+    features[1] = min(1.0, matches_i / 4.0)
+
+    # F3: 焦虑唤醒
+    arousal_words = ['心慌', '心跳', '喘不过气', '胸闷', '手抖', '出汗', '害怕', '恐惧']
+    matches_a = sum(1 for w in arousal_words if w in user_message)
+    features[2] = min(1.0, matches_a / 4.0)
+
+    # F4: 情绪极性 - 用已有的情绪提取结果
+    # 从 profile 的 emotion_timeline 取最近一条
+    et = profile.get('emotion_timeline', [])
+    if et:
+        last_feeling = str(et[-1].get('feeling', '')).lower()
+        if last_feeling in ('bad', 'terrible', 'anxious'):
+            features[3] = 0.2
+        elif last_feeling in ('good', 'great', 'happy'):
+            features[3] = 0.8
+        else:
+            features[3] = 0.5
+    else:
+        features[3] = 0.5
+
+    # F5: 对话深度
+    history = profile.get('history', [])
+    # 取最近10分钟内的对话
+    now_ts = datetime.now().timestamp()
+    recent = [h for h in history if isinstance(h, dict) and now_ts - h.get('_ts', now_ts) < 600]
+    features[4] = min(1.0, len(recent) / 20.0)
+
+    # F6: 互动时段
+    hour = datetime.now().hour
+    if 23 <= hour or hour < 3:
+        features[5] = 1.0  # 深夜
+    elif 3 <= hour < 6:
+        features[5] = 0.8  # 凌晨
+    elif 6 <= hour < 12:
+        features[5] = 0.3  # 上午
+    elif 12 <= hour < 18:
+        features[5] = 0.5  # 下午
+    else:
+        features[5] = 0.7  # 傍晚
+
+    # F7: 历史接受率
+    bs = profile.get('behavior_stats', {})
+    total = bs.get('total_relax_sessions', 0)
+    completed = bs.get('total_completed_sessions', 0)
+    features[6] = round(completed / max(1, total), 2)
+
+    # F8: 反馈一致性 - 当前压力类型和历史的匹配度
+    sdist = bs.get('stress_type_distribution', {})
+    if stress_type and sdist:
+        total_stress = sum(sdist.values())
+        this_stress_count = sdist.get(stress_type, 0)
+        features[7] = round(this_stress_count / max(1, total_stress), 2)
+    else:
+        features[7] = 0.5
+
+    return features
+
+
+def _meta_update(openid, session_data):
+    """元学习更新器（Phase 2）
+
+    每次干预结束后调用，根据本次干预结果更新用户的元参数。
+    session_data: {
+        'stress_type': str,
+        'breath_pattern': str,
+        'rounds': int,
+        'duration': int,
+        'completed': bool,
+        'timestamp': str,
+    }
+    """
+    profile = _load_user_profile(openid)
+    mp = profile.setdefault('meta_params', {})
+
+    # 如果 meta_params 不完整（旧用户第一次加载），补默认值
+    default = _get_default_profile()['meta_params']
+    for k, v in default.items():
+        if k not in mp:
+            mp[k] = v
+
+    completed = session_data.get('completed', False)
+    pattern = session_data.get('breath_pattern', '4-7-8')
+
+    # 1. 更新完成率
+    old_rate = mp.get('completion_rate', 0.0)
+    old_count = mp.get('total_interactions', 0)
+    new_rate = (old_count * old_rate + (1 if completed else 0)) / (old_count + 1)
+    mp['completion_rate'] = round(new_rate, 3)
+    mp['total_interactions'] = old_count + 1
+
+    # 2. 根据完成率调整干预阈值
+    #    完成率高于 0.6 → 微降阈值（用户接受干预）
+    #    低于 0.4 → 升阈值（用户可能不需要）
+    target = 0.5
+    if completed:
+        target = 0.45  # 做完了 → 可以更积极干预
+    else:
+        target = 0.55  # 没做完 → 提高门槛
+    old_threshold = mp.get('intervention_threshold', 0.5)
+    new_threshold = old_threshold + (target - old_threshold) * 0.2  # 平滑移动
+    mp['intervention_threshold'] = round(max(0.3, min(0.8, new_threshold)), 3)
+
+    # 3. 更新偏好模式评分
+    pscores = mp.get('_pattern_scores', {})
+    pscores[pattern] = pscores.get(pattern, 0) + (1.0 if completed else -0.3)
+    mp['preferred_pattern'] = sorted(pscores, key=lambda k: pscores[k], reverse=True)[0]
+
+    # 4. 更新压力类型的特征向量
+    fv = mp.get('feature_vector', [0.0] * 8)
+    stress_type = session_data.get('stress_type', '')
+    # 用 _extract_features 的当前消息特征做 EMA 更新
+    user_message = session_data.get('_raw_message', '')
+    if user_message:
+        new_fv = _extract_features(profile, user_message, stress_type)
+        # EMA: new = 0.3 * current + 0.7 * old
+        for i in range(8):
+            fv[i] = round(0.3 * new_fv[i] + 0.7 * fv[i], 3)
+    mp['feature_vector'] = fv
+
+    # 5. 更新响应率
+    total = profile.get('total_sessions', 0)
+    mp['response_rate'] = round(mp['total_interactions'] / max(1, total), 3)
+
+    # 6. 更新置信度 - 随交互次数增长但递减
+    n = mp['total_interactions']
+    mp['confidence'] = round(min(0.95, 0.3 + n * 0.08 - (n - 1) * 0.02), 3)
+
+    mp['last_meta_update'] = session_data.get('timestamp', datetime.now().strftime('%Y-%m-%d %H:%M'))
+
+    # 保存
+    _save_user_profile(profile, openid)
+    print(f'[MetaUpdate] 已更新: interactions={n}, threshold={mp["intervention_threshold"]}, confidence={mp["confidence"]}, preferred={mp["preferred_pattern"]}')
+
+
+def _run_daily_batch_optimization(profile, openid):
+    """跨夜中观适应 — 每日首次活跃时自动优化元参数
+
+    Lazy Maintenance Pattern: 不依赖外部调度器，附着在用户自然流量上触发。
+    每次调用检查 _last_meta_batch 日期，非今天则执行 batch 优化。
+    """
+    mp = profile.setdefault('meta_params', {})
+    today = datetime.now().strftime('%Y-%m-%d')
+
+    # 去重检查：今天已经优化过就不跑了
+    last_batch = mp.get('_last_meta_batch', '')
+    if last_batch == today:
+        return False
+
+    relax_logs = profile.get('relax_log', [])
+    if not relax_logs:
+        mp['_last_meta_batch'] = today
+        _save_user_profile(profile, openid)
+        return True
+
+    # 分析前一日干预日志
+    yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    target_logs = [log for log in relax_logs if log.get('timestamp', '').startswith(yesterday)]
+    if not target_logs:
+        target_logs = [log for log in relax_logs if log.get('timestamp', '').startswith(today)]
+    if not target_logs:
+        target_logs = relax_logs[-5:]
+
+    total = len(target_logs)
+    completed = sum(1 for log in target_logs if log.get('completed'))
+    rate = completed / total if total > 0 else 0
+    avg_rounds = sum(log.get('rounds', 3) for log in target_logs) / total if total > 0 else 3
+
+    print(f'[DailyBatch] [{openid[:8]}...] logs={total} completed={completed} rate={rate:.2f} avg_rounds={avg_rounds:.1f}')
+
+    # 1. 完成率 → 干预阈值
+    old_threshold = mp.get('intervention_threshold', 0.5)
+    if rate >= 0.7:
+        mp['intervention_threshold'] = round(max(0.25, old_threshold - 0.05), 2)
+    elif rate <= 0.3:
+        mp['intervention_threshold'] = round(min(0.75, old_threshold + 0.08), 2)
+    else:
+        mp['intervention_threshold'] = round((old_threshold + 0.5) / 2, 2)
+
+    # 2. 平均轮数 → rounds_scale
+    old_scale = mp.get('breath_rounds_scale', 2.0)
+    if avg_rounds >= 4:
+        mp['breath_rounds_scale'] = round(min(3.5, old_scale + 0.3), 2)
+    elif avg_rounds <= 2:
+        mp['breath_rounds_scale'] = round(max(0.5, old_scale - 0.3), 2)
+
+    # 3. 完成率 → rounds_base
+    if rate >= 0.7 and mp.get('breath_rounds_base', 3) < 6:
+        mp['breath_rounds_base'] = min(6, mp['breath_rounds_base'] + 1)
+    elif rate <= 0.3 and mp.get('breath_rounds_base', 3) > 2:
+        mp['breath_rounds_base'] = max(2, mp['breath_rounds_base'] - 1)
+
+    # 4. 记录本次优化日期
+    mp['_last_meta_batch'] = today
+    _save_user_profile(profile, openid)
+    print(f'[DailyBatch] [{openid[:8]}...] done: threshold={mp["intervention_threshold"]} base={mp["breath_rounds_base"]} scale={mp["breath_rounds_scale"]}')
+    return True
+
+
 # ===== 自学习引擎：服务器运行时自动进化 =====
 _self_learn_counter = 0
 _self_learn_lock = threading.Lock()
@@ -440,7 +869,7 @@ def _trigger_self_learn(force=False):
     if not force and last is not None and now - last < 300:
         return
     _trigger_self_learn._last_learn = now
-    
+
     try:
         # 拉反馈数据
         fb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'feedback.json')
@@ -448,22 +877,22 @@ def _trigger_self_learn(force=False):
             return
         with open(fb_path, 'r', encoding='utf-8') as f:
             feedbacks = json.load(f)
-        
+
         # 过滤有评分的反馈
         scored_fb = [fb for fb in feedbacks if fb.get('rating', 0) > 0]
         if len(scored_fb) < 3:
             return  # 数据不够
-        
+
         # 加载当前校准
         cal = _load_calibration()
-        
+
         # 1. 分析低评分反馈的比例 → 调整疼痛修正
         low_ratings = [fb for fb in scored_fb if fb['rating'] <= 2]
-        
+
         # 自适应模式切换：启发式 vs 线性回归
         _use_regression = len(scored_fb) >= 100
         cal['_learn_mode'] = 'regression' if _use_regression else 'heuristic'
-        
+
         if _use_regression:
             # ===== 数据充足：scikit-learn 线性回归（增强特征版）=====
             try:
@@ -505,25 +934,25 @@ def _trigger_self_learn(force=False):
                     print('[SelfLearn] 回归跳过: 样本多样性不足')
             except Exception as _rege:
                 print(f'[SelfLearn] 回归失败,回退启发式: {_rege}')
-        
+
         if not _use_regression and len(low_ratings) >= 3:
             # ===== 数据不足：启发式 =====
             old_penalty = cal.get('pain_penalty_base', 0.08)
             new_penalty = min(old_penalty + 0.02, 0.15)
             cal['pain_penalty_base'] = new_penalty
             print(f'[SelfLearn] 启发式模式: {old_penalty} -> {new_penalty} (基于{len(low_ratings)}条低评, 满100自动切换回归)')
-        
+
         # 2. 高评分反馈的快乐用户比例
         high_ratings = sum(1 for fb in scored_fb if fb['rating'] >= 4)
         happy_ratio = high_ratings / len(scored_fb)
         cal['happy_ratio'] = round(happy_ratio, 3)
-        
+
         # 3. 平均评分
         cal['avg_user_rating'] = round(sum(fb['rating'] for fb in scored_fb) / len(scored_fb), 2)
         # wm_score_at_time 可能为None，安全求和
         _wm_scores = [fb.get('wm_score_at_time', 0) or 0 for fb in scored_fb]
         cal['avg_wm_at_feedback'] = round(sum(_wm_scores) / len(scored_fb), 1)
-        
+
         # ===== 🌉 双引擎协同：偏好趋势 → 校准决策 =====
         try:
             _co_pref_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'user_preferences.json')
@@ -532,7 +961,7 @@ def _trigger_self_learn(force=False):
                     _co_pref = json.load(f)
                 # 提取偏好衰退类别
                 _co_cats = _co_pref.get('categories', {})
-                _co_declining = [c for c, v in _co_cats.items() 
+                _co_declining = [c for c, v in _co_cats.items()
                                 if isinstance(v, dict) and v.get('trend') == 'declining']
                 if _co_declining:
                     # 偏好衰退且评分低 → 系统推荐的策略方向可能错了
@@ -554,13 +983,13 @@ def _trigger_self_learn(force=False):
                 print(f'[SelfLearn] 协同扫描: {len(_co_cats)}个偏好类别')
         except Exception as _co_e:
             print(f'[SelfLearn] 协同跳过: {_co_e}')
-        
+
         cal['learned_on'] = datetime.now().strftime('%Y-%m-%d %H:%M')
         cal['samples'] = len(scored_fb)
         cal['version'] = '1.0'
-        
+
         _save_calibration(cal)
-        
+
         # ===== 🏛️ 架构内省：自学习完成后顺便做系统健康检查 =====
         try:
             from architecture_inner_eye import measure_system_pulse, report_to_calibration
@@ -572,12 +1001,10 @@ def _trigger_self_learn(force=False):
                     print(f'[ArchEye] 💡 {_a}')
         except Exception as _ae:
             pass  # 内省引擎不影响主流程
-        
+
         print(f'[SelfLearn] 学习完成: 用户评分={cal["avg_user_rating"]} WM={cal["avg_wm_at_feedback"]} 满意率={happy_ratio:.0%}')
     except Exception as e:
         print(f'[SelfLearn] 跳过: {e}')
-
-
 
 # 深度分析模块导入
 try:
@@ -671,7 +1098,7 @@ def _trend_analysis(profile):
 
 
 def _build_history_context(openid='default'):
-    """构建历史画像上下文，注入prompt——含叙事对比"""
+    """构建历史画像上下文，注入prompt--含叙事对比"""
     profile = _load_user_profile(openid)
     if not profile['history']:
         return '', {}
@@ -731,16 +1158,19 @@ def _build_history_context(openid='default'):
             else:
                 trend_note = f"评分对比：上次{scores[-2][0]} {last_score}分 → 这次{scores[-1][0]} {current_score}分，基本稳定(±{abs(delta):.0f})。"
             lines.append(trend_note)
-            # 跟踪上次建议是否被采纳
+            # 跟踪上次建议
             last_entry = profile['history'][-2] if len(profile['history']) >= 2 else profile['history'][-1]
             last_advice = ''
             for s in reversed(summaries):
-                if s.get('user', '') in last_entry.get('user_said', ''):
+                if s.get('advice_given'):
+                    last_advice = s.get('advice_given', '')
+                    break
+                elif s.get('user', '') in last_entry.get('user_said', ''):
                     last_advice = s.get('reply_preview', '')
                     break
             if last_advice:
-                lines.append(f"上次回复摘要: {last_advice[:80]}")
-                lines.append("如果用户今天反馈中提到尝试或没有尝试上次的建议，请基于这个信息做分析，而不是假定用户没看到。")
+                lines.append(f"上次给用户的建议: {last_advice[:120]}")
+                lines.append("注意：如果用户反馈中提到尝试了这些建议或自有其他方法，请基于执行情况做分析对比，不要假定用户没看到或没尝试。关注效果变化。")
 
     # === 情绪减压记录 ===
     stress_log = profile.get('stress_log', [])
@@ -823,13 +1253,18 @@ def load_deepseek_key():
     if import_env:
         DEEPSEEK_API_KEY = import_env
         return True
-
+    # 从 .env 文件加载（服务器部署fallback）
+    env_path = os.path.join(os.path.dirname(__file__) or '.', '.env')
+    if os.path.exists(env_path):
+        with open(env_path, 'r') as f:
+            for line in f:
+                if line.startswith('DEEPSEEK_API_KEY='):
+                    DEEPSEEK_API_KEY = line.strip().split('=', 1)[1]
+                    return True
     return False
 
 
 class ProxyHandler(BaseHTTPRequestHandler):
-
-
     # ===== 安全验证: 文献注入权限控制 =====
     EVIDENCE_ADMIN_KEY = os.environ.get("AISLEEPGEN_ADMIN_KEY", "")
 
@@ -853,7 +1288,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
     _heal_log = []  # 修复日志
     _last_heal_check = 0
     _heal_interval = 300  # 5分钟检查一次
-    
+
     def _log_heal(self, action, status, detail=''):
         """记录一次修复动作"""
         entry = {
@@ -865,8 +1300,8 @@ class ProxyHandler(BaseHTTPRequestHandler):
         self._heal_log.append(entry)
         if len(self._heal_log) > 50:
             self._heal_log = self._heal_log[-50:]
-        print(f'[SelfHeal] {status}: {action} — {detail}')
-    
+        print(f'[SelfHeal] {status}: {action} - {detail}')
+
     def _do_self_heal(self):
         """自我诊断+修复端点。小程序/外部可触发"""
         try:
@@ -875,7 +1310,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             issues = []
             fixes = []
             status = 'healthy'
-            
+
             # 1. 检查DeepSeek API Key
             if not DEEPSEEK_API_KEY:
                 issues.append('DEEPSEEK_API_KEY missing')
@@ -901,7 +1336,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     issues.append(f'DeepSeek API unreachable: {str(e)[:60]}')
                     status = 'degraded'
                     self._log_heal('check_api_key', 'FAIL', str(e)[:80])
-            
+
             # 2. 检查用户画像文件完整性
             for fn in ['user_profile.json', '.auto_evidence.json']:
                 fpath = os.path.join(os.path.dirname(__file__) or '.', fn)
@@ -911,6 +1346,17 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         if sz < 10:
                             issues.append(f'{fn} is ~empty')
                             status = 'degraded'
+                        # JSON 完整性校验
+                        if fn == 'user_profile.json':
+                            with open(fpath, 'r', encoding='utf-8') as _chk:
+                                json.load(_chk)
+                    except json.JSONDecodeError:
+                        issues.append(f'{fn} 损坏')
+                        status = 'degraded'
+                        recovered = _recover_from_backup()
+                        if recovered is not None:
+                            fixes.append(f'从备份恢复 {fn}')
+                            self._log_heal('fix_corrupted_file', 'OK', f'{fn} 从备份恢复')
                     except:
                         issues.append(f'{fn} unreadable')
                         status = 'degraded'
@@ -924,13 +1370,13 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     except Exception as e:
                         issues.append(f'Cannot create {fn}')
                         self._log_heal('fix_missing_file', 'FAIL', str(e)[:60])
-            
+
             # 3. 检查端口监听状态
             import socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 sock.bind(('127.0.0.1', 8090))
-                # 能绑定说明端口空闲——实际不应该，因为本进程就在用
+                # 能绑定说明端口空闲--实际不应该，因为本进程就在用
                 sock.close()
             except:
                 # 端口占用中，正常
@@ -938,7 +1384,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             finally:
                 try: sock.close()
                 except: pass
-            
+
             # 4. 检查PubMed证据时效性
             try:
                 ev_path = os.path.join(os.path.dirname(__file__) or '.', '.auto_evidence.json')
@@ -951,30 +1397,65 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         self._log_heal('check_evidence_freshness', 'STALE', f'{age_hours:.0f}h old')
             except:
                 pass
-            
+
             # 5. 内存清理：检查用户画像缓存大小
             try:
                 profile_path = os.path.join(os.path.dirname(__file__) or '.', 'user_profile.json')
                 if os.path.exists(profile_path) and os.path.getsize(profile_path) > 5 * 1024 * 1024:
-                    fixes.append('Profile file >5MB — consider archive')
+                    fixes.append('Profile file >5MB - consider archive')
                     self._log_heal('check_profile_size', 'WARN', f'{os.path.getsize(profile_path)} bytes')
             except:
                 pass
-            
+            # 6. 数据自修复：用户画像缺失字段填充
+            try:
+                profile_path = os.path.join(os.path.dirname(__file__) or '.', 'user_profile.json')
+                if os.path.exists(profile_path):
+                    with open(profile_path, 'r', encoding='utf-8') as f:
+                        all_profiles = json.load(f)
+                    # 检查每个用户的 meta_params 完整性
+                    from copy import deepcopy
+                    default_mp = {
+                        'intervention_threshold': 0.5, 'breath_rounds_base': 3,
+                        'breath_rounds_scale': 0.5, 'preferred_pattern': '4-7-8',
+                        'noise_preference': 'ocean', 'feature_vector': [0.0] * 8,
+                        'total_interactions': 0, 'response_rate': 0.0,
+                        'completion_rate': 0.0, 'avg_hrv_change': 0.0,
+                        '_pattern_scores': {}, 'last_meta_update': None, 'confidence': 0.3,
+                    }
+                    for oid, profile in all_profiles.items():
+                        if 'meta_params' not in profile:
+                            profile['meta_params'] = deepcopy(default_mp)
+                            fixes.append(f'Added missing meta_params for {oid[:12]}')
+                        else:
+                            mp = profile['meta_params']
+                            for k, v in default_mp.items():
+                                if k not in mp:
+                                    mp[k] = v
+                                    fixes.append(f'Filled {k} for {oid[:12]}')
+                    with open(profile_path, 'w', encoding='utf-8') as f:
+                        json.dump(all_profiles, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                issues.append(f'Profile repair error: {str(e)[:60]}')
+
             result = {
                 'success': True,
                 'status': status,
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'issues': issues,
                 'fixes': fixes,
-                'checks': ['api_key', 'data_files', 'port', 'evidence_freshness'],
+                'checks': ['api_key', 'data_files', 'port', 'evidence_freshness', 'profile_integrity'],
                 'heal_log': self._heal_log[-5:],
+                'repair_count': len(fixes),
             }
             if issues:
                 result['summary'] = f'{len(issues)} issues found, {len(fixes)} auto-fixed'
             else:
                 result['summary'] = 'All systems healthy'
-            
+            # 如果有严重问题，打印警告
+            for issue in issues:
+                if 'API' in issue or 'failure' in issue.lower():
+                    print(f'[SelfHeal] ⚠️ 严重: {issue}')
+
             self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
             self._last_heal_check = now
         except Exception as e:
@@ -996,7 +1477,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 'deepseek_connected': DEEPSEEK_API_KEY is not None
             }).encode('utf-8'))
             return
-        
+
         if path == '/api/self-heal':
             self._do_self_heal()
             return
@@ -1115,6 +1596,18 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 avg_score = round(sum(scores) / len(scores), 1) if scores else 0
 
             self._set_headers()
+            # 7天评分趋势
+            from datetime import datetime, timedelta
+            scores_7d = []
+            for i in range(7):
+                day = datetime.now() - timedelta(days=i)
+                day_str = day.strftime('%Y-%m-%d')
+                found = [x for x in daily_scores if x.get('date', '').startswith(day_str)]
+                scores_7d.insert(0, {'date': day_str, 'score': found[0].get('score', 0) if found else None})
+            # 7日均值
+            valid = [s['score'] for s in scores_7d if s['score'] and s['score'] > 0]
+            avg_7d = round(sum(valid) / len(valid), 1) if valid else 0
+
             self.wfile.write(json.dumps({
                 'openid': openid[:16],
                 'user_info': profile.get('user_info', {}),
@@ -1124,9 +1617,28 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     'total_days': member.get('total_days', 0),
                     'streak_days': member.get('streak_days', 0),
                     'avg_score': avg_score,
+                    'avg_score_7d': avg_7d,
+                    'current_score': daily_scores[-1].get('score', 0) if daily_scores else 0,
+                    'scores_7d': scores_7d,
                     'joined_at': member.get('joined_at', ''),
                 },
                 'behavior': profile.get('behavior_stats', {}),
+                'onboarding_done': profile.get('meta_params', {}).get('_initial_questionnaire', False),
+            }).encode('utf-8'))
+            return
+
+        # 问卷状态接口：/api/onboarding-status?openid=xxx
+        if path == '/api/onboarding-status':
+            qs_openid = ''
+            if parsed.query:
+                qs_params = dict(p.split('=') for p in parsed.query.split('&') if '=' in p)
+                qs_openid = qs_params.get('openid', '')
+            openid = qs_openid if qs_openid else self._get_openid({})
+            profile = _load_user_profile(openid)
+            mp = profile.get('meta_params', {})
+            self._set_headers()
+            self.wfile.write(json.dumps({
+                'onboarding_done': mp.get('_initial_questionnaire', False),
             }).encode('utf-8'))
             return
 
@@ -1356,7 +1868,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
 
     def _handle_update_profile(self, data):
-        """更新用户信息"""
+        """更新用户信息（含问卷初始化）"""
         self._set_headers()
         openid = self._get_openid(data)
         profile = _load_user_profile(openid)
@@ -1368,6 +1880,64 @@ class ProxyHandler(BaseHTTPRequestHandler):
         for key in ('nickname', 'avatar_url', 'gender', 'age_range'):
             if key in ui:
                 profile['user_info'][key] = ui[key]
+
+        # 问卷初始化钩子：提交问卷后初始化 meta_params
+        survey = data.get('onboarding_survey', {})
+        if survey:
+            mp = profile.setdefault('meta_params', {})
+            default = _get_default_profile()['meta_params']
+            for k, v in default.items():
+                if k not in mp:
+                    mp[k] = v
+
+            # 压力程度 → intervention_threshold
+            stress_level = survey.get('stress_level', 'medium')
+            threshold_map = {'low': 0.65, 'medium': 0.5, 'high': 0.35}
+            mp['intervention_threshold'] = threshold_map.get(stress_level, 0.5)
+
+            # 练习时长偏好 → breath_rounds_base
+            duration_pref = survey.get('duration_pref', 'medium')
+            rounds_map = {'short': 3, 'medium': 4, 'long': 6}
+            mp['breath_rounds_base'] = rounds_map.get(duration_pref, 4)
+
+            # 尝试过的方法 → preferred_pattern
+            methods = survey.get('methods', [])
+            if 'breathing' in methods or not methods:
+                mp['preferred_pattern'] = '4-7-8'
+            elif 'meditation' in methods:
+                mp['preferred_pattern'] = '箱式呼吸'
+            else:
+                mp['preferred_pattern'] = '4-7-8'
+
+            # 偏好声音 → noise_preference
+            sound_pref = survey.get('sound_pref', 'ocean')
+            mp['noise_preference'] = sound_pref
+
+            # 作息类型 → 映射到 feature_vector F6 先验
+            sleep_type = survey.get('sleep_type', 'normal')
+            fv = mp.get('feature_vector', [0.0] * 8)
+            type_map = {'night_owl': 0.8, 'normal': 0.5, 'early_bird': 0.3}
+            fv[5] = type_map.get(sleep_type, 0.5)  # F6: 时段偏好
+
+            # 初次困扰 → F1/F2/F3 先验
+            main_issue = survey.get('main_issue', '')
+            if main_issue == 'insomnia':
+                fv[1] = 0.7  # F2: 失眠倾向
+            elif main_issue == 'anxiety':
+                fv[2] = 0.7  # F3: 焦虑唤醒
+            elif main_issue == 'stress':
+                fv[0] = 0.7  # F1: 压力强度
+            else:
+                fv[0] = 0.4
+                fv[1] = 0.4
+            mp['feature_vector'] = fv
+
+            # 完成问卷后提升置信度
+            mp['confidence'] = 0.5
+            mp['_initial_questionnaire'] = True
+            mp['last_meta_update'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+            print(f'[Onboarding] [{openid[:8]}...] 问卷初始化完成: stress={stress_level}, duration={duration_pref}, issue={main_issue}')
 
         _save_user_profile(profile, openid)
         self.wfile.write(json.dumps({'success': True}).encode('utf-8'))
@@ -1395,6 +1965,13 @@ class ProxyHandler(BaseHTTPRequestHandler):
             'recent_scores': recent,
             'streak_days': member.get('streak_days', 0),
             'total_days': member.get('total_days', 0),
+            'relax_stats': {
+                'total_sessions': bs.get('total_relax_sessions', 0),
+                'completed_sessions': bs.get('total_completed_sessions', 0),
+                'avg_duration': bs.get('avg_relax_duration', 0),
+                'relax_streak_days': bs.get('relax_streak_days', 0),
+                'stress_type_distribution': bs.get('stress_type_distribution', {}),
+            } if (bs := profile.get('behavior_stats', {})) else {}
         }).encode('utf-8'))
 
     def _handle_history(self, data):
@@ -1512,27 +2089,27 @@ class ProxyHandler(BaseHTTPRequestHandler):
         print(f'[Export] [{openid[:8]}...] 数据已导出')
 
     def _handle_butler_check(self, data):
-        """POST: 主动管家检测——返回趋势告警+商业智能简报"""
+        """POST: 主动管家检测--返回趋势告警+商业智能简报"""
         self._set_headers()
         openid = self._get_openid(data)
         if not openid:
             openid = 'default'
         profile = _load_user_profile(openid)
         print(f'[Butler] openid={openid} profile_has_last_brief={"_last_brief_date" in profile}')
-        
+
         # 强制执行简报（临时调试）
         result = ButlerScheduler.check(openid, profile)
         result['show_brief'] = True
         result['brief'] = BizIntelEngine.get_daily_brief()
-        
+
         print(f'[Butler] result show_brief={result.get("show_brief")} alerts={len(result.get("alerts", []))}')
-        
+
         # 记录简报已读
         if result.get('show_brief'):
             profile['_last_brief_date'] = datetime.now().strftime('%Y-%m-%d')
             _save_user_profile(profile, openid)
             result['brief'] = BizIntelEngine.get_daily_brief()
-        
+
         self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
         print(f'[Butler] [{openid[:8]}...] 管家检测: {len(result.get("alerts", []))} 条告警')
 
@@ -1592,17 +2169,17 @@ class ProxyHandler(BaseHTTPRequestHandler):
         self._set_headers()
         openid = self._get_openid(data)
         profile = _load_user_profile(openid)
-        
+
         member = profile.get('member', {})
         history = profile.get('history', [])
         emotion_timeline = profile.get('emotion_timeline', [])
         summaries = profile.get('conversation_summaries', [])
         today = datetime.now().strftime('%Y-%m-%d')
-        
+
         today_entries = [h for h in history if h.get('date') == today]
         today_scores = [h.get('wm_score', 0) for h in today_entries if h.get('wm_score', 0) > 0]
         today_avg = round(sum(today_scores) / len(today_scores), 1) if today_scores else None
-        
+
         recent_scores = [h.get('wm_score', 0) for h in history[-7:] if h.get('wm_score', 0) > 0]
         trend = 'stable'
         if len(recent_scores) >= 3:
@@ -1610,25 +2187,25 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 trend = 'declining'
             elif all(recent_scores[i] > recent_scores[i-1] for i in range(1, len(recent_scores))):
                 trend = 'improving'
-        
+
         today_emotions = [e for e in emotion_timeline if e.get('date') == today]
         last_emotion = today_emotions[-1].get('emotion', '') if today_emotions else ''
-        
+
         all_topics = []
         for s in summaries:
             all_topics.extend(s.get('topics', []))
         from collections import Counter
         topic_counts = Counter(all_topics)
         common_topic = topic_counts.most_common(1)[0][0] if topic_counts else '睡眠'
-        
+
         suggestions = {
             'declining': '今晚别想太多，好好休息一晚，状态会回来的',
             'improving': '最近状态在变好，今晚继续保持节奏',
             'stable': '今晚好好睡一觉，明天又是新的一天',
         }
-        
+
         advice = suggestions.get(trend, suggestions['stable'])
-        
+
         score_msg = ''
         if today_avg is not None:
             if today_avg >= 80:
@@ -1637,10 +2214,10 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 score_msg = f'今天状态还可以，今晚好好休息'
             else:
                 score_msg = f'今晚好好调整，明天会更好'
-        
+
         streak = member.get('streak_days', 0)
         streak_msg = f' 已连续记录{streak}天🔥' if streak > 0 else ''
-        
+
         topic_tips = {
             '失眠': '明天记录一下一整天喝了多少咖啡因',
             '打鼾': '今晚试试严格侧卧睡',
@@ -1648,7 +2225,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             '作息': '明天同一时间起床，巩固生物钟',
         }
         tomorrow_tip = topic_tips.get(common_topic, f'继续关注{common_topic}，数据会越来越清晰')
-        
+
         push = {
             'success': True,
             'title': f'晚安 💤{streak_msg}',
@@ -1658,7 +2235,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             'today_score': today_avg,
             'streak_days': streak,
         }
-        
+
         try:
             if 'goodnight_log' not in profile:
                 profile['goodnight_log'] = []
@@ -1673,7 +2250,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             _save_user_profile(profile, openid)
         except:
             pass
-        
+
         self.wfile.write(json.dumps(push, ensure_ascii=False).encode('utf-8'))
         print(f'[Goodnight] [{openid[:8]}...] 晚安推送已生成')
 
@@ -1799,10 +2376,25 @@ class ProxyHandler(BaseHTTPRequestHandler):
             {'role': 'user', 'content': user_prompt}
         ]
 
+        # 尝试粒计算评分（作为DeepSeek fallback）
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            from granular_report import compute_sleep_quality_from_questionnaire, format_report_response
+            _q_score = compute_sleep_quality_from_questionnaire(data)
+            _granular_response = format_report_response(_q_score, data)
+            print(f'[粒计算] 评分完成: {_q_score["total_score"]}分 ({_q_score["grade"]})', flush=True)
+        except Exception as e:
+            print(f'[粒计算] 评分失败(不影响主流程): {e}', flush=True)
+            _granular_response = None
+
         # 调用DeepSeek
         result = self._call_deepseek(messages, max_tokens=3000)
 
         if 'error' in result:
+            # DeepSeek失败，回退到粒计算评分
+            if _granular_response:
+                self.wfile.write(json.dumps(_granular_response, ensure_ascii=False).encode('utf-8'))
+                return
             self.wfile.write(json.dumps({'error': result['error']}).encode('utf-8'))
             return
 
@@ -1904,12 +2496,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
         """
         import re
         data = {}
-        
+
         # 预处理：统一中英文标点
-        text_clean = text.replace('—', '-').replace('～', '~').replace('：', ':').replace('，', ',').replace('。', '.').replace('？', '?')
-        
+        text_clean = text.replace('-', '-').replace('～', '~').replace('：', ':').replace('，', ',').replace('。', '.').replace('？', '?')
+
         # ===== 第一阶段：精确表达式匹配 =====
-        
+
         # 上床时间（高级版）
         # 模式1: "12点多躺下"、"1点半睡的"、"11点50睡的"
         bed_match = None
@@ -1923,7 +2515,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             if m:
                 bed_match = m
                 break
-        
+
         # 特殊模式：点多表达（12点多躺下→12:30）
         if not bed_match:
             _more = re.search(r'(\d{1,2})\s*点多\s*(?:躺下|睡|上床)', text_clean)
@@ -1932,7 +2524,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 data['bedtime'] = f'{_h}:30'
                 print(f'[Extract] 点多匹配: bedtime={_h}:30')
                 bed_match = _more
-        
+
         # 翻来覆去到X点才睡着→提取睡着时间
         _toss = re.search(r'(?:翻来覆去|辗转反侧).{0,20}?(\d{1,2})\s*[点时:：]\s*(\d{0,2})\s*(?:分|半)?\s*(?:才|就)?\s*(?:睡着|入睡)', text_clean)
         if _toss:
@@ -1957,7 +2549,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         print(f'[Extract] 自动推算latency={_latency}分钟')
                 except:
                     pass
-        
+
         if bed_match and not isinstance(bed_match, bool):
             h = int(bed_match.group(1))
             m = 0
@@ -1977,7 +2569,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             if '多' in ctx_before + ctx_after and m_str and '半' not in after:
                 pass  # 已有具体分钟
             data['bedtime'] = f'{h}:{m:02d}'
-        
+
         # 起床时间（高级版）
         wake_patterns = [
             r'(?:起床|醒来|睁眼|醒了|睡到).{0,10}?(\d{1,2})\s*[点时:：]\s*(\d{0,2})\s*(?:分)?',
@@ -1996,9 +2588,9 @@ class ProxyHandler(BaseHTTPRequestHandler):
             if '半' in after and m == 0:
                 m = 30
             data['wake_time'] = f'{h}:{m:02d}'
-        
+
         # 睡眠时长（支持区间"五六个小时"）
-        dur_match = re.search(r'(?:睡[了]?|睡眠|只睡[了]?|睡了大概|睡了约|一共睡了)\s*(?:大约|大概|约)?\s*(\d+(?:[.-]\d+)?)\s*(?:~|到|至|-|—)?\s*(\d+)?\s*(?:小时|个钟|h|H|钟头)', text_clean)
+        dur_match = re.search(r'(?:睡[了]?|睡眠|只睡[了]?|睡了大概|睡了约|一共睡了)\s*(?:大约|大概|约)?\s*(\d+(?:[.-]\d+)?)\s*(?:~|到|至|-|-)?\s*(\d+)?\s*(?:小时|个钟|h|H|钟头)', text_clean)
         if dur_match:
             val = float(dur_match.group(1).replace('-','.').replace('，',''))
             val2 = dur_match.group(2)
@@ -2008,7 +2600,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 val = (val + val2) / 2
             data['total_duration'] = round(val * 60)  # 转为分钟
             data['total_duration_source'] = 'explicit'
-        
+
         # 区间表达"五六个小时"
         if 'total_duration' not in data:
             range_match = re.search(r'[五五六]六个?小时|七八个小时', text)
@@ -2021,12 +2613,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 elif '七' in r and '八' in r:
                     data['total_duration'] = 450  # 7.5h
                 data['total_duration_source'] = 'range_estimate'
-        
+
         # 入睡时间（高级版）
         # 模式1: "翻来覆去到1点半才睡着" → 需要结合上床时间计算latency
         # 模式2: "大概一个小时才睡着" → direct
         # 模式3: "很快就睡着了" → short
-        
+
         latency_match = None
         latency_patterns = [
             r'(?:翻来覆去|辗转反侧|折腾).{0,15}?(\d{1,2})\s*[点时:：]\s*(\d{0,2})\s*(?:分|半)?\s*(?:才|就)?\s*(?:睡着|入睡)',
@@ -2041,7 +2633,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             if m:
                 latency_match = m
                 break
-        
+
         if latency_match:
             # 检查是否是"翻来覆去到X点才睡着"→通过时间计算latency
             if '翻来覆去' in text and 'bedtime' in data:
@@ -2075,7 +2667,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     data['sleep_latency'] = int(latency_match.group(1)) if latency_match.group(1).isdigit() else None
                     if data.get('sleep_latency') and data['sleep_latency'] > 180:
                         data['sleep_latency_estimate'] = 'long'
-        
+
         # 模糊表达："很快就睡着了"
         if 'sleep_latency' not in data and 'sleep_latency_estimate' not in data:
             if re.search(r'(?:很快|一下就|一会就|没多久|瞬间).{0,5}(?:睡着|入睡|就睡)', text):
@@ -2084,10 +2676,10 @@ class ProxyHandler(BaseHTTPRequestHandler):
             elif re.search(r'(?:很久|好久|特别久|特别长|老半天|半天).{0,10}(?:才|都)(?:睡着|入睡)', text):
                 data['sleep_latency'] = 60
                 data['sleep_latency_estimate'] = 'long'
-        
+
         # 自动推导：如果bedtime和睡着时间都拿到了但latency没有，尝试计算
         # 这个在翻来覆去模式中已实现
-        
+
         # 醒来次数（高级版）
         # 模式: "醒了好几次"、"醒了两次"、"醒了又醒"
         awake_match = re.search(r'(?:醒|夜醒|中途醒|醒过来)\D{0,5}(\d+)\s*次', text)
@@ -2221,8 +2813,6 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 'error': '权限不足：请提供有效的 admin_key，或从本地访问'
             }, ensure_ascii=False).encode('utf-8'))
             return
-
-
 
         pmid = data.get('pmid', '')
         doi = data.get('doi', '')
@@ -2371,8 +2961,6 @@ class ProxyHandler(BaseHTTPRequestHandler):
         except Exception as e:
             print(f'[FetchPubMed] 拉取失败: {e}')
             return None
-
-
     # 顶级睡眠/医学期刊列表
     TOP_JOURNALS = {
         'sleep', 'sleep medicine', 'sleep medicine reviews', 'journal of sleep research',
@@ -2485,7 +3073,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         # 获取用户标识（微信openid）
         openid = self._get_openid(data)
-        
+
+        # 每日懒优化：跨夜中观适应（Lazy Maintenance Pattern）
+        if openid:
+            __p = _load_user_profile(openid)
+            _run_daily_batch_optimization(__p, openid)
+
         # 从对话中提取睡眠数据（如果有）
         user_message = data.get('message', '')
         history = data.get('history', [])
@@ -2713,21 +3306,19 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     if recovery_report:
                         print(f'[Recovery] 报告已生成({len(recovery_report)}字符)')
                         wm_context += recovery_report
-
-
                     # ===== 世界模型前置诊断引擎（心理减压+睡眠健康导向）=====
                     clinical_diagnosis = []
-                    
+
                     # 1. 总评分 → 用"状态"代替"分级"，温柔表达
                     if total >= 85:
-                        clinical_diagnosis.append("【状态概览】整体不错（≥85分）— 你的睡眠基础挺好，保持节奏就好")
+                        clinical_diagnosis.append("【状态概览】整体不错（≥85分）- 你的睡眠基础挺好，保持节奏就好")
                     elif total >= 70:
-                        clinical_diagnosis.append("【状态概览】有改善空间（70-84分）— 一些小调整就能让你睡得更舒服")
+                        clinical_diagnosis.append("【状态概览】有改善空间（70-84分）- 一些小调整就能让你睡得更舒服")
                     elif total >= 55:
-                        clinical_diagnosis.append("【状态概览】需要多一些关照（55-69分）— 你的身体在发出信号，我们一起找找原因")
+                        clinical_diagnosis.append("【状态概览】需要多一些关照（55-69分）- 你的身体在发出信号，我们一起找找原因")
                     else:
-                        clinical_diagnosis.append("【状态概览】最近睡眠状态不太好（<55分）— 这不怪你，压力大/生活节奏乱的时候睡眠总会先被影响，我们一步一步来")
-                    
+                        clinical_diagnosis.append("【状态概览】最近睡眠状态不太好（<55分）- 这不怪你，压力大/生活节奏乱的时候睡眠总会先被影响，我们一步一步来")
+
                     # 2. 各维度异常检测 → 温和提醒，不贴标签
                     anomalous_dims = []
                     for key in dim_order:
@@ -2737,30 +3328,30 @@ class ProxyHandler(BaseHTTPRequestHandler):
                             conf = dim.get('confidence', 0) * 100
                             name = dim_names_map.get(key, key)
                             if score < 60 and conf >= 40:
-                                anomalous_dims.append(f"· {name}({score:.0f}/100) — 可以关注一下这个方面")
+                                anomalous_dims.append(f"· {name}({score:.0f}/100) - 可以关注一下这个方面")
                     if anomalous_dims:
                         clinical_diagnosis.append("【值得关注的方面】")
                         clinical_diagnosis.extend(anomalous_dims)
-                    
+
                     # 3. 症状关联分析（非医疗诊断，侧重减压引导）
                     user_msg_lower = user_message.lower()
                     symptom_analysis = []
-                    
+
                     # 失眠/难以入睡
                     if any(kw in user_msg_lower for kw in ['睡不着', '难入睡', '入睡困难', '躺了很久', '翻来覆去']):
                         latency = current_data.get('sleep_latency', full_data.get('sleep_latency', 0))
                         if latency and isinstance(latency, (int, float)):
                             if latency > 60:
-                                symptom_analysis.append('· 你说躺了很久睡不着——超过1小时确实很难受。这种情况下身体可能已经习惯了「一上床就清醒」的模式。好消息是，通过调整睡前的放松习惯，这个模式是可以慢慢改变的')
+                                symptom_analysis.append('· 你说躺了很久睡不着--超过1小时确实很难受。这种情况下身体可能已经习惯了「一上床就清醒」的模式。好消息是，通过调整睡前的放松习惯，这个模式是可以慢慢改变的')
                             elif latency > 30:
-                                symptom_analysis.append("· 入睡需要半小时以上——可能睡前还在想事情？试试睡前一小时把手机放客厅，做5分钟深呼吸")
+                                symptom_analysis.append("· 入睡需要半小时以上--可能睡前还在想事情？试试睡前一小时把手机放客厅，做5分钟深呼吸")
                             else:
                                 symptom_analysis.append('· 入睡时间不算太长，但能感觉到你的困扰。有时候担心睡不着本身就会让人睡不着')
-                    
+
                     # 打鼾/呼吸暂停 → 温和提醒，强调改善而非诊断
                     if any(kw in user_msg_lower for kw in ['打鼾', '打呼', '呼吸停', '憋醒', '喘不上气', '呼吸暂停']):
-                        symptom_analysis.append("· 你提到打鼾的问题——很多人以为只是吵到别人，但其实它也可能影响你的睡眠深度和白天精神状态。侧卧睡通常能明显改善，今晚可以试试。如果调整睡姿后还是没改善，去医院呼吸科做个睡眠监测也不复杂，很多人做完才知道自己睡眠质量可以好那么多")
-                    
+                        symptom_analysis.append("· 你提到打鼾的问题--很多人以为只是吵到别人，但其实它也可能影响你的睡眠深度和白天精神状态。侧卧睡通常能明显改善，今晚可以试试。如果调整睡姿后还是没改善，去医院呼吸科做个睡眠监测也不复杂，很多人做完才知道自己睡眠质量可以好那么多")
+
                     # 夜醒
                     if any(kw in user_msg_lower for kw in ['半夜醒', '醒了', '醒来', '夜醒', '睡不沉', '容易醒']):
                         awake = current_data.get('awake_times', full_data.get('awake_times', 0))
@@ -2769,31 +3360,31 @@ class ProxyHandler(BaseHTTPRequestHandler):
                                 symptom_analysis.append(f"· 一晚醒{awake}次确实很折腾人，每次醒来看时间就更焦虑。可以试试睡前做一次身体扫描冥想，减少夜间自动唤醒的次数")
                             else:
                                 symptom_analysis.append(f"· 夜醒{awake}次其实在正常范围内，但如果醒来后很难再睡着，可以试试不带手机下床喝口水、听段白噪音再回去躺")
-                    
+
                     # 晨起状态
                     if any(kw in user_msg_lower for kw in ['口干', '头痛', '头昏', '没精神', '起不来', '困', '累', '乏力']):
                         if '口干' in user_msg_lower or '头痛' in user_msg_lower:
-                            symptom_analysis.append("· 早上起来口干或者头痛——试试睡前在床头放杯水，睡前2小时不喝酒。如果长期这样+打鼾，去医院看看会更安心")
+                            symptom_analysis.append("· 早上起来口干或者头痛--试试睡前在床头放杯水，睡前2小时不喝酒。如果长期这样+打鼾，去医院看看会更安心")
                         else:
                             duration = current_data.get('total_duration', full_data.get('total_duration', 0))
                             if duration and isinstance(duration, (int, float)):
                                 if duration >= 7:
-                                    symptom_analysis.append(f"· 睡了{duration:.1f}小时但白天还是困——可能问题不是时长，而是睡眠深度不够。睡前减少蓝光、保持卧室凉爽有助于增加深睡比例")
+                                    symptom_analysis.append(f"· 睡了{duration:.1f}小时但白天还是困--可能问题不是时长，而是睡眠深度不够。睡前减少蓝光、保持卧室凉爽有助于增加深睡比例")
                                 else:
                                     symptom_analysis.append(f"· 睡眠时长{duration:.1f}小时偏少，白天困是身体在提醒你：我需要更多休息")
-                    
+
                     # 情绪/压力
                     if any(kw in user_msg_lower for kw in ['焦虑', '压力', '紧张', '担心', '烦躁', 'emo', '抑郁', '不开心']):
-                        symptom_analysis.append('· 能感觉到你的情绪状态和睡眠在互相影响——晚上睡不好让你白天更焦虑，白天焦虑又让你晚上更难入睡。这不是你一个人的问题，这是现代人最常见的睡眠陷阱。先别想着治好，今晚就做一件事：睡前把今天担心的事写在一张纸上，明天再面对它')
-                    
+                        symptom_analysis.append('· 能感觉到你的情绪状态和睡眠在互相影响--晚上睡不好让你白天更焦虑，白天焦虑又让你晚上更难入睡。这不是你一个人的问题，这是现代人最常见的睡眠陷阱。先别想着治好，今晚就做一件事：睡前把今天担心的事写在一张纸上，明天再面对它')
+
                     # 产品/保健品咨询
                     if any(kw in user_msg_lower for kw in ['保健', '褪黑素', '维生素', '补剂', '药', '成分', '保健贴', '贴剂', '止鼾', '助眠产品']):
-                        symptom_analysis.append("· 你在看助眠产品——市面上这类东西很多，但大多数治标不治本。真正有效的是找到你失眠的根源：是压力？是作息乱了？是太焦虑？从根上解决问题，比花冤枉钱买贴剂有用得多")
-                    
+                        symptom_analysis.append("· 你在看助眠产品--市面上这类东西很多，但大多数治标不治本。真正有效的是找到你失眠的根源：是压力？是作息乱了？是太焦虑？从根上解决问题，比花冤枉钱买贴剂有用得多")
+
                     if symptom_analysis:
                         clinical_diagnosis.append("【我注意到的一些线索】")
                         clinical_diagnosis.extend(symptom_analysis)
-                    
+
                     # 4. 趋势分析 → 鼓励为主
                     history_trend = profile_local.get('history', [])
                     if len(history_trend) >= 3:
@@ -2808,12 +3399,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
                                 clinical_diagnosis.append("【趋势】评分在变好，你的调整有效果了！继续保持 👍")
                             elif recent_scores[-1] >= 80:
                                 clinical_diagnosis.append("【趋势】最近状态稳定不错，可以总结一下这段时间做对了什么，延续下去")
-                    
+
                     # 5. 就医提示 → 温和的"如果...建议..."
                     need_doctor = total < 55 or any(kw in user_msg_lower for kw in ['打鼾', '打呼', '呼吸停', '憋醒', '喘不上气'])
                     if need_doctor:
-                        clinical_diagnosis.append("【温馨提醒】如果尝试了调整睡姿、减压放松等方法后，打鼾或睡眠问题还是没改善，去医院看看没什么大不了的——睡眠门诊有办法帮你，而且比你想象的简单")
-                    
+                        clinical_diagnosis.append("【温馨提醒】如果尝试了调整睡姿、减压放松等方法后，打鼾或睡眠问题还是没改善，去医院看看没什么大不了的--睡眠门诊有办法帮你，而且比你想象的简单")
+
                     wm_diagnosis_text = "\n".join(clinical_diagnosis) if clinical_diagnosis else ""
                     if wm_diagnosis_text:
                         wm_context += f"\n===== 世界模型分析参考 =====\n{wm_diagnosis_text}\n========================\n"
@@ -2854,7 +3445,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                                 _d = _ar_dims.get(_k, {})
                                 if _d and _d.get('score') is not None:
                                     _ar_local_dims[_l] = round(_d['score'] * 100)
-                            
+
                             _ar_insights = wm_result.get('insights', {})
                             _ar_profile = _load_user_profile(openid)
                             _ar_scores = [h.get('wm_score', 0) for h in _ar_profile.get('history', [])[-7:] if h.get('wm_score', 0) > 0]
@@ -2910,51 +3501,49 @@ class ProxyHandler(BaseHTTPRequestHandler):
                                              user_message, openid)
                     except: pass
 
-        # 偏好学习(独立于世界模型，任何消息都处理)
+        # 偏好学习(独立于世界模型，任何消息都处理) — 异步后台执行
+        _async_pref_data = {}
+        _async_profile_local = {}
+        if _HAS_DEEP_MODULE:
+            def _run_pref_async(uid, msg):
+                try:
+                    global _pref_engine
+                    if _pref_engine is None:
+                        from preference_engine import PreferenceEngine
+                        def _pref_api_call(messages, **kwargs):
+                            return self._call_deepseek(messages, **kwargs)
+                        _pref_engine = PreferenceEngine(_pref_api_call)
+                    pl = _load_user_profile(uid)
+                    pd = _pref_engine.process_message(msg, pl)
+                    if pd.get('categories'):
+                        print(f'[Preference] 已学习: {list(pd["categories"].keys())}')
+                    else:
+                        print(f'[Preference] 分析完成(无新偏好)')
+                except Exception as e:
+                    print(f'[Preference] 异步跳过: {e}')
+            threading.Thread(target=_run_pref_async, args=(openid, user_message), daemon=True).start()
         pref_data = {}
         profile_local = {}
-        if _HAS_DEEP_MODULE:
-            try:
-                global _pref_engine
-                if _pref_engine is None:
-                    from preference_engine import PreferenceEngine
-                    def _pref_api_call(messages, **kwargs):
-                        return self._call_deepseek(messages, **kwargs)
-                    _pref_engine = PreferenceEngine(_pref_api_call)
-                profile_local = _load_user_profile(openid)
-                pref_data = _pref_engine.process_message(user_message, profile_local)
-                if pref_data.get('categories'):
-                    print(f'[Preference] 已学习: {list(pref_data["categories"].keys())}')
-                else:
-                    print(f'[Preference] 分析完成(无新偏好)')
-            except Exception as pref_e:
-                print(f'[Preference] 分析跳过: {pref_e}')
-                pref_data = {}
 
-        # 构建结构化生物反馈数据（世界模型v3的核心差异化）
+        # 构建结构化生物反馈数据（世界模型v3的核心差异化）— 异步后台执行
+        _async_biofeedback_data = None
+        _async_wm_result = None
+        if _HAS_DEEP_MODULE and 'wm' in locals() and wm:
+            def _run_biofeedback_async(uid, msg, hist):
+                try:
+                    fd = self._extract_sleep_data_from_text(
+                        msg + ' ' + ' '.join([m.get('content','') for m in hist])
+                    )
+                    if fd:
+                        wr = wm.comprehensive_analysis(fd)
+                        sk = wr.get('skin_biofeedback', {})
+                        if sk.get('available'):
+                            print(f'[Biofeedback] 已生成 {len(sk.get("dates_available", []))}天皮肤数据')
+                except Exception as e:
+                    print(f'[Biofeedback] 异步跳过: {e}')
+            threading.Thread(target=_run_biofeedback_async, args=(openid, user_message, history), daemon=True).start()
         biofeedback_data = None
         wm_result = None
-        if _HAS_DEEP_MODULE and 'wm' in locals() and wm:
-            try:
-                # 确保full_data存在
-                if 'full_data' not in dir() or not full_data:
-                    full_data = self._extract_sleep_data_from_text(
-                        user_message + ' ' + ' '.join([m.get('content','') for m in history])
-                    )
-                if full_data:
-                    wm_result = wm.comprehensive_analysis(full_data)
-                    skin_bio = wm_result.get('skin_biofeedback', {})
-                    if skin_bio.get('available'):
-                        biofeedback_data = {
-                            'type': 'skin_sleep_biofeedback',
-                            'source': 'face_photo_analysis_v6',
-                            'skin_context': skin_bio.get('context_text', ''),
-                            'dates_available': skin_bio.get('dates_available', []),
-                        }
-                        print(f'[Biofeedback] 已生成 {len(biofeedback_data["dates_available"])}天皮肤数据')
-            except Exception as e:
-                print(f'[Biofeedback] 跳过: {e}')
-                wm_result = None
 
         # 构建历史画像上下文（含专家回顾数据）
         history_context, expert_history = _build_history_context(openid)
@@ -2964,7 +3553,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
         evidence_context = ""
         try:
             user_msg_lower_for_evidence = user_message.lower()
-            
+
             # 用户关键词→证据类别的映射
             keyword_cat_map = {
                 '失眠': 'cbt_i', '睡不着': 'cbt_i', '入睡': 'cbt_i',
@@ -2974,12 +3563,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 '更年期': 'women_sleep', '孕期': 'women_sleep', '月经': 'women_sleep',
                 '孩子': 'adolescent', '青少年': 'adolescent', '学生': 'adolescent',
             }
-            
+
             matched_cats = set()
             for kw, cat in keyword_cat_map.items():
                 if kw in user_msg_lower_for_evidence:
                     matched_cats.add(cat)
-            
+
             if matched_cats:
                 recent_evidence = PubmedFrontier.get_recent_evidence(
                     days=30, categories=list(matched_cats), max_results=3
@@ -2989,7 +3578,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 recent_evidence = PubmedFrontier.get_recent_evidence(
                     days=30, max_results=2
                 )
-            
+
             if recent_evidence:
                 evidence_context = PubmedFrontier.format_evidence_for_prompt(recent_evidence)
                 if evidence_context:
@@ -3019,7 +3608,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 pref_ctx = _pref_engine.build_context(pref_data)
                 if pref_ctx:
                     scene_context += pref_ctx
-            
+
             # ===== 🌟 极致睡眠评分：压力分层对比 =====
             if wm_result and isinstance(wm_result, dict):
                 try:
@@ -3036,7 +3625,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         scene_context += _extreme_ctx + '\n'
                 except Exception:
                     pass
-            
+
             # ===== 情绪感知语调提示（内隐，不暴露给用户）=====
             try:
                 emotion_timeline = profile.get('emotion_timeline', [])
@@ -3068,7 +3657,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             correction_keywords = ['记错', '不是', '不对', '错了', '纠正', '更正', '修正', '其实', '搞错', '你弄错', '说错']
             has_correction_intent = any(w in user_message for w in correction_keywords)
 
-            # 批评反馈检测——用户说"不专业""不行""太差"等评价性批评
+            # 批评反馈检测--用户说"不专业""不行""太差"等评价性批评
             feedback_keywords = ['不专业', '不行', '太差', '不好', '没用', '不满意', '错误', '不准', '假', '忽悠', '垃圾', '水平低']
             has_feedback_intent = any(w in user_message for w in feedback_keywords)
 
@@ -3113,7 +3702,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     f"用户上次说的是: {_last_msg[:80]}\n"
                     f"系统上次提取的是: {_summary}\n"
                     f"处理原则：先诚恳道歉。然后逐条复述系统之前理解的数据，询问哪条不对。\n"
-                    f"不要问\"昨晚睡得怎么样\"——用户已经说过了。\n"
+                    f"不要问\"昨晚睡得怎么样\"--用户已经说过了。\n"
                     f"要问具体哪条数据不对，比如\"是我把入睡时间记成11点不对吗？\"\n"
                 )
             elif has_feedback_intent and last_history:
@@ -3125,12 +3714,160 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     f"\n【用户对分析表达不满（非数据纠正）】\n"
                     f"用户之前提供了数据: {_last_msg[:80]}\n"
                     f"上次评分: {_last_score if _last_score else '暂无'}\n"
-                    f"处理原则：不要道歉过度，也不要问\"昨晚睡得怎么样\"——用户已经有数据了。\n"
+                    f"处理原则：不要道歉过度，也不要问\"昨晚睡得怎么样\"--用户已经有数据了。\n"
                     f"直接追问用户对哪个部分不满意：是评分偏高/偏低？还是建议不实用？还是分析角度不对？\n"
                     f"回复模板：\"具体是哪方面让您不满意？是评分不太符合您的感受，还是建议不太适用？您告诉我，我来调整。\"\n"
                 )
         except Exception as e:
             print(f'[CorrectionCheck] 跳过: {e}')
+
+        # ===== 对话即干预：检测用户求助意图 =====
+        intervention_mode = False
+        intervention_prompt_extra = ""
+        try:
+            # 求助关键词：需要减压/放松的场景
+            help_keywords = [
+                '压力大', '睡不着', '睡不觉', '焦虑', '烦躁', '心慌', '不安', '担心',
+                '醒了睡不着', '醒来睡不着', '紧张', '害怕', '难受', '痛苦',
+                '喘不过气', '胸口闷', '心跳快',
+                '放松一下', '帮我放松', '减压', '心烦', '很烦', '郁闷',
+            ]
+            has_help_intent = any(kw in user_message for kw in help_keywords)
+
+            # 呼吸完成反馈--用户做完呼吸练习后说的"做完了""好一点了"
+            done_keywords = ['做完了', '做完了', '放松了一些', '放松了', '好一点', '好点了', '舒服了', '平静了', '感觉不错']
+            has_done_intent = any(kw in user_message for kw in done_keywords)
+
+            # 用户反馈"做完了"→ 更新最近的relax_log为completed
+            if has_done_intent:
+                try:
+                    profile = _load_user_profile(openid)
+                    if 'relax_log' in profile and profile['relax_log']:
+                        last_entry = profile['relax_log'][-1]
+                        if not last_entry.get('completed'):
+                            last_entry['completed'] = True
+                            last_entry['feedback'] = user_message[:50]
+                            # 保存（不用 save_json，直接用 json.dump）
+                            base_dir = os.path.dirname(os.path.abspath(__file__))
+                            p_path = os.path.join(base_dir, 'user_profile.json')
+                            all_p = {}
+                            if os.path.exists(p_path):
+                                with open(p_path, 'r', encoding='utf-8') as f:
+                                    all_p = json.load(f)
+                            all_p[openid] = profile
+                            with open(p_path, 'w', encoding='utf-8') as f:
+                                json.dump(all_p, f, ensure_ascii=False, indent=2)
+                            print(f'[RelaxLog] 反馈标记为completed: {user_message[:30]}')
+                except Exception as e:
+                    print(f'[RelaxLog] 反馈更新跳过: {e}')
+
+            # Phase 3: 元学习驱动的干预决策
+            _mp_profile = _load_user_profile(openid)
+            mp = _mp_profile.get('meta_params', {})
+            # 提取特征（F1-F8）
+            raw_features = _extract_features(_mp_profile, user_message, '')
+            # 计算综合干预得分：压力相关维度加权
+            intervention_score = (
+                raw_features[0] * 0.30 +   # F1: 压力强度
+                raw_features[1] * 0.25 +   # F2: 失眠倾向
+                raw_features[2] * 0.20 +   # F3: 焦虑唤醒
+                raw_features[3] * 0.10 +   # F4: 情绪极性
+                raw_features[5] * 0.15     # F6: 互动时段（深夜权重高）
+            )
+            threshold = mp.get('intervention_threshold', 0.5)
+            confidence = mp.get('confidence', 0.3)
+
+            # 决策：高置信度用分数 vs 低置信度用关键词保底
+            if confidence >= 0.6:
+                should_intervene = intervention_score >= threshold
+            else:
+                # 对不了解的用户，靠关键词触发（保底安全策略）
+                should_intervene = has_help_intent
+
+            # 有量化数据时不干预（保留旧逻辑）
+            has_current_data = bool(current_data) if 'current_data' in dir() and current_data else False
+            # 但即使有数据，如果置信度高且分数很高也干预
+            if has_current_data and confidence < 0.7:
+                should_intervene = False
+
+            if should_intervene and not has_current_data:
+                intervention_mode = True
+                # 特征向量 + 关键词混合判断压力类型
+                stress_type = '一般压力'
+                if any(kw in user_message for kw in ['睡不着', '睡不觉', '醒了', '醒来']):
+                    stress_type = '失眠焦虑'
+                elif raw_features[2] > 0.4 and any(kw in user_message for kw in ['心跳', '心慌', '害怕', '紧张']):
+                    stress_type = '焦虑唤醒'
+                elif any(kw in user_message for kw in ['工作', '老板', '同事', '项目', 'deadline', '业绩', '考试']):
+                    stress_type = '工作压力'
+                elif any(kw in user_message for kw in ['感情', '恋爱', '分手', '吵架', '伴侣', '对象', '婚姻']):
+                    stress_type = '情感压力'
+                elif raw_features[0] > raw_features[1] + 0.2:
+                    stress_type = '工作压力'
+                elif raw_features[1] > raw_features[2] + 0.2:
+                    stress_type = '失眠焦虑'
+
+                # 动态轮数：元参数 + 干预得分校准
+                base_rounds = mp.get('breath_rounds_base', 3)
+                scale = mp.get('breath_rounds_scale', 0.5)
+                dynamic_rounds = max(3, min(8, base_rounds + int(scale * intervention_score * 5)))
+
+                print(f'[Intervention] Phase3: score={intervention_score:.3f} thresh={threshold} conf={confidence}')
+                print(f'[Intervention] 检测到求助意图, 类型={stress_type}, 轮数={dynamic_rounds}')
+
+                # ===== Phase 7: 推理时搜索 — 对多个备选干预策略评分，选最优 =====
+                _inference_candidates = [
+                    {'name': '4-7-8', 'inhale': 4, 'hold': 7, 'exhale': 8, 'arousal_reduction': 0.8, 'completion_rate': 0.8, 'description': '经典放松'},
+                    {'name': '箱式呼吸', 'inhale': 4, 'hold': 4, 'exhale': 4, 'arousal_reduction': 0.6, 'completion_rate': 0.9, 'description': '军队训练法'},
+                    {'name': '3-3-6扩展', 'inhale': 3, 'hold': 3, 'exhale': 6, 'arousal_reduction': 0.7, 'completion_rate': 0.6, 'description': '延长呼气'},
+                    {'name': '4-2-4蝴蝶', 'inhale': 4, 'hold': 2, 'exhale': 4, 'arousal_reduction': 0.5, 'completion_rate': 0.95, 'description': '最简入门'},
+                ]
+                # 用户偏好加权
+                _pref_boost = 0.2 if mp.get('preferred_pattern', '') in ['4-7-8', 'box', '3-3-6'] else 0
+                _completion_rate = mp.get('completion_rate', 0.5)
+                # 搜索评分：arousal_reduction * 0.4 + completion_rate_delta * 0.3 + novelty * 0.2 + pref_boost * 0.1
+                _best_score = -1
+                _best_pattern = _inference_candidates[0]
+                for _c in _inference_candidates:
+                    _cr_score = 1.0 - abs(_completion_rate - _c['completion_rate'])
+                    _novelty = 0.1 if _c['name'] == _preferred else 0.5
+                    _pref_bonus = 0.2 if _c['name'] == _preferred else 0
+                    _score = _c['arousal_reduction'] * 0.4 + _cr_score * 0.3 + _novelty * 0.2 + _pref_bonus * 0.1
+                    if _score > _best_score:
+                        _best_score = _score
+                        _best_pattern = _c
+                _selected_pattern = _best_pattern
+                print(f'[Intervention] Search: 候选={len(_inference_candidates)} 最优={_selected_pattern["name"]} score={_best_score:.3f} (preferred={mp.get("preferred_pattern", "?")})')
+                _pattern = {
+                    'name': _selected_pattern['name'],
+                    'inhale': _selected_pattern['inhale'],
+                    'hold': _selected_pattern['hold'],
+                    'exhale': _selected_pattern['exhale'],
+                    'rounds': dynamic_rounds,
+                }
+                intervention_prompt_extra = f"""
+【当前模式：迷你减压干预 - 用户压力类型推测为{stress_type}】
+用户当前消息表达了压力/焦虑/失眠困扰，且没有提供新的睡眠数据。
+你的任务是：通过对话完成一次迷你减压干预，但不输出文字呼吸引导--而是转向沉浸式体验。
+
+**注意：回复中不要包含呼吸引导的文字描述。** 只需要：
+1. 共情（一到两句）
+2. 简短邀请用户做呼吸练习（不超过两句话）
+3. 结尾说"准备好了就告诉我"
+4. **不要**在文字中写"吸气4秒...屏住7秒..."--这些由前端动画接管
+
+回复模板示例：
+- "听起来压力不小。我们先做个深呼吸放松一下，跟着屏幕上的动画节奏来就好。准备好了告诉我。"
+- "能感受到你现在很紧张。一起做个呼吸练习吧，让身体先慢下来。准备好了就告诉我。"
+
+关键原则：
+- 引导语简短自然，说是"一起做"而不是"我教你做"
+- 整个过程控制在3-4句话内
+- **不要写呼吸节奏的文字，不要写吸气/呼气引导**--前端动画会展示
+"""
+        except Exception as e:
+            print(f'[InterventionCheck] 跳过: {e}')
+            intervention_mode = False
 
         system_content = f"""你是眠小兔，一名睡眠健康顾问
 
@@ -3159,7 +3896,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
 3. 明确标注哪些是确定结论，哪些是推测
 4. 建议要具体、可执行
 4. 如有世界模型数据，展示7维度评估（要整洁、一眼看清）
-5. 2-3条具体可执行的建议（每条带一句科学依据）
+5. 2-3条具体可执行的建议，每条必须按"三要素"模板写：
+   模板：[行动指令]（基于用户的具体数据[引用数据]），因为[简短科学解释]。
+   示例：
+   ❌ "保持良好的睡眠习惯"（空洞）
+   ✅ "把入睡时间提前到11点（你最近12点睡7点起，总时长足够但深睡不够），因为11点前入睡能赶上生长激素分泌高峰，更容易进入深睡"
+   ✅ "醒来后15分钟还没睡着就起来坐一会儿（你昨晚醒了1次超过20分钟），不要在床上焦虑，避免床和'睡不着'形成条件反射"
 6. 就医提示：只适用于连续失眠超3周或伴有严重身体不适的情况。用户第一次对话或仅描述轻微症状时，不要提就医。
 
 格式规范：
@@ -3167,6 +3909,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
 - 如果数据中有"身体恢复评估"部分，也要展示出来，这是纯大模型做不到的生理量化指标
 - 不用星号、下划线等Markdown符号做粗体，纯Unicode
 - 建议用数字列表 1. 2. 3.
+- 如果引用了科学研究，在建议区最后统一加一行"📚 参考文献"：
+  📚 参考文献
+  · Stepanski et al., Sleep Med Rev 2003 (PMID: 14631217)
+  · 基于临床共识
+  只用 evidence_context 中提供的 PMID，不要编造。
 - 段落之间空行，不堆砌
 - 注意时间线：今天是 {today_str}，用户说的"昨晚"就是 {today_str} 的前一天。如果用户隔天再次询问，应区分是新的情况还是跟踪之前的反馈。
 
@@ -3179,8 +3926,23 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
 {wm_context}{evidence_context}{scene_context}"""
 
+        # ===== 对话即干预：干预模式覆盖 =====
+        if intervention_mode and intervention_prompt_extra:
+            system_content = f"""你是眠小兔，一名专注于减压和睡眠健康的AI助手。
+
+你的角色不是分析或评分，而是陪伴用户完成一次即时的减压干预。
+
+{intervention_prompt_extra}
+
+当前日期是 {today_str}。对话语言自然温暖，不做作。
+"""
+            print(f'[Intervention] 已切换到干预模式')
+
         # 构建"减压+睡眠管理"风格的系统提示
-        if wm_context and has_quantitative_now:
+        if intervention_mode:
+            # 干预模式下不走任何评分/分析路径
+            pass
+        elif wm_context and has_quantitative_now:
             # 有充足数据，按完整分析回复
             pass
         else:
@@ -3204,6 +3966,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
 第三轮：数据足够后，基于收集到的数据做分析，展示评分和建议
 
+【追问时的结构化映射】
+当用户给出了具体数字后，在回复中自然地确认我理解的数据：
+- "我记一下：你大约12点睡、6点醒" → 这样系统会自动识别
+- 然后用分析或评分回应用户
+
 关键原则：
 - 不一次问太多问题，避免用户觉得像在填表
 - 保持"减压"的氛围，不要让用户觉得在被审问
@@ -3224,29 +3991,77 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         # 【关键防护】当前消息无量化数据时，注入硬约束
         if not has_quantitative_now:
+            # 分析已有的历史数据字段数
+            hist_field_count = 0
+            if last_history:
+                last_ext = last_history[-1].get('extracted', {}) or {}
+                hist_field_count = len([k for k in ['bedtime','wake_time','awake_times','total_duration','sleep_latency'] if last_ext.get(k)])
+
             constraint = (
                 "### 重要约束 ###\n"
                 "用户当前这条消息没有提供具体的睡眠数据(时间/时长/次数)。\n"
                 "- 可以引用历史评分作为回顾背景，但不能当作当前消息的评分\n"
                 "- 不要假设用户之前给过数据所以这次也能评分\n"
                 "- 重点放在共情和引导反问\n"
-                "- 如果用户指出之前的记忆有误，承认错误并以最新说法为准"
+                "- 如果用户指出之前的记忆有误，承认错误并以最新说法为准\n"
+                f"- 用户已有 {hist_field_count} 个历史字段。如果已有3个以上字段（入睡时间/起床时间/夜醒次数/总时长中的任意3个），可以基于已有数据做简略分析，同时询问缺失的关键字段。"
             )
             messages.append({'role': 'system', 'content': constraint})
 
         try:
-            result = self._call_deepseek(messages, max_tokens=1000, temperature=0.7)
-            reply_content = result['content']
+            # ===== 干预模式：不走 DeepSeek，直接返回呼吸引导 =====
+            if intervention_mode:
+                # 根据元参数 + 压力类型选择呼吸模式
+                _stress_type = stress_type if 'stress_type' in dir() else '一般压力'
+                _stress_type = stress_type if 'stress_type' in dir() else '一般压力'
+                _mp_for_pattern = _load_user_profile(openid).get('meta_params', {})
+                if '焦虑' in _stress_type or '紧张' in str(user_message):
+                    _tip = '慢慢吸气4秒，屏住7秒，缓缓呼气8秒，感觉压力随呼吸释放'
+                elif '失眠' in _stress_type or '睡不着' in str(user_message):
+                    _tip = '慢吸4秒，屏住7秒，长呼8秒，让身体慢慢进入休息状态'
+                else:
+                    _tip = '跟着动画节奏慢慢来，把注意力放在呼吸上'
+                print(f'[Intervention] 策略选择: {_pattern["name"]}, rounds={_pattern["rounds"]}, tip={_tip[:20]}...')
+
+                # 让DeepSeek生成共情+邀请文案，但不生成呼吸引导文字
+
+                # 让DeepSeek生成共情+邀请文案，但不生成呼吸引导文字
+                result = self._call_deepseek(messages, max_tokens=200, temperature=0.7)
+                reply_content = result['content']
+                # 添加action参数让前端展示呼吸动画
+                response_obj = {
+                    'success': True,
+                    'action': 'start_breathing',
+                    'action_params': {
+                        'name': _pattern['name'],
+                        'inhale': _pattern['inhale'],
+                        'hold': _pattern['hold'],
+                        'exhale': _pattern['exhale'],
+                        'rounds': _pattern['rounds'],
+                        'tip': _tip,
+                    },
+                    'reply': reply_content,
+                    'intervention': True,
+                    'stress_type': _stress_type,
+                    'usage': result.get('usage', {}),
+                }
+                print(f'[Intervention] 响应: {_stress_type}, 呼吸模式={_pattern["name"]}, rounds={_pattern["rounds"]}')
+                # 记录干预日志（首次-启动，后续反馈"做完了"时再更新为completed）
+                _log_intervention(openid, _stress_type, _pattern['name'], rounds=_pattern['rounds'], duration=0, completed=False, user_message=user_message)
+            else:
+                result = self._call_deepseek(messages, max_tokens=1000, temperature=0.7)
+                reply_content = result['content']
 
             # 检测是否包含实操引导意图
             breathing_kw = ['呼吸', '带我做', '带我练', '引导', '跟着', '实操', '练习']
             is_breathing_req = any(kw in user_message for kw in breathing_kw)
 
-            response_obj = {
-                'success': True,
-                'reply': reply_content,
-                'usage': result.get('usage', {}),
-            }
+            if 'response_obj' not in locals():
+                response_obj = {
+                    'success': True,
+                    'reply': reply_content,
+                    'usage': result.get('usage', {}),
+                }
 
             # ===== 附加迷你睡眠卡数据（auto_report）=====
             try:
@@ -3256,9 +4071,9 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     _ar_rebuild = True
                 if _ar_rebuild or not _ar_src:
                     _wm_r = locals().get('wm_result') or globals().get('wm_result')
-                    if _wm_r and isinstance(_wm_r, dict) and _wm_r.get('total_score', 0) >= 50:
+                    if _wm_r and isinstance(_wm_r, dict) and _wm_r.get('total_score', 0) >= 50 and has_quantitative_now:
                         _ar_dims = _wm_r.get('analysis', {}).get('dimensions', {}) if isinstance(_wm_r.get('analysis'), dict) else {}
-                    
+
                         # 1. 维度评分升级：{score, label, icon}
                         _ar_d2meta = {
                             'ClinicalPsychologist': {'name':'临床心理','icon':'🧠'},
@@ -3276,7 +4091,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                                 _sc = round(_d['score'] * 100)
                                 _label = '优秀' if _sc >= 85 else '良好' if _sc >= 70 else '一般' if _sc >= 55 else '需关注'
                                 _dl[_vm['name']] = {'score': _sc, 'label': _label, 'icon': _vm['icon']}
-                    
+
                         # 2. 减压建议升级：从action_plan取therapy_details
                         _ar_sr = _ar_dims.get('StressRelaxation', {}) or {}
                         _ar_relax = {'arousal_type': _ar_sr.get('arousal_type', ''),
@@ -3315,7 +4130,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         _rf = locals().get('retrospective_findings')
                         if _rf:
                             _ar_retro = _rf[:4]
-                    
+
                         # 4. 趋势 → 对象化
                         _ar_trend_obj = {'direction': 'stable', 'delta_7d': 0, 'labels': []}
                         _ar_profile = _load_user_profile(openid)
@@ -3330,7 +4145,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                             elif all(_ar_last3[i] > _ar_last3[i-1] for i in range(1, len(_ar_last3))):
                                 _ar_trend_obj['direction'] = 'improving'
 
-                        # 5. action_takeaway — 可操作的行动建议
+                        # 5. action_takeaway - 可操作的行动建议
                         _ar_takeaway = ''
                         _ar_insights = _wm_r.get('insights', {})
                         _ar_summaries = _ar_insights.get('summary', [])
@@ -3355,7 +4170,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                             _ar_top_evidence = _wm_r.get('action_plan', {}).get('auto_evidence_count', 0) or 0
                             _ar_ev_count = _ar_top_evidence
 
-                        # 7. reason — 诊断推理简述
+                        # 7. reason - 诊断推理简述
                         _ar_reason = ''
                         _ar_lowest_dim = None
                         _ar_lowest_score = 101
@@ -3386,7 +4201,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                             _reason_parts.append(f"风险标记：{_ar_risk_flags[0]}")
                         _ar_reason = '；'.join(_reason_parts)
 
-                        # 8. user_profile_tags — 用户分型标签
+                        # 8. user_profile_tags - 用户分型标签
                         _ar_tags = []
                         _ar_sr_at = _ar_sr.get('arousal_type', '')
                         if _ar_sr_at in ('high_physiological', 'mixed'):
@@ -3416,12 +4231,22 @@ class ProxyHandler(BaseHTTPRequestHandler):
                             'user_tags': _ar_tags,
                             'evidence_count': _ar_ev_count,
                             'confidence_bounds': _ar_insights.get('confidence_bounds', {}),
-                            'data_sufficient': _ar_insights.get('_known_fields', 0) > 2 
-                                              if _ar_insights.get('_known_fields') is not None 
+                            'data_sufficient': _ar_insights.get('_known_fields', 0) > 2
+                                              if _ar_insights.get('_known_fields') is not None
                                               else (_wm_r.get('total_score', 0) >= 10),
+                            'references': [{
+                                'pmid': _ar_relax.get('evidence', '').split('PMID: ')[-1].split(')')[0] if 'PMID' in (_ar_relax.get('evidence', '') or '') else '',
+                                'source': _ar_relax.get('evidence', '')[:80] if _ar_relax.get('evidence') else '',
+                                'label': '基于临床研究'
+                            }] if _ar_relax.get('evidence') else []
                         }
             except Exception:
                 pass
+
+            # ===== 干预模式标记 =====
+            if intervention_mode:
+                response_obj['intervention'] = True
+                response_obj['stress_type'] = stress_type if 'stress_type' in dir() else '一般压力'
 
             # ===== 最佳实践：世界模型皮肤生物反馈独立字段 =====
             if biofeedback_data:
@@ -3442,16 +4267,52 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 response_obj['reply'] = '好的，带你做一次呼吸练习，跟着节奏放松🧘'
                 print(f'[Action] 呼吸引导: {response_obj["action_params"]["name"]}')
 
+            # ===== 干预模式: 组装action响应 =====
+            if intervention_mode:
+                _st = stress_type if 'stress_type' in dir() and stress_type else '一般压力'
+                # "醒了"场景 → 渐进式肌肉放松
+                if _st == '失眠焦虑' and any(kw in user_message for kw in ['醒了', '醒来']):
+                    response_obj['action'] = 'start_progressive_relaxation'
+                    response_obj['action_params'] = {
+                        'name': '全身渐进式放松',
+                        'steps': [
+                            {'part': '脚部', 'instruction': '用力绷紧双脚5秒...然后完全放松'},
+                            {'part': '小腿', 'instruction': '小腿收紧5秒...松开放松'},
+                            {'part': '大腿和臀部', 'instruction': '大腿和臀部收紧...放松'},
+                            {'part': '腹部', 'instruction': '腹部收紧...放松'},
+                            {'part': '手和手臂', 'instruction': '握拳、手臂收紧...放松'},
+                            {'part': '肩膀', 'instruction': '耸肩到耳朵...放下'},
+                            {'part': '脸部', 'instruction': '皱眉、咬牙...全面放松'},
+                        ],
+                        'total_seconds': 120,
+                        'tip': '跟着指令一步步来，感受从紧张到放松的对比',
+                    }
+                    response_obj['reply'] = '半夜醒来确实难受。我们做个全身渐进放松，帮你重新入睡。跟着指令一步一步来🧘'
+                    print(f'[Action] 渐进放松引导')
+                    # 记录干预日志
+                    _log_intervention(openid, _st, '渐进式肌肉放松', rounds=7, duration=120, completed=False, user_message=user_message)
+                else:
+                    response_obj['action'] = 'start_breathing'
+                    response_obj['action_params'] = {
+                        'name': '4-7-8呼吸法',
+                        'inhale': 4, 'hold': 7, 'exhale': 8, 'rounds': 3,
+                        'tip': '跟着动画节奏，慢慢吸气…屏住…缓缓呼出…',
+                    }
+                    response_obj['reply'] = '一起做个呼吸练习，让身体慢慢放松下来🌬️'
+                    print(f'[Action] 呼吸引导: 4-7-8')
+                    # 记录干预日志
+                    _log_intervention(openid, _st, '4-7-8呼吸法', rounds=3, duration=0, completed=False, user_message=user_message)
+
             # ===== 跨对话记忆：对话摘要 =====
             try:
                 profile_mem = _load_user_profile(openid)
                 if 'conversation_summaries' not in profile_mem:
                     profile_mem['conversation_summaries'] = []
-                
+
                 # 根据用户消息和AI回复生成简短摘要
                 user_msg_short = user_message[:60].replace('\n', ' ')
                 ai_reply_short = reply_content[:80].replace('\n', ' ')
-                
+
                 # 检测关键主题
                 topics = []
                 topic_keywords = {
@@ -3465,12 +4326,20 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 for kw, topic in topic_keywords.items():
                     if kw in msg_lower and topic not in topics:
                         topics.append(topic)
-                
+
+                # 提取本次回复中的建议（取数字标号部分的文本）
+                advice_this_time = ''
+                import re as _re_adv
+                _adv_matches = _re_adv.findall(r'(?:\d+\.\s*)([^\n]+(?:因为[^\n]+)?)', reply_content)
+                if _adv_matches:
+                    advice_this_time = ' | '.join(a.strip()[:60] for a in _adv_matches[:3])
+
                 summary_entry = {
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
                     'date': datetime.now().strftime('%Y-%m-%d'),
                     'user': user_msg_short,
                     'reply_preview': ai_reply_short,
+                    'advice_given': advice_this_time,
                     'topics': topics[:3],
                     'has_score': has_quantitative_now,
                     'total_score': wm_result.get('total_score', 0) if wm_result else 0,
@@ -3479,11 +4348,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 # 保留最近50条摘要
                 if len(profile_mem['conversation_summaries']) > 50:
                     profile_mem['conversation_summaries'] = profile_mem['conversation_summaries'][-50:]
-                
+
                 # ===== 情绪时间线 =====
                 if 'emotion_timeline' not in profile_mem:
                     profile_mem['emotion_timeline'] = []
-                
+
                 # 简单情绪关键词检测（非AI方式，轻量快速）
                 emotion_detected = None
                 intensity = 5
@@ -3502,7 +4371,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                         emotion_detected = emotion
                         intensity = default_intensity
                         break
-                
+
                 if not emotion_detected:
                     # 情绪中性，根据评分估算
                     wm_score_val = wm_result.get('total_score', 0) if wm_result else 0
@@ -3518,7 +4387,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     else:
                         emotion_detected = '中性'
                         intensity = 3
-                
+
                 emotion_entry = {
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
                     'date': datetime.now().strftime('%Y-%m-%d'),
@@ -3531,7 +4400,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 # 保留最近90天
                 if len(profile_mem['emotion_timeline']) > 90:
                     profile_mem['emotion_timeline'] = profile_mem['emotion_timeline'][-90:]
-                
+
                 _save_user_profile(profile_mem, openid)
                 print(f'[Memory] 对话摘要+情绪已存储')
             except Exception as mem_e:
@@ -3545,7 +4414,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 _dp_hist = _dp.get('history', [])
                 _dp_scored = [h for h in _dp_hist if h.get('wm_score', 0) > 0]
                 _dp_data_days = len(set(h.get('date', '') for h in _dp_scored))
-                
+
                 # 数据丰富度等级
                 if _dp_data_days <= 1:
                     _dp_level = 'cold_start'
@@ -3559,7 +4428,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 else:
                     _dp_level = 'mature'
                     _dp_tip = str(_dp_data_days) + '天数据积累，分析置信度稳定'
-                
+
                 # 下一个解锁里程碑
                 _dp_milestones = {
                     'cold_start': '3天数据 → 趋势图',
@@ -3567,7 +4436,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                     'active': '14天数据 → 个性化建议',
                     'mature': '坚持记录，对比效果更明显',
                 }
-                
+
                 # 如果有≥2次有评分的对话，推送时间线
                 _dp_timeline = None
                 if len(_dp_scored) >= 2:
@@ -3584,7 +4453,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
                                 _dp_timeline.append(pt)
                     except:
                         pass
-                
+
                 response_obj['data_level'] = _dp_level
                 response_obj['data_tip'] = _dp_tip
                 response_obj['next_milestone'] = _dp_milestones.get(_dp_level, '')
@@ -3661,6 +4530,72 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 'error': '请说句话吧'
             }, ensure_ascii=False).encode('utf-8'))
             return
+
+        # ===== Phase 8: 语音情绪特征提取（规则引擎 + 情绪词典） =====
+        import re
+        _voice_emotion_profile = {}
+        try:
+            _emotion_dict = {
+                '焦虑': {'emotion': 'anxiety', 'intensity': 7, 'plan': 'breathing'},
+                '紧张': {'emotion': 'anxiety', 'intensity': 6, 'plan': 'breathing'},
+                '心慌': {'emotion': 'anxiety', 'intensity': 8, 'plan': 'breathing'},
+                '害怕': {'emotion': 'fear', 'intensity': 7, 'plan': 'breathing'},
+                '烦躁': {'emotion': 'irritation', 'intensity': 6, 'plan': 'pmr'},
+                '烦': {'emotion': 'irritation', 'intensity': 5, 'plan': 'pmr'},
+                '生气': {'emotion': 'anger', 'intensity': 7, 'plan': 'pmr'},
+                '愤怒': {'emotion': 'anger', 'intensity': 8, 'plan': 'pmr'},
+                '睡不着': {'emotion': 'insomnia', 'intensity': 6, 'plan': 'meditation'},
+                '失眠': {'emotion': 'insomnia', 'intensity': 7, 'plan': 'meditation'},
+                '压力': {'emotion': 'stress', 'intensity': 6, 'plan': 'breathing'},
+                '累': {'emotion': 'fatigue', 'intensity': 5, 'plan': 'meditation'},
+                '疲惫': {'emotion': 'fatigue', 'intensity': 6, 'plan': 'meditation'},
+                '困': {'emotion': 'sleepy', 'intensity': 4, 'plan': 'meditation'},
+                'emo': {'emotion': 'sadness', 'intensity': 5, 'plan': 'meditation'},
+                '低落': {'emotion': 'sadness', 'intensity': 6, 'plan': 'meditation'},
+                '不开心': {'emotion': 'sadness', 'intensity': 5, 'plan': 'meditation'},
+                '难过': {'emotion': 'sadness', 'intensity': 7, 'plan': 'meditation'},
+                '想哭': {'emotion': 'sadness', 'intensity': 8, 'plan': 'meditation'},
+            }
+            _max_intensity = 0
+            _primary_emotion = 'unknown'
+            _suggested_plan = 'breathing'
+            for _kw, _info in _emotion_dict.items():
+                if _kw in user_text and _info['intensity'] > _max_intensity:
+                    _max_intensity = _info['intensity']
+                    _primary_emotion = _info['emotion']
+                    _suggested_plan = _info['plan']
+            _exclamation = user_text.count('!') + user_text.count('！')
+            if _exclamation >= 2:
+                _max_intensity = min(10, _max_intensity + 1)
+            _sentences = [s for s in re.split(r'[。！？\n]', user_text) if s.strip()]
+            _short_sentence_ratio = sum(1 for s in _sentences if len(s) < 10) / max(1, len(_sentences))
+            if _short_sentence_ratio > 0.5:
+                _max_intensity = min(10, _max_intensity + 1)
+            _voice_emotion_profile = {
+                'emotion': _primary_emotion,
+                'intensity': _max_intensity,
+                'suggested_plan': _suggested_plan,
+                'text_length': len(user_text),
+                'short_sentence_ratio': round(_short_sentence_ratio, 2),
+                'exclamation_count': _exclamation,
+            }
+            print(f"[VoiceEmotion] [{openid[:8]}...] {_primary_emotion} intensity={_max_intensity} plan={_suggested_plan}")
+            _timeline_profile = _load_user_profile(openid)
+            if 'emotion_timeline' not in _timeline_profile:
+                _timeline_profile['emotion_timeline'] = []
+            _timeline_profile['emotion_timeline'].append({
+                'date': datetime.now().strftime('%Y-%m-%d'),
+                'time': datetime.now().strftime('%H:%M'),
+                'source': 'voice_emotion_analysis',
+                'emotion': _primary_emotion,
+                'intensity': _max_intensity,
+                'text_preview': user_text[:30],
+            })
+            if len(_timeline_profile['emotion_timeline']) > 40:
+                _timeline_profile['emotion_timeline'] = _timeline_profile['emotion_timeline'][-40:]
+            _save_user_profile(_timeline_profile, openid)
+        except Exception as _ve_e:
+            print(f'[VoiceEmotion] 跳过: {_ve_e}')
 
         system_prompt = """你是一位情绪减压和正念引导专家。用户的语音经过转写后发给你，请分析他们当前的情绪状态并推荐最合适的减压方案。
 
@@ -3949,7 +4884,7 @@ PUBMED_SLEEP_QUERY = (
 
 class PubmedFrontier:
     """PubMed前沿感知引擎：自动爬取+分类+证据提取"""
-    
+
     CATEGORY_MAP = {
         'cbt_i': ['cognitive behavioral therapy', 'cbt-i', 'cbti', 'insomnia therapy', 'sleep therapy'],
         'sleep_apnea': ['sleep apnea', 'osa', 'cpap', 'oral appliance', 'snoring'],
@@ -3959,12 +4894,12 @@ class PubmedFrontier:
         'women_sleep': ['menopause', 'pregnancy', 'menstrual', 'postpartum', 'women sleep'],
         'adolescent': ['adolescent', 'teen', 'child sleep', 'pediatric'],
     }
-    
+
     @staticmethod
     def fetch_latest(days_back=7, max_results=20):
         """爬取最近days_back天的睡眠领域新文献"""
         import urllib.request, urllib.parse
-        
+
         # 先用esearch搜索论文ID
         params = {
             'db': 'pubmed',
@@ -3975,19 +4910,19 @@ class PubmedFrontier:
             'sort': 'date',
         }
         search_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?' + urllib.parse.urlencode(params)
-        
+
         try:
             req = urllib.request.Request(search_url, headers={'User-Agent': 'AISleepGen/2.0'})
             with urllib.request.urlopen(req, timeout=20) as r:
                 result = json.loads(r.read().decode('utf-8'))
-            
+
             id_list = result.get('esearchresult', {}).get('idlist', [])
             if not id_list:
                 print(f'[PubmedFrontier] 未找到最近{days_back}天新文献')
                 return []
-            
+
             print(f'[PubmedFrontier] 找到{len(id_list)}篇潜在文献，开始拉取详情...')
-            
+
             # 批量拉取详情（efetch支持逗号分隔多个ID）
             details_url = (
                 f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
@@ -3996,25 +4931,25 @@ class PubmedFrontier:
             req = urllib.request.Request(details_url, headers={'User-Agent': 'AISleepGen/2.0'})
             with urllib.request.urlopen(req, timeout=30) as r:
                 xml_data = r.read().decode('utf-8')
-            
+
             # 简易解析：拆分每篇文献
             articles = PubmedFrontier._parse_pubmed_xml_batch(xml_data)
             print(f'[PubmedFrontier] 成功解析{len(articles)}篇文献')
             return articles
-            
+
         except Exception as e:
             print(f'[PubmedFrontier] 爬取失败: {e}')
             return []
-    
+
     @staticmethod
     def _parse_pubmed_xml_batch(xml_data):
         """批量解析PubMed XML，提取关键信息"""
         import re
         articles = []
-        
+
         # 拆分每篇Article
         article_blocks = re.findall(r'<PubmedArticle>.*?</PubmedArticle>', xml_data, re.DOTALL)
-        
+
         for block in article_blocks:
             try:
                 # PMID
@@ -4022,24 +4957,24 @@ class PubmedFrontier:
                 if not pmid_m:
                     continue
                 pmid = pmid_m.group(1)
-                
+
                 # Title
                 title_m = re.search(r'<ArticleTitle[^>]*>(.*?)</ArticleTitle>', block, re.DOTALL)
                 title = re.sub(r'<[^>]+>', '', title_m.group(1)).strip() if title_m else 'Unknown'
                 title = title.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
-                
+
                 # Abstract
                 abs_parts = re.findall(r'<AbstractText[^>]*>(.*?)</AbstractText>', block, re.DOTALL)
                 abstract = ' '.join(re.sub(r'<[^>]+>', '', p).strip() for p in abs_parts)[:500]
-                
+
                 # DOI
                 doi_m = re.search(r'<ELocationID[^>]*EIdType="doi"[^>]*>(.*?)</ELocationID>', block)
                 doi = doi_m.group(1) if doi_m else ''
-                
+
                 # Year
                 year_m = re.search(r'<Year>(\d{4})</Year>', block)
                 year = year_m.group(1) if year_m else '?'
-                
+
                 # Journal
                 journal_m = re.search(r'<Journal>.*?<Title[^>]*>(.*?)</Title>', block, re.DOTALL)
                 journal = journal_m.group(1) if journal_m else ''
@@ -4047,10 +4982,10 @@ class PubmedFrontier:
                     journal_m = re.search(r'<ISOAbbreviation[^>]*>(.*?)</ISOAbbreviation>', block)
                     journal = journal_m.group(1) if journal_m else ''
                 journal = journal.replace('&amp;', '&')
-                
+
                 # Publication type
                 pub_types = re.findall(r'<PublicationType[^>]*>(.*?)</PublicationType>', block)
-                
+
                 # Determine certainty based on publication type
                 pt_text = ' '.join(pub_types).lower()
                 if 'meta-analysis' in pt_text or 'systematic review' in pt_text:
@@ -4065,7 +5000,7 @@ class PubmedFrontier:
                 else:
                     certainty = 'low'
                     effect_size = '待确定研究类型'
-                
+
                 # Categorize
                 title_abs_lower = (title + ' ' + abstract).lower()
                 categories = []
@@ -4074,7 +5009,7 @@ class PubmedFrontier:
                         categories.append(cat)
                 if not categories:
                     categories.append('general_sleep')
-                
+
                 article = {
                     'pmid': pmid,
                     'title': title[:200],
@@ -4089,19 +5024,19 @@ class PubmedFrontier:
                     'fetched_at': datetime.now().strftime('%Y-%m-%d'),
                 }
                 articles.append(article)
-                
+
             except Exception as e:
                 print(f'[PubmedFrontier] 跳过一篇文章: {e}')
                 continue
-        
+
         return articles
-    
+
     @staticmethod
     def merge_into_evidence(new_articles, evidence_path=None):
         """将新文献合并到auto_evidence.json，去重"""
         if evidence_path is None:
             evidence_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.auto_evidence.json')
-        
+
         # 读取现有证据
         existing = {}
         if os.path.exists(evidence_path):
@@ -4114,7 +5049,7 @@ class PubmedFrontier:
                         existing[pmid] = e
             except:
                 existing = {}
-        
+
         # 合并新文献（跳过已存在的）
         added = 0
         for article in new_articles:
@@ -4134,32 +5069,32 @@ class PubmedFrontier:
                 }
                 existing[pmid] = entry
                 added += 1
-        
+
         # 写回文件
         merged = list(existing.values())
         with open(evidence_path, 'w', encoding='utf-8') as f:
             json.dump(merged, f, ensure_ascii=False, indent=2)
-        
+
         print(f'[PubmedFrontier] 合并完成: 新增{added}篇, 总计{len(merged)}篇')
         return added
-    
+
     @staticmethod
     def get_recent_evidence(days=7, categories=None, max_results=5):
         """获取最近x天的文献摘要（用于注入对话上下文）"""
         evidence_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.auto_evidence.json')
         if not os.path.exists(evidence_path):
             return []
-        
+
         try:
             with open(evidence_path, 'r', encoding='utf-8') as f:
                 all_evidence = json.load(f)
         except:
             return []
-        
+
         # 按日期过滤
         cutoff = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
         recent = [e for e in all_evidence if e.get('added_on', '') >= cutoff]
-        
+
         # 按类别过滤
         if categories:
             filtered = []
@@ -4168,19 +5103,19 @@ class PubmedFrontier:
                 if any(c in e_cats for c in categories):
                     filtered.append(e)
             recent = filtered
-        
+
         # 按certainty排序
         certainty_order = {'high': 0, 'low': 1, 'manual': 2}
         recent.sort(key=lambda e: certainty_order.get(e.get('certainty', 'low'), 3))
-        
+
         return recent[:max_results]
-    
+
     @staticmethod
     def format_evidence_for_prompt(evidence_list):
         """将文献列表格式化为prompt可用的文本"""
         if not evidence_list:
             return ""
-        
+
         lines = ["\n===== 最新睡眠科学研究参考 ====="]
         for e in evidence_list:
             certainty_tag = {
@@ -4251,7 +5186,7 @@ def main():
     except Exception as e:
         print(f'[PubmedFrontier] 启动失败: {e}')
 
-    # 启动Self-Healing后台线程（每10分钟无声自检）
+    # 启动Self-Healing后台线程（每10分钟API连通性检查）
     def run_self_heal_cron():
         while True:
             time.sleep(600)
@@ -4269,11 +5204,11 @@ def main():
                 )
                 urllib.request.urlopen(test_req, timeout=10)
             except Exception as e:
-                print(f'[SelfHeal] heal cycle detected: {e}')
+                print(f'[SelfHeal] ⚠️ API异常: {e}')
     threading.Thread(target=run_self_heal_cron, daemon=True).start()
-    print('[SelfHeal] 自愈系统已启动（每10分钟无声自检）')
+    print('[SelfHeal] 自愈系统v2已启动（每10分钟自检+修复）')
 
-    port = 8090
+    port = int(os.environ.get('AISLEEPGEN_PORT', '8090'))
     server = ThreadingHTTPServer(('0.0.0.0', port), ProxyHandler)
     print(f'Server on http://localhost:{port}')
     print(f'  /health, /api/chat, /api/sleep-report, /api/meditation-plan')

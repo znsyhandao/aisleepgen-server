@@ -208,15 +208,15 @@ class ParamHistory:
         try:
             import threading
             self._lock = threading.Lock()
-        except:
-            pass
-
+        except Exception as _ep:
+            _log.warning("[meta_learner] %s", _ep)
     def _load(self):
         try:
             if os.path.exists(self.path):
                 with open(self.path, 'r', encoding='utf-8') as f:
                     return json.load(f)
-        except: pass
+        except Exception as _ep:
+            _log.warning("[meta_learner] %s", _ep)
         return {'history': [], 'head': -1}
 
     def _save(self, data):
@@ -224,8 +224,8 @@ class ParamHistory:
             os.makedirs(os.path.dirname(self.path), exist_ok=True)
             with open(self.path, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-        except: pass
-
+        except Exception as _ep:
+            _log.warning("[meta_learner] %s", _ep)
     def snapshot(self, openid='_system', reason=''):
         """保存当前所有模块参数的快照"""
         data = self._load()
@@ -314,8 +314,8 @@ class ParamHistory:
                 val = getattr(e, param, None)
                 if val is not None:
                     return val
-            except:
-                pass
+            except Exception as _ep:
+                _log.warning("[meta_learner] %s", _ep)
         return self._get_param(param, openid)
 
     def _apply_params(self, params, openid=None):
@@ -390,8 +390,8 @@ class ParamHistory:
                         d = json.load(fp)
                     if param in d:
                         return d[param]
-            except:
-                pass
+            except Exception as _ep:
+                _log.warning("[meta_learner] %s", _ep)
         # 2. 全局
         gp = self._load_global_params()
         if param in gp:
@@ -473,7 +473,8 @@ class MetaLearner:
             if os.path.exists(self.meta_log_path):
                 with open(self.meta_log_path, 'r', encoding='utf-8') as f:
                     return json.load(f)
-        except: pass
+        except Exception as _ep:
+            _log.warning("[meta_learner] %s", _ep)
         return {'reviews': [], 'adjustments': []}
 
     def _save_meta_log(self, data):
@@ -481,8 +482,8 @@ class MetaLearner:
             os.makedirs(os.path.dirname(self.meta_log_path), exist_ok=True)
             with open(self.meta_log_path, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-        except: pass
-
+        except Exception as _ep:
+            _log.warning("[meta_learner] %s", _ep)
     def review_past_n_hours(self, hours=24, openid=None):
         """审查过去N小时的所有实验
 
@@ -562,8 +563,8 @@ class MetaLearner:
                         ent = belief.get('normalized_entropy', belief.get('entropy', 0.5))
                         if isinstance(ent, (int, float)) and 0 < ent < 3:
                             user_entropies.append(ent)
-                    except:
-                        pass
+                    except Exception as _ep:
+                        _log.warning("[meta_learner] %s", _ep)
             if user_entropies:
                 avg_uncertainty = sum(user_entropies) / len(user_entropies)
             else:

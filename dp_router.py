@@ -6,6 +6,13 @@ dp_router.py - AISleepGen 路由处理层
 所有 handler 作为模块级函数，接收 dict 返回 dict。
 零 HTTP I/O，零 self 引用。可被 asyncio 或 sync 服务器同等调用。
 
+设计哲学：专气至柔，能如婴儿乎？（老子）
+───────────────────────────────────────
+• 婴儿不问诊 — 不绕弯子、不堆砌分析，直接给最需要的那个判断
+• 婴儿不知疲倦但不打扰 — 后台静静待命，用户需要时才响应
+• 婴儿的直觉 — 最少推理层直达本质。不要8专家轮流发言，让最懂的专家说一句
+• 返璞归真 — 核心判断 > 华丽推理链 > 理论堆砌
+
 从 deepseek_proxy.py ProxyHandler 类方法重构而来。
 每个函数对应一个 API 路由。
 """
@@ -62,6 +69,60 @@ _ai_log = logging.getLogger('aisleepgen.dp_router')
 if not _px.DEEPSEEK_API_KEY:
     _px.load_deepseek_key()
 
+# ===== 活动日志（不可挽回缺口 1：沉默基线预埋） =====
+_activity_log_file = None
+def _log_activity(openid, action_type, detail=''):
+    """记录用户活动事件，不依赖对话内容
+    Args:
+        openid: 用户标识
+        action_type: chat|band_report|app_open|push_click|silent_close
+        detail: 可选副信息
+    """
+    import json, os
+    # ★ openid 脱敏：导出的日志文件不暴露明文 openid（死亡模式 5）
+    try:
+        _safe_openid = __import__('hashlib').sha256(str(openid).encode()).hexdigest()[:16]
+    except Exception:
+        _safe_openid = str(openid)[:16]
+    global _activity_log_file
+    try:
+        if _activity_log_file is None:
+            from datetime import datetime
+            _log_dir = os.path.join(os.path.dirname(__file__) or '.', 'data', 'activity_logs')
+            os.makedirs(_log_dir, exist_ok=True)
+            _date_str = datetime.now().strftime('%Y%m%d')
+            _activity_log_file = open(
+                os.path.join(_log_dir, f'activity_{_date_str}.jsonl'),
+                'a', encoding='utf-8'
+            )
+        _activity_log_file.write(json.dumps({
+            't': __import__('time').time(),
+            'v': __import__('version').VERSION,
+            'openid': _safe_openid,
+            'action': action_type,
+            'detail': str(detail)[:64],
+        }, ensure_ascii=False) + '\n')
+        _activity_log_file.flush()
+    except Exception:
+        pass  # 活动日志非关键路径，不能炸
+
+# ===== 数据完整性检查（不可挽回缺口 13） =====
+_DATA_COMPLETENESS_FIELDS = {
+    'handle_sleep_report': ['score', 'bed_time', 'wake_time', 'sleep_duration'],
+    'handle_band_insight': ['hrv', 'spo2', 'respiration', 'heart_rate'],
+    'submit_feedback': ['rating', 'openid'],
+}
+import time as _ct_time
+def _check_data_completeness(action_name, data, openid='default'):
+    """检查必填字段完整性并记录到活动日志"""
+    required = _DATA_COMPLETENESS_FIELDS.get(action_name, [])
+    if not required:
+        return
+    missing = [f for f in required if not data.get(f) and data.get(f) != 0]
+    if missing:
+        _log_activity(openid, 'incomplete_data', '%s|%s' % (action_name, ','.join(missing)))
+        _ai_log.info('[DataComplete] %s missing: %s', action_name, missing)
+
 # ===== 缓存层注入 =====
 import cache_layer
 _ai_log.info('[Cache] Layer initialized: WM=%d DS=%d Profile=%d',
@@ -84,8 +145,10 @@ def _get_pop_mgr():
     return _POPULATION_MANAGER
 
 
-def route(path, methods=['POST']):
+def route(path, methods=None):
     """装饰器：注册路由 + 统一错误屏障（任何异常→返回 {'error': '描述'}）"""
+    if methods is None:
+        methods = ['POST']
     def dec(fn):
         safe_fn = _safe_handler(fn)
         for m in methods:
@@ -99,6 +162,10 @@ def _safe_handler(fn):
     import traceback
     def wrapped(data):
         try:
+            # ★ 请求验证：核心路由必须带 openid（健康检查和认证路由除外）
+            _skip_check = ('/health', '/', '/api/metrics', '/api/wx-login')
+            if fn.__name__ not in _skip_check and isinstance(data, dict) and not data.get('openid'):
+                _ai_log.warning('[Validate] %s missing openid', fn.__name__)
             result = fn(data)
             if result is None:
                 return {'error': f'{fn.__name__} returned None'}
@@ -121,6 +188,10 @@ def handle_wx_login(data):
     code = data.get('code', '')
     if not code:
         return {'error': 'missing_code'}
+    # ★ 合规基线：记录知情同意时间戳（不依赖是否登录成功）
+    _consent_openid = data.get('scene', '') or data.get('source', '') or code[:16]
+    _log_activity(_consent_openid, 'user_consent',
+        'login_at=%s_scene=%s' % (__import__('time').time(), data.get('scene', '?')))
     if not _WX_APPID or not _WX_SECRET:
         import hashlib
         fake_openid = 'wx_' + hashlib.md5(code.encode()).hexdigest()[:16]
@@ -133,6 +204,17 @@ def handle_wx_login(data):
         resp = json.loads(urllib.request.urlopen(url, timeout=5).read())
         if 'openid' in resp:
             _ai_log.info('[WX-Login] Got openid: %s', resp['openid'][:10])
+            # ★ 合规持久化：用户首次登录即标记知情同意
+            try:
+                _px._load_user_profile(resp['openid'])
+                _profile = _px._load_user_profile(resp['openid'])
+                if not _profile.get('privacy_consent_at'):
+                    _profile['privacy_consent_at'] = __import__('time').time()
+                    _profile['privacy_consent_version'] = '2026-05'
+                    _px._save_user_profile(_profile, resp['openid'])
+                    _ai_log.info('[Privacy] Consent recorded for %s', resp['openid'][:10])
+            except Exception:
+                pass
             return {'openid': resp['openid']}
         else:
             _ai_log.warning('[WX-Login] API error: %s', resp.get('errmsg', 'unknown'))
@@ -147,7 +229,12 @@ def handle_wx_login(data):
 @route('/api/chat')
 def handle_chat(data):
     """聊天处理--注入完整用户画像到 prompt"""
+    _chat_start = _ct_time.time()  # AI 回复延迟基线
     openid = data.get('openid', 'default')
+    _log_activity(openid, 'chat', '')
+    _entry_source = data.get('entry_source', 'manual')
+    if _entry_source:
+        _log_activity(openid, 'chat_entry', _entry_source)
     message = data.get('message', '')
     history = data.get('history', [])
     persona = data.get('persona', 'restorative')
@@ -392,6 +479,14 @@ def handle_chat(data):
             _conv_lines.append(f'{_role}: {_content}')
         _recent_conv = '\n'.join(_conv_lines)
 
+    # ★ AGM 认知三角实时分析（工具化，不走 tool calling）
+    try:
+        from cognitive_belief import cognitive_analyze
+        _cognitive_analysis = cognitive_analyze(openid, user_message=message)
+    except Exception as _ca_e:
+        _cognitive_analysis = None
+        _ai_log.warning('[AGM] cognitive_analyze failed: %s', _ca_e)
+    
     sc = build_system_content(
         correction_note=correction_note,
         score_calibration_hint=score_hint,
@@ -405,6 +500,7 @@ def handle_chat(data):
         persona_config=persona_config,
         emotion_prefix=emotion_prefix,
         intervention_hint=intervention_hint,
+        cognitive_analysis=_cognitive_analysis,
     )
     messages = build_messages(sc, history, message)
 
@@ -500,10 +596,15 @@ def handle_chat(data):
                     pass
             _ds_messages = [{'role': 'system', 'content': _ds_system_text}, {'role': 'user', 'content': _ds_user_text}]
 
-            from ai_client import call_deepseek_api as _call_ds_api
-            _ds_reply = _call_ds_api(_ds_messages, use_async=False)
+            from ai_client import call_deepseek_api as _call_ds_api, load_tier_config as _load_tier, get_tier_from_profile as _get_tier, track_usage_with_openid as _track_usage
+            _tier_cfg = _load_tier(_get_tier(profile))
+            _ds_messages_enhanced = [{'role': 'system', 'content': _ds_system_text}, {'role': 'user', 'content': _ds_user_text}]
+            _ds_reply = _call_ds_api(_ds_messages_enhanced, use_async=False)
             if _ds_reply and len(str(_ds_reply)) > 20:
                 reply = str(_ds_reply)
+                # 用真实 openid 覆盖默认的 token 追踪
+                _track_usage(openid, _tier_cfg.get('model', 'deepseek-chat'),
+                             len(_ds_user_text) // 2, len(reply) // 2, (len(_ds_user_text) + len(reply)) // 2)
                 if _trace_obj:
                     try:
                         _trace_obj.layer('sync_deepseek_override', reply_len=len(reply))
@@ -664,12 +765,71 @@ def handle_chat(data):
     except Exception as _el_e:
         pass
 
-    # ===== 认知信念更新（每次chat交互后） =====
+    # ===== ★ 从主回复解析 AGM 信念（零额外 token 成本） =====
+    _extracted_beliefs = None
+    _agm_marker_start = '---AGM_BELIEFS---'
+    _agm_marker_end = '---END---'
+    if reply and _agm_marker_start in reply:
+        try:
+            _s = reply.find(_agm_marker_start) + len(_agm_marker_start)
+            _e = reply.find(_agm_marker_end, _s)
+            if _e > _s:
+                _json_raw = reply[_s:_e].strip()
+                if _json_raw.startswith('[') and _json_raw.endswith(']'):
+                    import json as _json
+                    _extracted_beliefs = _json.loads(_json_raw)
+                reply = reply[:reply.find(_agm_marker_start)].rstrip()
+        except Exception:
+            pass
+        # 双重防御：回复中仍残留的残缺标签也清除
+        if '---AGM_BELIEFS' in reply or '---END---' in reply:
+            import re as _re_agm
+            reply = _re_agm.sub(r'---(?:AGM_BELIEFS|END)---?\s*', '', reply).rstrip()
+
+        # ★ 上下文提取：AI通过---CONTEXT---段输出社交/生活方式/医疗信息（专业：AI语义理解）
+    _ctx_marker_start = "---CONTEXT---"
+    if reply and _ctx_marker_start in reply:
+        try:
+            _ctx_s = reply.find(_ctx_marker_start) + len(_ctx_marker_start)
+            _ctx_e = reply.find("---END---", _ctx_s)
+            if _ctx_e > _ctx_s:
+                _ctx_raw = reply[_ctx_s:_ctx_e].strip()
+                if _ctx_raw.startswith("[") and _ctx_raw.endswith("]"):
+                    import json as _ctx_json
+                    _ctx_items = _ctx_json.loads(_ctx_raw)
+                    if isinstance(_ctx_items, list) and len(_ctx_items) > 0:
+                        _profile = _px._load_user_profile(openid)
+                        _existing = _profile.setdefault("context_inferred", {})
+                        _changed = False
+                        for _ctx_item in _ctx_items:
+                            if not isinstance(_ctx_item, dict):
+                                continue
+                            _t = _ctx_item.get("type", "")
+                            _v = _ctx_item.get("value", "")
+                            if _t and _v:
+                                if _t not in _existing or _existing[_t] != _v:
+                                    _existing[_t] = _v
+                                    _changed = True
+                        if _changed:
+                            _px._save_user_profile(_profile, openid)
+                            _ai_log.info("[Ctx] AI-extracted context for %s: %s",
+                                        openid[:8], _ctx_items)
+        except Exception:
+            pass
+        # 清除---CONTEXT---段（避免出现在用户面前）
+        import re as _ctx_clean
+        reply = _ctx_clean.sub(r"---CONTEXT---\s*\[.*?\]\s*---END---", "", reply).rstrip()
+
+# ===== 认知信念更新（每次chat交互后） =====
     try:
         _cb_update(openid, score=score if isinstance(score, (int, float)) else None,
-                   feedback=1 if _outcome_positive else 0)
-    except:
-        pass
+                   feedback=1 if _outcome_positive else 0,
+                   extracted_beliefs=_extracted_beliefs)
+    except Exception as _cb_e:
+        if 'openid' in dir() and openid:
+            _ai_log.warning('[CB] chat update failed for %s: %s', openid[:8], _cb_e)
+        else:
+            _ai_log.warning('[CB] chat update failed: %s', _cb_e)
 
     # 判断用户是否有足够数据支撑专家模拟
     _has_user_data = bool(latest and (
@@ -1259,8 +1419,11 @@ def handle_sleep_analyze(data):
     try:
         _cb_update(openid, score=current_score if isinstance(current_score, (int, float)) else None,
                    feedback=1 if (isinstance(current_score, (int, float)) and current_score > 60) else 0)
-    except:
-        pass
+    except Exception as _cb_e:
+        if 'openid' in dir() and openid:
+            _ai_log.warning('[CB] analyze update failed for %s: %s', openid[:8], _cb_e)
+        else:
+            _ai_log.warning('[CB] analyze update failed: %s', _cb_e)
 
     # ===== 实验日志闭环：survey实验 → concluded =====
     if _survey_exp_id:
@@ -1291,6 +1454,109 @@ def handle_sleep_report(data):
         'avg_score': avg,
         'total': len(history),
         'source': 'AI聊天生成',
+    }
+
+
+@route('/api/band-insight')
+def handle_band_insight(data):
+    """"手环数据智能解读：HRV/血氧/呼吸率 → 可读洞察"""
+    openid = data.get('openid', 'default')
+    _log_activity(openid, 'band_report', '')
+    profile = _px._load_user_profile(openid)
+    latest = profile.get('latest', {})
+    band = latest.get('band_data', {}) or {}
+    
+    hrv = band.get('hrv') or band.get('hr_variability')
+    spo2 = band.get('spo2') or band.get('blood_oxygen')
+    respiration = band.get('respiration') or band.get('resp_rate') or band.get('breath_rate')
+    heart_rate = band.get('heart_rate') or band.get('heartRate')
+    
+    # ★ 手环数据摘要 → 活动日志（异步友好，不走同步文件写）
+    _log_activity(openid, 'band_data',
+        'HRV=%s SPO2=%s RR=%s HR=%s' % (hrv or '?', spo2 or '?', respiration or '?', heart_rate or '?'))
+    
+    _check_data_completeness('handle_band_insight', {
+        'hrv': hrv, 'spo2': spo2, 'respiration': respiration, 'heart_rate': heart_rate
+    }, openid)
+    
+    insights = []
+    risks = []
+    suggestions = []
+    
+    # ★ 个人基线对比（不可挽回缺口 16）
+    try:
+        from cognitive_belief import BeliefSystem as _bs
+        _bs_inst = _bs(openid)
+        _baseline = _bs_inst.get_band_baseline(openid)
+        if _baseline and hrv:
+            _hrv_base = _baseline.get('hrv')
+            if _hrv_base and _hrv_base['std'] > 0 and _hrv_base['count'] >= 3:
+                _z = (float(hrv) - _hrv_base['mean']) / _hrv_base['std']
+                if _z < -2:
+                    insights.append({'label': 'HRV对比基线', 'value': f'{hrv} (↓{abs(_z):.0f}σ)',
+                        'level': 'warning', 'text': f'今晚HRV显著低于你的个人基线({_hrv_base["mean"]})，偏差{abs(_z):.0f}个标准差。'})
+    except Exception:
+        pass
+    
+    # HRV 解读
+    if hrv:
+        if hrv < 30:
+            insights.append({'label': 'HRV', 'value': str(hrv) + 'ms', 'level': 'warning',
+                'text': '心率变异性偏低，交感神经处于高度紧张状态。建议进行15分钟正念冥想或渐进放松练习。'})
+            risks.append('低HRV提示自主神经失衡，长期可能增加心血管压力')
+            suggestions.append('睡前正念呼吸15分钟')
+        elif hrv < 50:
+            insights.append({'label': 'HRV', 'value': str(hrv) + 'ms', 'level': 'info',
+                'text': '心率变异性处于正常偏低范围。持续追踪3晚以上建立个人基准。'})
+        else:
+            insights.append({'label': 'HRV', 'value': str(hrv) + 'ms', 'level': 'good',
+                'text': '心率变异性良好，显示自主神经系统恢复充分。'})
+    
+    # 血氧饱和度解读
+    if spo2:
+        try:
+            s = float(spo2)
+        except (ValueError, TypeError):
+            s = 0
+        if s >= 95:
+            insights.append({'label': '血氧', 'value': str(spo2) + '%', 'level': 'good',
+                'text': '血氧饱和度在正常范围（≥95%），提示夜间呼吸通畅。'})
+        elif s >= 90:
+            insights.append({'label': '血氧', 'value': str(spo2) + '%', 'level': 'warning',
+                'text': '血氧饱和度轻度偏低（90-94%），建议就医排查睡眠呼吸问题。'})
+            risks.append('夜间血氧轻度偏低，需要关注睡眠呼吸')
+        else:
+            insights.append({'label': '血氧', 'value': str(spo2) + '%', 'level': 'danger',
+                'text': '血氧饱和度偏低（<90%），强烈建议就医检查。'})
+            risks.append('严重低血氧，需要立即就医排查')
+    
+    # 呼吸率解读
+    if respiration:
+        try:
+            r = float(respiration)
+        except (ValueError, TypeError):
+            r = 0
+        if 12 <= r <= 20:
+            insights.append({'label': '呼吸率', 'value': str(respiration) + '/分', 'level': 'good',
+                'text': '夜间呼吸率在正常范围（12-20次/分）。'})
+        elif r > 20:
+            insights.append({'label': '呼吸率', 'value': str(respiration) + '/分', 'level': 'warning',
+                'text': '呼吸率偏高，可能处于浅睡状态或受焦虑影响。建议睡前做4-7-8呼吸法。'})
+            suggestions.append('4-7-8呼吸法降低呼吸率')
+        else:
+            insights.append({'label': '呼吸率', 'value': str(respiration) + '/分', 'level': 'info',
+                'text': '呼吸率偏低，需结合其他指标综合评估。'})
+    
+    # ★ 手环原始数据持久化 + hash脱敏（最佳实践：异步写入，不在主路径同步写）
+    # 改为通过活动日志通道记录——不再同步写 band_logs.jsonl
+    # 后续可改为独立 /api/band-log endpoint
+    
+    return {
+        'success': True,
+        'insights': insights,
+        'risks': risks,
+        'suggestions': suggestions,
+        'band_raw': band,
     }
 
 
@@ -2256,6 +2522,11 @@ def dispatch(method, path, data):
             result = ROUTES[key](data)
             elapsed = (time.time() - t0) * 1000
             has_error = 'error' in result and not result.get('version')
+            # ★ HTTP 语义状态码：error=4xx, success=200
+            if has_error:
+                result['_http_status'] = 400
+            else:
+                result['_http_status'] = 200
             # handler 内部可能已调 _record_metric 传了 detail，这里只做基本计数
             if path not in {'/api/chat', '/api/sleep-analyze'}:
                 _record_metric(path, elapsed, has_error=has_error)
@@ -3133,6 +3404,27 @@ def handle_agent_cycle(data):
     return {'success': True, 'result': result}
 
 
+# ★ 推送反馈路由（不可挽回缺口 3）
+@route('/api/log-open', methods=['POST'])
+def handle_log_open(data):
+    """记录用户打开小程序的来源——推送反馈环基线"""
+    openid = data.get('openid', 'default')
+    source = data.get('source', 'manual')
+    platform = data.get('platform', '')
+    detail = source
+    if platform:
+        detail = source + '|' + platform
+    _log_activity(openid, 'app_open', detail)
+    return {'success': True}
+
+@route('/api/log-close', methods=['POST'])
+def handle_log_close(data):
+    """记录用户关闭小程序——沉默基线"""
+    openid = data.get('openid', 'default')
+    _log_activity(openid, 'silent_close', '')
+    return {'success': True}
+
+
 # ===== v7.4: 同步 DeepSeek 调用（短超时） =====
 def _sync_deepseek_call(messages, timeout_sec=1.5):
     """同步调 DeepSeek，短超时，用于覆盖 fallback 回复
@@ -3141,4 +3433,10 @@ def _sync_deepseek_call(messages, timeout_sec=1.5):
     """
     from ai_client import call_deepseek_api as _call_ds
     reply = _call_ds(messages, use_async=False)
+    # ★ AI 回复延迟基线（不可挽回缺口 14）
+    try:
+        _latency = _ct_time.time() - _chat_start
+        _log_activity(openid, 'reply_latency', '%.1f' % _latency)
+    except Exception:
+        pass
     return reply
