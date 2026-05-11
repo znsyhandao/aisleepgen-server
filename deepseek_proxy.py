@@ -5241,52 +5241,17 @@ def main():
 #   
 # 如果未配置商户号，支付接口返回友好提示（不会崩溃）
 
+# 导入专业推荐引擎
+from tier_recommender import (
+    get_smart_recommendation as _smart_recommend,
+    get_pricing_info,
+    PRICING,
+    record_recommendation_click,
+    record_conversion,
+)
+
 WECHAT_MCHID = os.environ.get('AISLEEPGEN_WECHAT_MCHID', '')
 WECHAT_API_KEY = os.environ.get('AISLEEPGEN_WECHAT_API_KEY', '')
-
-# 定价配置
-PRICING = {
-    'pro': {
-        'name': '专业版',
-        'price': 29.00,          # 月卡29元
-        'price_quarter': 69.00,  # 季卡69元
-        'price_year': 199.00,    # 年卡199元
-        'desc': '解锁500次深度分析 + 详细报告 + 优先响应',
-        'icon': '⭐',
-    },
-    'unlimited': {
-        'name': '无限版',
-        'price': 99.00,          # 月卡99元
-        'price_year': 499.00,    # 年卡499元
-        'desc': '无限次数 + 所有高级功能 + 专属客服',
-        'icon': '👑',
-    }
-}
-
-# 智能推荐规则
-# 根据用户行为动态调整推荐策略
-RECOMMEND_RULES = {
-    'heavy_free': {
-        'condition': '使用超过20次且评分<70且连续使用>5天',
-        'recommend_tier': 'pro',
-        'message': '您已累计分析{total_sessions}次，专业版每月可解锁500次深度分析+详细报告，让您的睡眠管理更精准。',
-    },
-    'scorer_low': {
-        'condition': '评分连续低于60且使用超过3天',
-        'recommend_tier': 'pro',
-        'message': '您的睡眠评分偏低，专业版提供完整诊断报告和个性化改善方案，助您突破瓶颈。',
-    },
-    'weekend_warrior': {
-        'condition': '偶尔使用但评分波动大',
-        'recommend_tier': 'unlimited',
-        'message': '无限版让您随时获取深度分析，再也不用担心次数限制。',
-    },
-    'dedicated': {
-        'condition': '高频使用（>30次）当前free或pro',
-        'recommend_tier': 'unlimited',
-        'message': '您是高频用户！无限版为您解锁全部潜力，让AI成为您24小时的睡眠管家。',
-    }
-}
 
 
 def _generate_nonce_str(length=32):
@@ -5336,7 +5301,7 @@ def create_wechat_order(openid, tier, period='month', ip='127.0.0.1'):
         return {'success': False, 'error': '无效的套餐'}
     
     if period == 'month':
-        price = tier_config['price']
+        price = tier_config['price_monthly']
     elif period == 'quarter' and tier == 'pro':
         price = tier_config['price_quarter']
     elif period == 'year' and tier == 'pro':
@@ -5458,91 +5423,13 @@ def upgrade_member(openid, tier, order_no='', period='month'):
         'order_no': order_no,
         'tier': tier,
         'period': period,
-        'amount': PRICING.get(tier, {}).get('price', 0),
+        'amount': PRICING.get(tier, {}).get('price_monthly', 0),
         'time': now.strftime('%Y-%m-%d %H:%M:%S'),
         'old_level': old_level,
     })
     
     _save_user_profile(openid, profile)
     return profile
-
-
-def get_smart_recommendation(openid):
-    """
-    AI代理式智能定价推荐
-    根据用户行为数据, 推荐最适合的会员升级方案
-    返回: {should_recommend: bool, tier: str, message: str, price: float, reason: str}
-    """
-    profile = _load_user_profile(openid)
-    member = profile.get('member', {})
-    behavior = profile.get('behavior_stats', {})
-    
-    current_level = member.get('level', 'free')
-    if current_level != 'free' and current_level != 'pro':
-        return {'should_recommend': False, 'reason': '已是最高等级'}
-    
-    total_sessions = behavior.get('total_relax_sessions', 0)
-    total_analyses = profile.get('meta_params', {}).get('total_interactions', 0)
-    total_usage = total_sessions + total_analyses
-    
-    scores = member.get('daily_scores', [])
-    recent_scores = [s.get('score', 0) for s in scores[-7:]] if scores else []
-    avg_recent_score = sum(recent_scores) / len(recent_scores) if recent_scores else 0
-    
-    streak_days = member.get('streak_days', 0)
-    total_days = member.get('total_days', 0)
-    
-    # --- 推荐逻辑 ---
-    
-    # 1. 高频免费用户 → 推pro
-    if current_level == 'free' and total_usage >= 20 and avg_recent_score < 70 and streak_days >= 5:
-        msg = f'您已累计分析{total_usage}次，专业版每月可解锁500次深度分析+详细报告，让您的睡眠管理更精准。'
-        return {
-            'should_recommend': True,
-            'tier': 'pro',
-            'message': msg,
-            'price': PRICING['pro']['price'],
-            'icon': PRICING['pro']['icon'],
-            'recommendation': 'heavy_free',
-        }
-    
-    # 2. 低分用户 → 推pro
-    if current_level == 'free' and avg_recent_score < 60 and streak_days >= 3:
-        msg = '您的睡眠评分偏低，专业版提供完整诊断报告和个性化改善方案，助您突破瓶颈。'
-        return {
-            'should_recommend': True,
-            'tier': 'pro',
-            'message': msg,
-            'price': PRICING['pro']['price'],
-            'icon': PRICING['pro']['icon'],
-            'recommendation': 'scorer_low',
-        }
-    
-    # 3. 高频pro用户 → 推unlimited
-    if current_level == 'pro' and total_usage >= 30:
-        msg = '您是高频用户！无限版为您解锁全部潜力，让AI成为您24小时的睡眠管家。'
-        return {
-            'should_recommend': True,
-            'tier': 'unlimited',
-            'message': msg,
-            'price': PRICING['unlimited']['price'],
-            'icon': PRICING['unlimited']['icon'],
-            'recommendation': 'dedicated',
-        }
-    
-    # 4. 忠实用户（连续7天以上）→ 推pro
-    if current_level == 'free' and streak_days >= 7:
-        msg = f'连续使用{streak_days}天，您已经是睡眠管理达人了！升级专业版获得更精准的分析。'
-        return {
-            'should_recommend': True,
-            'tier': 'pro',
-            'message': msg,
-            'price': PRICING['pro']['price'],
-            'icon': PRICING['pro']['icon'],
-            'recommendation': 'streak_achiever',
-        }
-    
-    return {'should_recommend': False, 'reason': '暂无推荐'}
 
 
 # ===== 支付/会员接口路由 =====
@@ -5602,17 +5489,13 @@ def handle_pay_callback(handler):
 def handle_get_pricing(handler):
     """GET /api/pricing - 获取定价信息"""
     handler._set_headers()
-    handler.wfile.write(json.dumps({
-        'pricing': PRICING,
-        'recommend_rules': {k: {'condition': v['condition'], 'recommend_tier': v['recommend_tier']} 
-                           for k, v in RECOMMEND_RULES.items()}
-    }).encode('utf-8'))
+    handler.wfile.write(json.dumps(get_pricing_info()).encode('utf-8'))
 
 
 def handle_smart_recommend(handler, data):
-    """POST /api/recommend-tier - AI智能推荐会员方案"""
+    """POST /api/recommend-tier - AI智能推荐会员方案（专业引擎）"""
     openid = handler._get_openid(data)
-    recommendation = get_smart_recommendation(openid)
+    recommendation = _smart_recommend(openid)
     handler._set_headers()
     handler.wfile.write(json.dumps(recommendation).encode('utf-8'))
 
