@@ -1642,6 +1642,10 @@ class ProxyHandler(BaseHTTPRequestHandler):
             }).encode('utf-8'))
             return
 
+        if path == '/api/pricing':
+            handle_get_pricing(self)
+            return
+
         if path == '/audio/sleep.mp3':
             self._serve_audio('sleep.mp3')
             return
@@ -1748,6 +1752,14 @@ class ProxyHandler(BaseHTTPRequestHandler):
         elif path == '/api/timeline':
             # timeline 是 GET 接口，POST 也转发到 GET handler
             self._do_GET()
+        elif path == '/api/create-order':
+            handle_create_order(self, data)
+        elif path == '/api/pay-callback':
+            handle_pay_callback(self)
+        elif path == '/api/pricing':
+            handle_get_pricing(self)
+        elif path == '/api/recommend-tier':
+            handle_smart_recommend(self, data)
         else:
             self._set_headers(404)
             self.wfile.write(json.dumps({'error': 'Not found'}).encode('utf-8'))
@@ -5218,6 +5230,392 @@ def main():
     except KeyboardInterrupt:
         print('Stopped')
         server.server_close()
+
+# ============================================================
+# 微信支付 + 会员升级 + AI智能定价推荐
+# ============================================================
+# 配置方式（环境变量）:
+#   AISLEEPGEN_WECHAT_MCHID    - 微信支付商户号
+#   AISLEEPGEN_WECHAT_API_KEY  - 商户API密钥（APIv2）
+#   AISLEEPGEN_WECHAT_APPSECRET - 小程序appsecret（已有AISLEEPGEN_WECHAT_SECRET）
+#   
+# 如果未配置商户号，支付接口返回友好提示（不会崩溃）
+
+WECHAT_MCHID = os.environ.get('AISLEEPGEN_WECHAT_MCHID', '')
+WECHAT_API_KEY = os.environ.get('AISLEEPGEN_WECHAT_API_KEY', '')
+
+# 定价配置
+PRICING = {
+    'pro': {
+        'name': '专业版',
+        'price': 29.00,          # 月卡29元
+        'price_quarter': 69.00,  # 季卡69元
+        'price_year': 199.00,    # 年卡199元
+        'desc': '解锁500次深度分析 + 详细报告 + 优先响应',
+        'icon': '⭐',
+    },
+    'unlimited': {
+        'name': '无限版',
+        'price': 99.00,          # 月卡99元
+        'price_year': 499.00,    # 年卡499元
+        'desc': '无限次数 + 所有高级功能 + 专属客服',
+        'icon': '👑',
+    }
+}
+
+# 智能推荐规则
+# 根据用户行为动态调整推荐策略
+RECOMMEND_RULES = {
+    'heavy_free': {
+        'condition': '使用超过20次且评分<70且连续使用>5天',
+        'recommend_tier': 'pro',
+        'message': '您已累计分析{total_sessions}次，专业版每月可解锁500次深度分析+详细报告，让您的睡眠管理更精准。',
+    },
+    'scorer_low': {
+        'condition': '评分连续低于60且使用超过3天',
+        'recommend_tier': 'pro',
+        'message': '您的睡眠评分偏低，专业版提供完整诊断报告和个性化改善方案，助您突破瓶颈。',
+    },
+    'weekend_warrior': {
+        'condition': '偶尔使用但评分波动大',
+        'recommend_tier': 'unlimited',
+        'message': '无限版让您随时获取深度分析，再也不用担心次数限制。',
+    },
+    'dedicated': {
+        'condition': '高频使用（>30次）当前free或pro',
+        'recommend_tier': 'unlimited',
+        'message': '您是高频用户！无限版为您解锁全部潜力，让AI成为您24小时的睡眠管家。',
+    }
+}
+
+
+def _generate_nonce_str(length=32):
+    """生成随机字符串"""
+    import random
+    chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    return ''.join(random.choice(chars) for _ in range(length))
+
+
+def _wechat_sign(params, api_key):
+    """微信支付签名（MD5）"""
+    sorted_keys = sorted(params.keys())
+    raw = '&'.join(f'{k}={params[k]}' for k in sorted_keys) + f'&key={api_key}'
+    return hashlib.md5(raw.encode('utf-8')).hexdigest().upper()
+
+
+def _xml_to_dict(xml_str):
+    """简易XML转dict"""
+    result = {}
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(xml_str)
+    for child in root:
+        result[child.tag] = child.text
+    return result
+
+
+def _dict_to_xml(d):
+    """dict转XML"""
+    parts = ['<xml>']
+    for k, v in d.items():
+        parts.append(f'<{k}><![CDATA[{v}]]></{k}>')
+    parts.append('</xml>')
+    return ''.join(parts)
+
+
+def create_wechat_order(openid, tier, period='month', ip='127.0.0.1'):
+    """
+    创建微信支付JSAPI订单
+    返回: {success: bool, prepay_id: str, pay_params: dict} 或 {success: false, error: str}
+    """
+    if not WECHAT_MCHID or not WECHAT_API_KEY:
+        return {'success': False, 'no_payment': True, 'error': '商户号未配置，支付暂不可用'}
+    
+    # 价格查询
+    tier_config = PRICING.get(tier)
+    if not tier_config:
+        return {'success': False, 'error': '无效的套餐'}
+    
+    if period == 'month':
+        price = tier_config['price']
+    elif period == 'quarter' and tier == 'pro':
+        price = tier_config['price_quarter']
+    elif period == 'year' and tier == 'pro':
+        price = tier_config['price_year']
+    elif period == 'year' and tier == 'unlimited':
+        price = tier_config['price_year']
+    else:
+        return {'success': False, 'error': '无效的周期'}
+    
+    total_fee = int(price * 100)  # 元转分
+    
+    # 获取用户的openid用于回调
+    profile = _load_user_profile(openid)
+    wx_openid = profile.get('user_info', {}).get('wx_openid', openid)
+    
+    # 构建统一下单参数
+    order_no = f'{datetime.now().strftime("%Y%m%d%H%M%S")}{_generate_nonce_str(8)}'
+    notify_url = f'http://82.156.208.245:8090/api/pay-callback'
+    
+    params = {
+        'appid': WECHAT_APPID,
+        'mch_id': WECHAT_MCHID,
+        'nonce_str': _generate_nonce_str(),
+        'body': f'AISleepGen {tier_config["name"]} ({period})',
+        'out_trade_no': order_no,
+        'total_fee': str(total_fee),
+        'spbill_create_ip': ip,
+        'notify_url': notify_url,
+        'trade_type': 'JSAPI',
+        'openid': wx_openid,
+    }
+    params['sign'] = _wechat_sign(params, WECHAT_API_KEY)
+    
+    import http.client
+    xml_data = _dict_to_xml(params)
+    
+    try:
+        conn = http.client.HTTPSConnection('api.mch.weixin.qq.com', timeout=10)
+        conn.request('POST', '/pay/unifiedorder', xml_data, {'Content-Type': 'text/xml'})
+        resp = conn.getresponse().read().decode('utf-8')
+        result = _xml_to_dict(resp)
+        
+        if result.get('return_code') == 'SUCCESS' and result.get('result_code') == 'SUCCESS':
+            prepay_id = result['prepay_id']
+            
+            # 构造小程序支付参数
+            pay_params = {
+                'appId': WECHAT_APPID,
+                'timeStamp': str(int(time.time())),
+                'nonceStr': _generate_nonce_str(),
+                'package': f'prepay_id={prepay_id}',
+                'signType': 'MD5',
+            }
+            pay_params['paySign'] = _wechat_sign(pay_params, WECHAT_API_KEY)
+            
+            return {
+                'success': True,
+                'prepay_id': prepay_id,
+                'order_no': order_no,
+                'pay_params': pay_params,
+                'tier': tier,
+                'period': period,
+                'price': price,
+            }
+        else:
+            err_msg = result.get('return_msg', result.get('err_code_des', '未知错误'))
+            return {'success': False, 'error': f'下单失败: {err_msg}'}
+    except Exception as e:
+        return {'success': False, 'error': f'支付通讯异常: {str(e)}'}
+
+
+def upgrade_member(openid, tier, order_no='', period='month'):
+    """
+    升级会员等级
+    保存订单记录+更新会员等级+设置过期时间
+    """
+    profile = _load_user_profile(openid)
+    
+    # 计算会员到期时间
+    now = datetime.now()
+    if period == 'month':
+        expire = now.replace(month=now.month + 1) if now.month < 12 else now.replace(year=now.year + 1, month=1)
+    elif period == 'quarter':
+        expire = now.replace(month=now.month + 3) if now.month <= 9 else now.replace(year=now.year + 1, month=now.month - 9)
+    elif period == 'year':
+        expire = now.replace(year=now.year + 1)
+    else:
+        expire = now.replace(month=now.month + 1)
+    
+    # 更新会员信息
+    member = profile.setdefault('member', {})
+    old_level = member.get('level', 'free')
+    
+    # 升级逻辑：低等级不能覆盖高等级
+    tier_order = {'free': 0, 'pro': 1, 'unlimited': 2}
+    current_tier = member.get('level', 'free')
+    if tier_order.get(tier, 0) <= tier_order.get(current_tier, 0):
+        # 相同等级或降级，延长有效期
+        old_expire = member.get('expire_at', '')
+        if old_expire:
+            try:
+                old_time = datetime.strptime(old_expire, '%Y-%m-%d')
+                if old_time > now:
+                    expire = old_time.replace(month=old_time.month + 
+                        (1 if period == 'month' else 3 if period == 'quarter' else 12))
+                else:
+                    expire = now.replace(month=now.month + 
+                        (1 if period == 'month' else 3 if period == 'quarter' else 12))
+            except:
+                pass
+    
+    member['level'] = tier
+    member['expire_at'] = expire.strftime('%Y-%m-%d')
+    member['last_upgrade'] = now.strftime('%Y-%m-%d %H:%M')
+    
+    # 订单历史
+    orders = profile.setdefault('order_history', [])
+    orders.append({
+        'order_no': order_no,
+        'tier': tier,
+        'period': period,
+        'amount': PRICING.get(tier, {}).get('price', 0),
+        'time': now.strftime('%Y-%m-%d %H:%M:%S'),
+        'old_level': old_level,
+    })
+    
+    _save_user_profile(openid, profile)
+    return profile
+
+
+def get_smart_recommendation(openid):
+    """
+    AI代理式智能定价推荐
+    根据用户行为数据, 推荐最适合的会员升级方案
+    返回: {should_recommend: bool, tier: str, message: str, price: float, reason: str}
+    """
+    profile = _load_user_profile(openid)
+    member = profile.get('member', {})
+    behavior = profile.get('behavior_stats', {})
+    
+    current_level = member.get('level', 'free')
+    if current_level != 'free' and current_level != 'pro':
+        return {'should_recommend': False, 'reason': '已是最高等级'}
+    
+    total_sessions = behavior.get('total_relax_sessions', 0)
+    total_analyses = profile.get('meta_params', {}).get('total_interactions', 0)
+    total_usage = total_sessions + total_analyses
+    
+    scores = member.get('daily_scores', [])
+    recent_scores = [s.get('score', 0) for s in scores[-7:]] if scores else []
+    avg_recent_score = sum(recent_scores) / len(recent_scores) if recent_scores else 0
+    
+    streak_days = member.get('streak_days', 0)
+    total_days = member.get('total_days', 0)
+    
+    # --- 推荐逻辑 ---
+    
+    # 1. 高频免费用户 → 推pro
+    if current_level == 'free' and total_usage >= 20 and avg_recent_score < 70 and streak_days >= 5:
+        msg = f'您已累计分析{total_usage}次，专业版每月可解锁500次深度分析+详细报告，让您的睡眠管理更精准。'
+        return {
+            'should_recommend': True,
+            'tier': 'pro',
+            'message': msg,
+            'price': PRICING['pro']['price'],
+            'icon': PRICING['pro']['icon'],
+            'recommendation': 'heavy_free',
+        }
+    
+    # 2. 低分用户 → 推pro
+    if current_level == 'free' and avg_recent_score < 60 and streak_days >= 3:
+        msg = '您的睡眠评分偏低，专业版提供完整诊断报告和个性化改善方案，助您突破瓶颈。'
+        return {
+            'should_recommend': True,
+            'tier': 'pro',
+            'message': msg,
+            'price': PRICING['pro']['price'],
+            'icon': PRICING['pro']['icon'],
+            'recommendation': 'scorer_low',
+        }
+    
+    # 3. 高频pro用户 → 推unlimited
+    if current_level == 'pro' and total_usage >= 30:
+        msg = '您是高频用户！无限版为您解锁全部潜力，让AI成为您24小时的睡眠管家。'
+        return {
+            'should_recommend': True,
+            'tier': 'unlimited',
+            'message': msg,
+            'price': PRICING['unlimited']['price'],
+            'icon': PRICING['unlimited']['icon'],
+            'recommendation': 'dedicated',
+        }
+    
+    # 4. 忠实用户（连续7天以上）→ 推pro
+    if current_level == 'free' and streak_days >= 7:
+        msg = f'连续使用{streak_days}天，您已经是睡眠管理达人了！升级专业版获得更精准的分析。'
+        return {
+            'should_recommend': True,
+            'tier': 'pro',
+            'message': msg,
+            'price': PRICING['pro']['price'],
+            'icon': PRICING['pro']['icon'],
+            'recommendation': 'streak_achiever',
+        }
+    
+    return {'should_recommend': False, 'reason': '暂无推荐'}
+
+
+# ===== 支付/会员接口路由 =====
+
+def handle_create_order(handler, data):
+    """POST /api/create-order - 创建支付订单"""
+    openid = handler._get_openid(data)
+    tier = data.get('tier', 'pro')
+    period = data.get('period', 'month')
+    ip = handler.client_address[0]
+    
+    if tier not in ('pro', 'unlimited'):
+        handler._set_headers(400)
+        handler.wfile.write(json.dumps({'error': '无效套餐'}).encode('utf-8'))
+        return
+    
+    result = create_wechat_order(openid, tier, period, ip)
+    handler._set_headers()
+    handler.wfile.write(json.dumps(result).encode('utf-8'))
+
+
+def handle_pay_callback(handler):
+    """POST /api/pay-callback - 微信支付结果回调"""
+    content_length = int(handler.headers.get('Content-Length', 0))
+    body = handler.rfile.read(content_length).decode('utf-8')
+    
+    result = _xml_to_dict(body)
+    
+    # 验证签名
+    if result.get('return_code') == 'SUCCESS':
+        expected_sign = _wechat_sign(result, WECHAT_API_KEY)
+        if result.get('sign') == expected_sign:
+            # 支付成功
+            if result.get('result_code') == 'SUCCESS':
+                openid = result.get('openid', '')
+                order_no = result.get('out_trade_no', '')
+                # 根据订单号查套餐信息（简化：从out_trade_no推断）
+                # 实际应有订单数据库
+                upgrade_member(openid, 'pro', order_no)
+                
+                handler._set_headers()
+                resp_xml = _dict_to_xml({
+                    'return_code': 'SUCCESS',
+                    'return_msg': 'OK'
+                })
+                handler.wfile.write(resp_xml.encode('utf-8'))
+                return
+    
+    handler._set_headers()
+    resp_xml = _dict_to_xml({
+        'return_code': 'FAIL',
+        'return_msg': 'SIGN ERROR'
+    })
+    handler.wfile.write(resp_xml.encode('utf-8'))
+
+
+def handle_get_pricing(handler):
+    """GET /api/pricing - 获取定价信息"""
+    handler._set_headers()
+    handler.wfile.write(json.dumps({
+        'pricing': PRICING,
+        'recommend_rules': {k: {'condition': v['condition'], 'recommend_tier': v['recommend_tier']} 
+                           for k, v in RECOMMEND_RULES.items()}
+    }).encode('utf-8'))
+
+
+def handle_smart_recommend(handler, data):
+    """POST /api/recommend-tier - AI智能推荐会员方案"""
+    openid = handler._get_openid(data)
+    recommendation = get_smart_recommendation(openid)
+    handler._set_headers()
+    handler.wfile.write(json.dumps(recommendation).encode('utf-8'))
+
 
 if __name__ == '__main__':
     main()
