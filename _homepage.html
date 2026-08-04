@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AISleepGen 减压睡眠 · AI睡眠分析专家</title>
+<meta name="description" content="AISleepGen — AI驱动的减压睡眠分析平台，专业睡眠评分、个性化改善方案、科学入眠引导。北京汇嘉利华管理咨询有限责任公司旗下品牌。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:#0a0a1a;color:#d0d0e0;line-height:1.6;overflow-x:hidden}
+#particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+.section{padding:96px 0;position:relative;z-index:1}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,#2a2a5a,rgba(240,208,160,.3),#2a2a5a,transparent);margin:0}
+.gradient-text{background:linear-gradient(135deg,#f0d0a0,#e8a070);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ===== Navigation ===== */
+nav{position:fixed;top:0;left:0;width:100%;z-index:100;background:rgba(10,10,26,.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(42,42,90,.5);transition:background .3s}
+nav .container{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-size:20px;font-weight:700;color:#f0d0a0;text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-logo span{font-size:24px}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:#9090c0;text-decoration:none;font-size:14px;transition:color .3s;position:relative}
+.nav-links a:hover,.nav-links a.active{color:#f0d0a0}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:#f0d0a0;transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.nav-cta{background:linear-gradient(135deg,#e08060,#f0d0a0);color:#0a0a1a;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .3s;text-decoration:none}
+.nav-cta:hover{opacity:.85}
+.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.mobile-toggle span{width:24px;height:2px;background:#d0d0e0;border-radius:2px;transition:all .3s}
+
+/* ===== Hero ===== */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:64px;position:relative}
+.hero-bg-pattern{position:absolute;inset:0;overflow:hidden;z-index:0}
+.hero-bg-pattern .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12}
+.hero-bg-pattern .orb:nth-child(1){width:500px;height:500px;background:#8060e0;top:-100px;right:-100px;animation:float1 8s ease-in-out infinite}
+.hero-bg-pattern .orb:nth-child(2){width:400px;height:400px;background:#e08060;bottom:-80px;left:-80px;animation:float2 10s ease-in-out infinite}
+.hero-bg-pattern .orb:nth-child(3){width:300px;height:300px;background:#40a0d0;top:50%;left:50%;transform:translate(-50%,-50%);animation:float3 12s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,40px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-40px)}}
+@keyframes float3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.hero-content{position:relative;z-index:1;max-width:680px}
+.hero-badge{display:inline-block;background:rgba(240,208,160,.1);border:1px solid rgba(240,208,160,.2);color:#f0d0a0;padding:6px 16px;border-radius:20px;font-size:12px;margin-bottom:24px;letter-spacing:1px}
+.hero h1{font-size:clamp(36px,6vw,64px);font-weight:800;line-height:1.1;margin-bottom:20px}
+.hero h1 .gradient-text{display:block}
+.hero p{font-size:clamp(15px,2vw,18px);color:#8080b0;max-width:520px;margin-bottom:36px;line-height:1.8}
+.hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,#e08060,#f0d0a0);color:#0a0a1a;border:none;padding:14px 32px;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(240,208,160,.25)}
+.btn-secondary{background:transparent;color:#d0d0e0;border:1px solid #2a2a5a;padding:14px 32px;border-radius:30px;font-size:15px;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:#f0d0a0;background:rgba(240,208,160,.05)}
+.hero-stats{display:flex;gap:40px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(42,42,90,.5)}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:28px;font-weight:800;color:#f0d0a0}
+.hero-stat .label{font-size:12px;color:#606090;margin-top:4px}
+
+/* ===== Section Titles ===== */
+.section-title{text-align:center;margin-bottom:56px}
+.section-title h2{font-size:clamp(26px,4vw,40px);font-weight:700;margin-bottom:12px}
+.section-title p{color:#606090;font-size:15px;max-width:500px;margin:0 auto}
+.section-title .sub{display:inline-block;color:#8080b0;font-size:12px;letter-spacing:2px;margin-bottom:12px}
+
+/* ===== Features ===== */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.feature-card{background:linear-gradient(145deg,rgba(20,20,50,.6),rgba(30,20,40,.4));border:1px solid rgba(42,42,90,.4);border-radius:20px;padding:36px 28px;transition:all .4s;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .4s}
+.feature-card:hover::before{opacity:1}
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(42,42,90,.8);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.feature-icon{font-size:36px;margin-bottom:16px;display:block}
+.feature-card h3{font-size:18px;font-weight:600;margin-bottom:10px;color:#f0f0ff}
+.feature-card p{font-size:14px;color:#7070a0;line-height:1.7}
+.feature-card .feature-tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:10px;margin-top:14px;color:var(--accent);background:rgba(240,208,160,.08);border:1px solid rgba(240,208,160,.15)}
+.feature-card:nth-child(1){--accent:#f0d0a0}
+.feature-card:nth-child(2){--accent:#80c0e0}
+.feature-card:nth-child(3){--accent:#c080e0}
+.feature-card:nth-child(4){--accent:#80e0a0}
+.feature-card:nth-child(5){--accent:#e08060}
+.feature-card:nth-child(6){--accent:#e0e080}
+
+/* ===== How It Works ===== */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;max-width:900px;margin:0 auto}
+.step{text-align:center;position:relative}
+.step-num{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(240,208,160,.15),rgba(224,128,96,.1));border:2px solid rgba(240,208,160,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:22px;font-weight:800;color:#f0d0a0}
+.step h4{font-size:16px;font-weight:600;margin-bottom:8px}
+.step p{font-size:13px;color:#606090;line-height:1.6}
+
+/* ===== Live Demo ===== */
+#demo{background:linear-gradient(180deg,rgba(10,10,26,1),rgba(15,15,35,.95))}
+.demo-container{max-width:420px;margin:0 auto}
+.demo-card{background:linear-gradient(135deg,#151540,#201530);border:1px solid #2a2a4a;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.demo-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a1a3a}
+.demo-header h3{font-size:16px;color:#f0d0a0}
+.demo-header span{font-size:11px;color:#606090}
+.demo-body{padding:20px}
+.demo-chat{display:flex;flex-direction:column;gap:10px;max-height:420px;overflow-y:auto;min-height:200px;padding-bottom:4px}
+.demo-msg{max-width:88%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.demo-msg.user{background:#2a2a5a;align-self:flex-end;border-bottom-right-radius:4px}
+.demo-msg.bot{background:#1a1a3a;border-left:3px solid #f0d0a0;align-self:flex-start;border-bottom-left-radius:4px}
+.demo-score-card{background:linear-gradient(135deg,#1a1a4a,#2a1a3a);border:1px solid #3a2a5a;border-radius:12px;padding:12px;margin-top:8px}
+.demo-score-card .sctitle{font-size:11px;color:#a080d0;margin-bottom:8px}
+.demo-dims{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.demo-dim{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:3px 0}
+.demo-dim .lb{color:#8080b0}
+.demo-dim .val{color:#d0d0f0;font-weight:600}
+.demo-input{display:flex;gap:8px;padding:12px 0 0;border-top:1px solid #1a1a3a;margin-top:12px}
+.demo-input input{flex:1;background:#1a1a3a;border:1px solid #2a2a5a;border-radius:10px;color:#d0d0e0;font-size:13px;padding:10px 12px;outline:none}
+.demo-input input:focus{border-color:#f0d0a0}
+.demo-input button{background:linear-gradient(135deg,#e08060,#f0d0a0);color:#0a0a1a;border:none;border-radius:10px;padding:0 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.demo-loading{opacity:.6}
+.demo-loading::after{content:' ● ● ●';animation:demoblink 1.2s infinite}
+@keyframes demoblink{0%,20%{opacity:.3}40%{opacity:1}60%,100%{opacity:.3}}
+
+/* ===== Testimonials ===== */
+.testimonial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.testimonial-card{background:rgba(20,20,50,.4);border:1px solid #1e1e3e;border-radius:16px;padding:28px}
+.testimonial-card .stars{color:#f0d0a0;font-size:14px;margin-bottom:12px}
+.testimonial-card blockquote{font-size:14px;color:#8080b0;line-height:1.7;margin-bottom:16px}
+.testimonial-card .author{display:flex;align-items:center;gap:10px}
+.testimonial-card .author .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2a2a5a,#3a2a5a);display:flex;align-items:center;justify-content:center;font-size:16px}
+.testimonial-card .author .name{font-size:13px;color:#c0c0e0}
+.testimonial-card .author .title{font-size:11px;color:#505080}
+
+/* ===== Pricing ===== */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start;max-width:960px;margin:0 auto}
+.pricing-card{background:linear-gradient(145deg,rgba(20,20,50,.6),rgba(30,20,40,.4));border:1px solid #1e1e3e;border-radius:20px;padding:36px 28px;text-align:center;transition:all .4s;position:relative}
+.pricing-card.featured{border-color:rgba(240,208,160,.3);background:linear-gradient(145deg,rgba(40,30,60,.6),rgba(50,25,45,.4));transform:scale(1.03)}
+.pricing-card.featured .badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#e08060,#f0d0a0);color:#0a0a1a;padding:4px 16px;border-radius:12px;font-size:11px;font-weight:700}
+.pricing-card h3{font-size:18px;margin-bottom:8px}
+.pricing-card .price{font-size:42px;font-weight:800;color:#f0d0a0;margin:16px 0}
+.pricing-card .price span{font-size:14px;color:#606090;font-weight:400}
+.pricing-card ul{list-style:none;text-align:left;padding:0;margin:20px 0}
+.pricing-card ul li{padding:8px 0;font-size:13px;color:#8080b0;display:flex;align-items:center;gap:8px}
+.pricing-card ul li::before{content:'✓';color:#80e0a0;font-weight:700}
+.pricing-card ul li.muted{color:#404060}
+.pricing-card ul li.muted::before{content:'✕';color:#404060}
+
+/* ===== FAQ ===== */
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.faq-item{border:1px solid #1e1e3e;border-radius:14px;overflow:hidden;transition:border-color .3s}
+.faq-item:hover,.faq-item.active{border-color:#2a2a5a}
+.faq-q{width:100%;padding:16px 20px;background:rgba(20,20,50,.3);border:none;color:#c0c0e0;font-size:14px;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:background .3s}
+.faq-q:hover{background:rgba(30,30,60,.4)}
+.faq-q .arrow{transition:transform .3s;font-size:12px}
+.faq-item.active .faq-q .arrow{transform:rotate(180deg)}
+.faq-a{padding:0 20px;max-height:0;overflow:hidden;transition:all .4s;font-size:13px;color:#606090;line-height:1.7}
+.faq-item.active .faq-a{padding:0 20px 16px;max-height:300px}
+
+/* ===== Footer ===== */
+footer{background:rgba(10,10,26,.9);border-top:1px solid #1a1a3a;padding:48px 0 32px;position:relative;z-index:1}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px}
+.footer-brand .logo{font-size:18px;font-weight:700;color:#f0d0a0;margin-bottom:8px}
+.footer-brand p{font-size:13px;color:#606090;line-height:1.7;max-width:300px}
+.footer-col h4{font-size:13px;color:#9090c0;margin-bottom:16px;letter-spacing:1px}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{color:#505080;text-decoration:none;font-size:13px;transition:color .3s}
+.footer-col ul li a:hover{color:#f0d0a0}
+.footer-bottom{border-top:1px solid #1a1a3a;padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:12px;color:#404060}
+.footer-bottom .icp{color:#505080;text-decoration:none;font-size:12px}
+.footer-bottom .icp:hover{color:#8080b0}
+.footer-beian{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0a0a1a}
+::-webkit-scrollbar-thumb{background:#2a2a5a;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#3a3a6a}
+
+/* ===== Animations ===== */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.delay-1{transition-delay:0.1s}
+.delay-2{transition-delay:0.2s}
+.delay-3{transition-delay:0.3s}
+.delay-4{transition-delay:0.4s}
+
+/* ===== Responsive ===== */
+@media(max-width:900px){
+  .nav-links{display:none}
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;width:100%;background:rgba(10,10,26,.95);backdrop-filter:blur(16px);padding:20px 24px;gap:16px;border-bottom:1px solid #1a1a3a}
+  .mobile-toggle{display:flex}
+  .hero-stats{gap:24px;flex-wrap:wrap}
+  .hero-stat .num{font-size:22px}
+  .steps{grid-template-columns:1fr;gap:32px}
+  .pricing-card.featured{transform:none}
+}
+@media(max-width:600px){
+  .container{padding:0 16px}
+  .section{padding:64px 0}
+  .section-title{margin-bottom:40px}
+  .hero h1{font-size:32px}
+  .features-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:24px}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hero-buttons{flex-direction:column}
+  .btn-primary,.btn-secondary{text-align:center;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+
+<!-- ===== Navigation ===== -->
+<nav id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo"><span>🌙</span> AISleepGen</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#features" class="active">功能</a></li>
+      <li><a href="#how">原理</a></li>
+      <li><a href="#demo">体验</a></li>
+      <li><a href="#pricing">定价</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#demo" class="nav-cta">开始体验</a>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="hero">
+  <div class="hero-bg-pattern">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  <div class="container hero-content">
+    <div class="hero-badge">AI 睡眠专家会诊系统 2.0</div>
+    <h1>
+      <span class="gradient-text">告别辗转反侧</span>
+      <span class="gradient-text">科学重启深度睡眠</span>
+    </h1>
+    <p>AISleepGen 基于 8 位虚拟睡眠专家会诊模型，从昼夜节律、深度时长、心理恢复等多维度分析你的睡眠质量，提供个性化的减压入眠方案。</p>
+    <div class="hero-buttons">
+      <a href="#demo" class="btn-primary">免费体验睡眠分析</a>
+      <a href="#features" class="btn-secondary">了解详情</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">10,000+</div><div class="label">服务人次</div></div>
+      <div class="hero-stat"><div class="num">92%</div><div class="label">用户满意度</div></div>
+      <div class="hero-stat"><div class="num">7维</div><div class="label">睡眠评分体系</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Features ===== -->
+<div class="section-divider"></div>
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="sub">Features</div>
+      <h2>为什么选择 <span class="gradient-text">AISleepGen</span></h2>
+      <p>不只是睡眠记录，而是 AI 驱动的深度睡眠教练</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in delay-1">
+        <span class="feature-icon">🧠</span>
+        <h3>8位专家会诊</h3>
+        <p>昼夜节律专家、心理专家、行为专家等 8 个虚拟角色协同分析，多维度交叉验证你的睡眠数据。</p>
+        <span class="feature-tag">核心引擎</span>
+      </div>
+      <div class="feature-card fade-in delay-2">
+        <span class="feature-icon">📊</span>
+        <h3>7维睡眠评分</h3>
+        <p>从节律、时长、效率、深度、夜醒、身体恢复、心理恢复七个维度综合评分，看清每一面的状态。</p>
+        <span class="feature-tag">科学评估</span>
+      </div>
+      <div class="feature-card fade-in delay-3">
+        <span class="feature-icon">🎯</span>
+        <h3>个性化改善方案</h3>
+        <p>基于你的睡眠特征，动态生成每日入睡指引、减压冥想和作息建议，一人一方案。</p>
+        <span class="feature-tag">AI 适配</span>
+      </div>
+      <div class="feature-card fade-in delay-1">
+        <span class="feature-icon">💬</span>
+        <h3>自然语言交互</h3>
+        <p>像和朋友聊天一样描述昨晚的睡眠——「12 点睡，中间醒了一次，7 点起」——系统自动分析。</p>
+        <span class="feature-tag">零门槛</span>
+      </div>
+      <div class="feature-card fade-in delay-2">
+        <span class="feature-icon">🌊</span>
+        <h3>减压冥想引导</h3>
+        <p>内置专业减压呼吸练习、正念冥想和心理弹性训练，帮你从白天的焦虑中平稳过渡到睡眠。</p>
+        <span class="feature-tag">辅助功能</span>
+      </div>
+      <div class="feature-card fade-in delay-3">
+        <span class="feature-icon">📱</span>
+        <h3>微信小程序 + Web</h3>
+        <p>同时支持微信小程序和 Web 端使用，记录随时同步，随时随地获取你的睡眠分析。</p>
+        <span class="feature-tag">多端支持</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== How It Works ===== -->
+<div class="section-divider"></div>
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="sub">How It Works</div>
+      <h2>三步获得你的 <span class="gradient-text">睡眠报告</span></h2>
+      <p>简单三步，获取专业的睡眠分析</p>
+    </div>
+    <div class="steps fade-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>描述睡眠</h4>
+        <p>用自然语言描述你昨晚的睡眠情况，就像跟朋友聊天一样简单</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>AI 分析</h4>
+        <p>8 位虚拟专家从 7 个维度交叉分析，生成综合睡眠评分与解读</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>获得方案</h4>
+        <p>基于分析结果生成个性化的入眠指引、减压建议与改善计划</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Live Demo ===== -->
+<div class="section-divider"></div>
+<section class="section" id="demo">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="sub">Live Demo</div>
+      <h2>立即体验 <span class="gradient-text">AI 睡眠分析</span></h2>
+      <p>输入你的睡眠情况，看看 AI 专家怎么说</p>
+    </div>
+    <div class="demo-container fade-in delay-1">
+      <div class="demo-card">
+        <div class="demo-header">
+          <h3>🌙 AISleepGen</h3>
+          <span>8位专家会诊</span>
+        </div>
+        <div class="demo-body">
+          <div class="demo-chat" id="demoChat">
+            <div class="demo-msg bot">🌙 告诉我昨晚睡得怎么样？<br><span style="color:#7070a0">比如：「昨晚11点半睡，6点醒，中间醒了一次」</span></div>
+          </div>
+          <div class="demo-input">
+            <input type="text" id="demoInput" placeholder="说说昨晚睡得怎么样..." maxlength="500">
+            <button id="demoSendBtn" onclick="demoSend()">分析</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<div class="section-divider"></div>
+<section class="section" id="testimonials">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="sub">Testimonials</div>
+      <h2>用户 <span class="gradient-text">好评</span></h2>
+      <p>来自真实用户的使用反馈</p>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card fade-in delay-1">
+        <div class="stars">★★★★★</div>
+        <blockquote>"用了一周，睡眠评分从 52 提升到了 78。最神奇的是它建议我把手机在睡前 40 分钟放下，真的有效。"</blockquote>
+        <div class="author">
+          <div class="avatar">👩</div>
+          <div><div class="name">林女士</div><div class="title">互联网 · 产品经理</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-in delay-2">
+        <div class="stars">★★★★★</div>
+        <blockquote>"之前用过很多睡眠 app，第一次感觉 AI 真的理解我的问题。它推荐的呼吸练习帮我从焦虑中平静下来。"</blockquote>
+        <div class="author">
+          <div class="avatar">👨</div>
+          <div><div class="name">王先生</div><div class="title">金融 · 交易员</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-in delay-3">
+        <div class="stars">★★★★☆</div>
+        <blockquote>"作为经常熬夜的程序员，这个评分体系帮我量化了睡眠质量。专家的建议很中肯，不是那种泛泛而谈的鸡汤。"</blockquote>
+        <div class="author">
+          <div class="avatar">👨‍💻</div>
+          <div><div class="name">张先生</div><div class="title">科技 · 软件开发</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Pricing ===== -->
+<div class="section-divider"></div>
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="sub">Pricing</div>
+      <h2>选择适合你的 <span class="gradient-text">方案</span></h2>
+      <p>免费开始，升级解锁更多专业功能</p>
+    </div>
+    <div class="pricing-grid fade-in">
+      <div class="pricing-card">
+        <h3>免费版</h3>
+        <div class="price">0<span> /月</span></div>
+        <ul>
+          <li>每日 AI 睡眠分析</li>
+          <li>7 维睡眠评分</li>
+          <li>基础改善建议</li>
+          <li>7 天历史回顾</li>
+          <li class="muted">高级分析报告</li>
+          <li class="muted">个性化冥想引导</li>
+        </ul>
+        <a href="#demo" class="btn-secondary" style="display:inline-flex;padding:10px 28px">立即使用</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="badge">推荐</div>
+        <h3>专业版</h3>
+        <div class="price">29<span> /月</span></div>
+        <ul>
+          <li>无限次 AI 深度分析</li>
+          <li>完整 7 维评分报告</li>
+          <li>个性化减压冥想</li>
+          <li>30 天趋势分析</li>
+          <li>呼吸训练 + 正念引导</li>
+          <li>数据导出</li>
+        </ul>
+        <a href="#demo" class="btn-primary" style="display:inline-flex;padding:10px 28px">升级专业版</a>
+      </div>
+      <div class="pricing-card">
+        <h3>无限版</h3>
+        <div class="price">99<span> /永久</span></div>
+        <ul>
+          <li>全部专业版功能</li>
+          <li>永久无限使用</li>
+          <li>优先新功能体验</li>
+          <li>专属客服支持</li>
+          <li>未来所有更新免费</li>
+          <li>家庭共享</li>
+        </ul>
+        <a href="#demo" class="btn-secondary" style="display:inline-flex;padding:10px 28px">了解详情</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<div class="section-divider"></div>
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-title fade-in">
+      <div class="sub">FAQ</div>
+      <h2>常见 <span class="gradient-text">问题</span></h2>
+    </div>
+    <div class="faq-list fade-in">
+      <div class="faq-item active">
+        <button class="faq-q" onclick="toggleFAQ(this)">AISleepGen 如何分析我的睡眠？ <span class="arrow">&#9660;</span></button>
+        <div class="faq-a">我们采用 8 位虚拟专家会诊系统，每位专家从不同维度分析你描述的睡眠情况（入睡时间、醒来次数、睡眠时长、主观感受等），交叉验证后生成 7 维评分和个性化建议。整个过程由 AI 驱动，无需穿戴设备。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">需要付费吗？ <span class="arrow">&#9660;</span></button>
+        <div class="faq-a">我们提供免费的每日 AI 睡眠分析和基础评分。升级专业版（29 元/月）可解锁无限次深度分析、个性化冥想引导和 30 天趋势追踪。还有永久 99 元的无限版。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">数据安全吗？ <span class="arrow">&#9660;</span></button>
+        <div class="faq-a">所有睡眠数据通过加密传输和存储。我们严格遵守个人信息保护法，提供数据导出和删除功能（被遗忘权）。详情请查看隐私政策。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">可以在手机上使用吗？ <span class="arrow">&#9660;</span></button>
+        <div class="faq-a">当然可以。我们提供微信小程序和响应式 Web 端，手机、平板、PC 均可使用，数据通过云端同步。</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">AISleepGen 是医疗产品吗？ <span class="arrow">&#9660;</span></button>
+        <div class="faq-a">AISleepGen 是睡眠健康管理工具，提供 AI 驱动的睡眠分析和个性化建议，不作为医疗诊断设备。如果您有严重的睡眠障碍，建议咨询专业医生。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">&#127769; AISleepGen</div>
+        <p>AI 驱动的减压睡眠分析平台。基于 8 位虚拟专家会诊系统，从 7 个维度科学评估睡眠质量，提供个性化改善方案。</p>
+      </div>
+      <div class="footer-col">
+        <h4>产品</h4>
+        <ul>
+          <li><a href="#features">功能介绍</a></li>
+          <li><a href="#pricing">定价方案</a></li>
+          <li><a href="#demo">在线体验</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>支持</h4>
+        <ul>
+          <li><a href="#faq">常见问题</a></li>
+          <li><a href="#">隐私政策</a></li>
+          <li><a href="#">服务协议</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>联系</h4>
+        <ul>
+          <li><a href="mailto:support@aisleepgen.com">support@aisleepgen.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>
+        <p>&copy; 2026 AISleepGen. All rights reserved.</p>
+      </div>
+      <div class="footer-beian">
+        <span>北京汇嘉利华管理咨询有限责任公司</span>
+        <a class="icp" href="https://beian.miit.gov.cn" target="_blank" rel="noopener">京ICP备2025114441号-2</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== Particles Background =====
+(function(){
+  var c = document.getElementById('particles-canvas');
+  var ctx = c.getContext('2d');
+  var w,h,particles=[];
+  function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight}
+  window.addEventListener('resize',resize); resize();
+  for(var i=0;i<60;i++){
+    particles.push({
+      x:Math.random()*w,y:Math.random()*h,
+      vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,
+      r:Math.random()*1.5+0.5,a:Math.random()*0.3+0.1
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;
+      if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(180,180,220,'+p.a+')';ctx.fill();
+    }
+    ctx.strokeStyle='rgba(180,180,220,0.06)';ctx.lineWidth=0.5;
+    for(var i=0;i<particles.length;i++){
+      for(var j=i+1;j<particles.length;j++){
+        var dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ===== Scroll Animations =====
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('visible')}
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(function(el){observer.observe(el)});
+
+// ===== Nav Scroll =====
+var nav = document.getElementById('navbar');
+var links = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',function(){
+  var scrollY = window.scrollY;
+  links.forEach(function(link){
+    var target = document.querySelector(link.getAttribute('href'));
+    if(target){
+      var offset = target.offsetTop - 120;
+      if(scrollY >= offset && scrollY < offset + target.offsetHeight){
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    }
+  });
+});
+
+// ===== Mobile Toggle =====
+document.getElementById('mobileToggle').addEventListener('click',function(){
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ===== FAQ Toggle =====
+function toggleFAQ(btn){
+  var item = btn.parentElement;
+  item.classList.toggle('active');
+}
+
+// ===== Demo Chat =====
+var API = window.location.origin;
+var DEMO_ID = 'demo_' + Date.now();
+var chatEl = document.getElementById('demoChat');
+var inputEl = document.getElementById('demoInput');
+
+function demoAddMsg(text,isUser){
+  var d = document.createElement('div');
+  d.className = 'demo-msg ' + (isUser ? 'user' : 'bot');
+  d.textContent = text;
+  chatEl.appendChild(d);
+  chatEl.scrollTop = chatEl.scrollHeight;
+  return d;
+}
+
+function demoShowScoreCard(data){
+  if(!data || !data.total_score) return;
+  var div = document.createElement('div');
+  div.className = 'demo-score-card';
+  var dimLabels = {circadian:'节律',duration:'时长',efficiency:'效率',depth:'深度',awake:'夜醒',recovery_physical:'身体',recovery_mental:'心理'};
+  var dims = data.dimensions || [];
+  var html = '<div class="sctitle">&#128202; 7维评估 &middot; 总分 ' + data.total_score + '/100</div><div class="demo-dims">';
+  for(var i=0;i<dims.length;i++){
+    var n = dimLabels[dims[i].name] || dims[i].name;
+    var s = dims[i].score || 0;
+    html += '<div class="demo-dim"><span class="lb">' + n + '</span><span class="val">' + s + '</span></div>';
+  }
+  html += '</div><div style="margin-top:8px;padding-top:8px;border-top:1px solid #1a1a3a;font-size:11px;color:#606090;text-align:center">' + (data.quality || '良好') + '</div>';
+  div.innerHTML = html;
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function demoSend(){
+  var text = inputEl.value.trim();
+  if(!text) return;
+  inputEl.value = '';
+  demoAddMsg(text, true);
+  var loading = demoAddMsg('分析中', false);
+  loading.classList.add('demo-loading');
+  var btn = document.getElementById('demoSendBtn');
+  btn.disabled = true;
+  fetch(API + '/api/chat', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message:text, openid:DEMO_ID})
+  }).then(function(r){return r.json()}).then(function(d){
+    loading.remove();
+    var reply = d.reply || d.response || '(无回复)';
+    demoAddMsg(reply, false);
+    if(d.auto_report && d.auto_report.score && d.auto_report.data_sufficient !== false){
+      demoShowScoreCard(d.auto_report);
+    }
+  }).catch(function(){
+    loading.remove();
+    demoAddMsg('请求超时，请稍后重试', false);
+  }).finally(function(){
+    btn.disabled = false;
+  });
+}
+
+inputEl.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){e.preventDefault(); demoSend();}
+});
+
+// ===== Close mobile menu on link click =====
+document.querySelectorAll('.nav-links a').forEach(function(a){
+  a.addEventListener('click', function(){
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

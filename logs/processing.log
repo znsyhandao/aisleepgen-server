@@ -1,0 +1,48 @@
+2025-04-09 09:02:27,826 - INFO - 启动数据处理流程
+2025-04-09 09:02:27,826 - INFO - 启动数据处理流程
+2025-04-09 09:08:46,478 - INFO - 启动数据处理流程
+2025-04-09 09:08:46,478 - INFO - 启动数据处理流程
+2025-04-09 09:13:02,623 - INFO - 启动数据处理流程
+2025-04-09 09:13:02,623 - INFO - 启动数据处理流程
+2025-04-09 09:13:02,643 - ERROR - 流程执行失败: name 'Counter' is not defined
+2025-04-09 09:13:02,643 - ERROR - 流程执行失败: name 'Counter' is not defined
+2025-04-09 09:18:31,171 - INFO - 启动数据处理流程
+2025-04-09 09:18:31,171 - INFO - 启动数据处理流程
+2025-04-09 09:21:33,015 - INFO - 启动数据处理流程
+2025-04-09 09:21:33,015 - INFO - 启动数据处理流程
+2025-04-09 09:28:28,937 - INFO - 启动数据处理流程
+2025-04-09 09:28:28,937 - INFO - 启动数据处理流程
+2025-04-09 09:28:29,237 - ERROR - 流程执行失败: [Errno 13] Permission denied: 'reports\\visual_report_train_processed.json.pdf'
+2025-04-09 09:28:29,237 - ERROR - 流程执行失败: [Errno 13] Permission denied: 'reports\\visual_report_train_processed.json.pdf'
+2025-04-09 09:30:59,281 - INFO - 启动数据处理流程
+2025-04-09 09:30:59,281 - INFO - 启动数据处理流程
+2025-04-09 09:30:59,543 - ERROR - 流程执行失败: [Errno 13] Permission denied: 'reports\\visual_report_train_processed.json.pdf'
+2025-04-09 09:30:59,543 - ERROR - 流程执行失败: [Errno 13] Permission denied: 'reports\\visual_report_train_processed.json.pdf'
+2025-04-09 09:32:51,011 - INFO - 启动数据处理流程
+2025-04-09 09:32:51,011 - INFO - 启动数据处理流程
+2025-04-09 09:49:29,867 - INFO - 启动数据处理流程
+2025-04-09 09:49:29,867 - INFO - 启动数据处理流程
+2025-04-09 09:49:51,049 - INFO - 启动数据处理流程
+2025-04-09 09:49:51,049 - INFO - 启动数据处理流程
+2025-04-09 09:50:24,736 - INFO - 启动数据处理流程
+2025-04-09 09:50:24,736 - INFO - 启动数据处理流程
+2025-04-09 10:12:35,671 - INFO - 启动数据处理流程
+2025-04-09 10:12:35,671 - INFO - 启动数据处理流程
+2025-04-09 10:15:18,889 - INFO - 启动数据处理流程
+2025-04-09 10:15:18,889 - INFO - 启动数据处理流程
+2025-04-09 10:41:34,960 - INFO - 启动数据处理流程
+2025-04-09 10:41:34,960 - INFO - 启动数据处理流程
+2025-04-09 10:41:40,245 - INFO - Modify plan for patient PATIENT_123
+2025-04-09 10:41:40,245 - INFO - Modify plan for patient PATIENT_123
+2025-04-09 10:41:57,234 - INFO - Modify plan for patient PATIENT_123
+2025-04-09 10:41:57,234 - INFO - Modify plan for patient PATIENT_123
+2025-04-09 10:45:22,064 - INFO - 启动数据处理流程
+2025-04-09 10:45:22,064 - INFO - 启动数据处理流程
+2025-04-09 10:47:41,518 - INFO - 启动数据处理流程
+2025-04-09 10:47:41,518 - INFO - 启动数据处理流程
+2025-04-09 10:47:50,435 - INFO - Rejected plan for patient PATIENT_123
+2025-04-09 10:47:50,435 - INFO - Rejected plan for patient PATIENT_123
+2025-04-09 10:47:54,763 - INFO - Approved plan for patient PATIENT_123
+2025-04-09 10:47:54,763 - INFO - Approved plan for patient PATIENT_123
+2025-04-09 10:52:38,563 - INFO - Approved plan for patient PATIENT_123
+2025-04-09 10:52:38,563 - INFO - Approved plan for patient PATIENT_123

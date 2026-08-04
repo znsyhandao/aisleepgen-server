@@ -1,0 +1,104 @@
+<view class="page">
+  <!-- 背景网格 -->
+  <view class="hologrid"></view>
+  
+  <!-- 关闭 -->
+  <view class="close" catchtap="closeNow">
+    <text class="close-icon">✕</text>
+  </view>
+  
+  <!-- 标题 -->
+  <view class="title-bar">
+    <text class="title-text">{{relaxName}}</text>
+  </view>
+
+  <!-- 全息人体区 -->
+  <view class="body-area">
+    <!-- 人体轮廓（纯CSS + 伪元素） -->
+    <view class="hologram-body">
+      <!-- 头部 -->
+      <view class="body-part head {{_bodyPart === 6 ? 'active' : ''}}" data-part="head">
+        <view class="part-glow"></view>
+      </view>
+      <!-- 躯干 -->
+      <view class="body-part torso {{_bodyPart === 3 ? 'active' : (_bodyPart === 4 ? 'active' : '')}}" data-part="torso">
+        <view class="part-glow"></view>
+      </view>
+      <!-- 左臂 -->
+      <view class="body-part arm-left {{_bodyPart === 4 ? 'active' : ''}}" data-part="arm-left">
+        <view class="part-glow"></view>
+      </view>
+      <!-- 右臂 -->
+      <view class="body-part arm-right {{_bodyPart === 4 ? 'active' : ''}}" data-part="arm-right">
+        <view class="part-glow"></view>
+      </view>
+      <!-- 左腿 -->
+      <view class="body-part leg-left {{_bodyPart <= 2 ? 'active' : ''}}" data-part="leg-left">
+        <view class="part-glow"></view>
+      </view>
+      <!-- 右腿 -->
+      <view class="body-part leg-right {{_bodyPart <= 2 ? 'active' : ''}}" data-part="leg-right">
+        <view class="part-glow"></view>
+      </view>
+    </view>
+    
+    <!-- 扫描线 -->
+    <view class="scan-line" animation="{{scanAnim}}"></view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-wrap">
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{totalSteps > 0 ? (step / totalSteps * 100) : 0}}%"></view>
+    </view>
+    <text class="progress-num">{{step > 0 ? step : 0}}/{{totalSteps}}</text>
+  </view>
+
+  <!-- 指令卡片 -->
+  <view class="instruction-card">
+    <view class="part-badge" wx:if="{{!done}}">
+      <text class="badge-text">● {{currentPart}}</text>
+    </view>
+    
+    <view class="phase-section" wx:if="{{!done}}">
+      <!-- 准备阶段 -->
+      <block wx:if="{{subStatus === 'ready'}}">
+        <text class="instruction-text">{{instruction}}</text>
+        <view class="phases-status">
+          <text class="status-text">准备好了吗？</text>
+        </view>
+      </block>
+      
+      <!-- 收紧阶段 -->
+      <block wx:if="{{subStatus === 'tense'}}">
+        <text class="instruction-text action">绷紧 {{currentPart}} ——</text>
+        <view class="countdown-ring">
+          <view class="countdown-num">{{subCount}}</view>
+          <text class="countdown-label">收紧</text>
+        </view>
+      </block>
+      
+      <!-- 放松阶段 -->
+      <block wx:if="{{subStatus === 'relax'}}">
+        <text class="instruction-text release">…放松……</text>
+        <view class="countdown-ring relax">
+          <view class="countdown-num">{{subCount}}</view>
+          <text class="countdown-label">放松</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 完成 -->
+    <view class="done-section" wx:if="{{done}}">
+      <text class="done-icon">✨</text>
+      <text class="done-title">全身放松完成</text>
+      <text class="done-sub">感受从头到脚彻底放松的感觉</text>
+      <view class="done-btn" catchtap="closeNow">完成</view>
+    </view>
+  </view>
+
+  <!-- 提示 -->
+  <view class="tip-bar" wx:if="{{displayTip && !done}}">
+    <text class="tip-text">{{displayTip}}</text>
+  </view>
+</view>

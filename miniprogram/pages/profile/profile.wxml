@@ -1,0 +1,278 @@
+<!-- pages/profile/profile.wxml — 用户中心（专业版）含会员升级 -->
+<view class="container">
+  
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-layer">
+    <view class="spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <scroll-view class="profile-scroll" scroll-y wx:else show-scrollbar="{{false}}">
+    
+    <!-- ===== 用户卡片 ===== -->
+    <view class="user-hero-card">
+      <view class="hero-glow"></view>
+      
+      <view class="avatar-area">
+        <button wx:if="{{!userInfo.avatarUrl}}" class="avatar-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+          <view class="avatar-placeholder">👤</view>
+        </button>
+        <image wx:else class="avatar-img" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        
+        <view class="user-meta">
+          <text class="user-name">{{userInfo.nickname}}</text>
+          <view class="level-badge" style="background: {{getLevelInfo(member.level).color}}15; border-color: {{getLevelInfo(member.level).color}}30;">
+            <text>{{getLevelInfo(member.level).icon}} {{getLevelInfo(member.level).label}}</text>
+          </view>
+          <text class="joined-date">加入 {{member.joinedAt}}</text>
+        </view>
+      </view>
+      
+      <!-- 统计行 -->
+      <view class="stats-row">
+        <view class="stat-item">
+          <text class="stat-value">{{member.totalSessions}}</text>
+          <text class="stat-label">分析次数</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value">{{member.avgScore}}</text>
+          <text class="stat-label">总平均分</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value">{{member.avgScore7d}}</text>
+          <text class="stat-label">近7日平均</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value highlight">{{member.streakDays}}</text>
+          <text class="stat-label">连续🔥</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value">{{member.totalDays}}</text>
+          <text class="stat-label">累计天数</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== AI智能推荐卡片 ===== -->
+    <view wx:if="{{hasRecommendation}}" class="recommend-card">
+      <view class="recommend-header">
+        <text class="recommend-badge">🤖 AI推荐</text>
+        <text class="recommend-close" bindtap="dismissRecommendation">✕</text>
+      </view>
+      <text class="recommend-icon">{{recommendation.icon}} {{recommendation.tier === 'pro' ? '专业版' : '无限版'}}</text>
+      <text class="recommend-text">{{recommendation.message}}</text>
+      <view class="recommend-price-row">
+        <text class="recommend-price">¥{{recommendation.price}}<text class="recommend-unit">/月</text></text>
+        <button class="recommend-btn" bindtap="applyRecommendation" catchtap="openUpgrade">立即升级</button>
+      </view>
+    </view>
+
+    <!-- ===== 会员升级入口 ===== -->
+    <view class="upgrade-card" wx:if="{{member.level === 'free' || member.level === 'pro'}}" bindtap="openUpgrade">
+      <view class="upgrade-card-glow"></view>
+      <view class="upgrade-card-content">
+        <text class="upgrade-card-icon">⭐</text>
+        <view class="upgrade-card-text">
+          <text class="upgrade-card-title">升级会员</text>
+          <text class="upgrade-card-desc">解锁更多深度分析与个性化方案</text>
+        </view>
+        <text class="upgrade-card-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- ===== 功能导航 ===== -->
+    <view class="menu-section">
+      <text class="menu-section-label">功能导航</text>
+      
+      <view class="menu-list">
+        <view class="menu-item" wx:for="{{menuItems}}" wx:key="page" 
+              data-page="{{item.page}}" bindtap="handleNavClick">
+          <view class="menu-icon-wrap">
+            <text class="menu-icon">{{item.icon}}</text>
+          </view>
+          <view class="menu-content">
+            <text class="menu-text">{{item.text}}</text>
+            <text class="menu-desc">{{item.desc}}</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 减压画像 ===== -->
+    <view class="menu-section" wx:if="{{relaxStats.total_sessions > 0}}">
+      <text class="menu-section-label">🧘 减压画像</text>
+      
+      <view class="relax-card">
+        <view class="relax-grid">
+          <view class="relax-item">
+            <text class="relax-val highlight">{{relaxStats.total_sessions}}</text>
+            <text class="relax-lbl">减压次数</text>
+          </view>
+          <view class="relax-item">
+            <text class="relax-val">{{relaxStats.completed_sessions}}</text>
+            <text class="relax-lbl">完整完成</text>
+          </view>
+          <view class="relax-item">
+            <text class="relax-val highlight">{{relaxStats.relax_streak_days}}</text>
+            <text class="relax-lbl">连续减压🔥</text>
+          </view>
+          <view class="relax-item">
+            <text class="relax-val">{{formatDuration(relaxStats.avg_duration)}}</text>
+            <text class="relax-lbl">平均时长</text>
+          </view>
+        </view>
+
+        <!-- 压力类型分布 -->
+        <view class="stress-tags" wx:if="{{relaxStats.stress_types.length > 0}}">
+          <text class="stress-tag" wx:for="{{relaxStats.stress_types}}" wx:key="type">
+            {{item.type}} ×{{item.count}}
+          </text>
+        </view>
+
+        <!-- 完成率 -->
+        <view class="completion-row" wx:if="{{relaxStats.total_sessions > 0}}">
+          <text class="completion-lbl">完成率</text>
+          <view class="completion-bar">
+            <view class="completion-fill" style="width: {{relaxStats.total_sessions > 0 ? (relaxStats.completed_sessions / relaxStats.total_sessions * 100) : 0}}%"></view>
+          </view>
+          <text class="completion-pct">{{relaxStats.total_sessions > 0 ? Math.round(relaxStats.completed_sessions / relaxStats.total_sessions * 100) : 0}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 版本信息 ===== -->
+    <view class="footer-info">
+      <text class="footer-name">AISleepGen</text>
+      <text class="footer-version">v1.0.0</text>
+      <text class="footer-tagline">AI 驱动的睡眠分析助手</text>
+    </view>
+    
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+
+  <!-- ===== 升级弹窗 ===== -->
+  <view wx:if="{{showUpgradeModal}}" class="modal-overlay" catchtouchmove="preventTouchMove" bindtap="closeUpgrade">
+    <view class="modal-content" catchtap="{{''}}" style="">
+      <!-- 成功状态 -->
+      <view wx:if="{{upgradeSuccess}}" class="upgrade-success">
+        <view class="success-icon">✅</view>
+        <text class="success-title">升级成功！</text>
+        <text class="success-desc">您的会员权益已生效，享受更强大的睡眠分析体验。</text>
+      </view>
+
+      <!-- 套餐选择 -->
+      <view wx:else>
+        <view class="modal-header">
+          <text class="modal-title">升级会员</text>
+          <text class="modal-close" bindtap="closeUpgrade">✕</text>
+        </view>
+
+        <!-- 当前状态 -->
+        <view class="current-tier">
+          <text class="current-label">当前等级</text>
+          <text class="current-value">{{getLevelInfo(member.level).icon}} {{getLevelInfo(member.level).label}}</text>
+        </view>
+
+        <!-- 套餐选择 -->
+        <view class="tier-select">
+          <view class="tier-option {{selectedTier === 'pro' ? 'tier-active' : ''}}" bindtap="selectTier" data-tier="pro">
+            <text class="tier-icon">⭐</text>
+            <text class="tier-name">专业版</text>
+            <text wx:if="{{pricing}}" class="tier-price">¥{{pricing.pro.price}}<text class="tier-unit">/月</text></text>
+            <text class="tier-desc">500次/月分析 + 详细报告</text>
+          </view>
+          <view class="tier-option {{selectedTier === 'unlimited' ? 'tier-active' : ''}}" bindtap="selectTier" data-tier="unlimited">
+            <text class="tier-icon">👑</text>
+            <text class="tier-name">无限版</text>
+            <text wx:if="{{pricing}}" class="tier-price">¥{{pricing.unlimited.price}}<text class="tier-unit">/月</text></text>
+            <text class="tier-desc">无限次数 + 全部高级功能</text>
+          </view>
+        </view>
+
+        <!-- 周期选择（专业版有季卡/年卡） -->
+        <view class="period-select" wx:if="{{selectedTier === 'pro'}}">
+          <view class="period-option {{selectedPeriod === 'month' ? 'period-active' : ''}}" bindtap="selectPeriod" data-period="month">
+            <text class="period-label">月卡</text>
+            <text wx:if="{{pricing}}" class="period-price">¥{{pricing.pro.price}}</text>
+          </view>
+          <view class="period-option {{selectedPeriod === 'quarter' ? 'period-active' : ''}}" bindtap="selectPeriod" data-period="quarter">
+            <text class="period-label">季卡</text>
+            <text wx:if="{{pricing}}" class="period-price">¥{{pricing.pro.price_quarter || 69}}</text>
+            <text class="period-badge">省{{pricing ? Math.round((pricing.pro.price * 3 - pricing.pro.price_quarter) / (pricing.pro.price * 3) * 100) : 20}}%</text>
+          </view>
+          <view class="period-option {{selectedPeriod === 'year' ? 'period-active' : ''}}" bindtap="selectPeriod" data-period="year">
+            <text class="period-label">年卡</text>
+            <text wx:if="{{pricing}}" class="period-price">¥{{pricing.pro.price_year || 199}}</text>
+            <text class="period-badge">省{{pricing ? Math.round((pricing.pro.price * 12 - pricing.pro.price_year) / (pricing.pro.price * 12) * 100) : 40}}%</text>
+          </view>
+        </view>
+
+        <!-- 周期选择（无限版有年卡） -->
+        <view class="period-select" wx:if="{{selectedTier === 'unlimited'}}">
+          <view class="period-option {{selectedPeriod === 'month' ? 'period-active' : ''}}" bindtap="selectPeriod" data-period="month">
+            <text class="period-label">月卡</text>
+            <text wx:if="{{pricing}}" class="period-price">¥{{pricing.unlimited.price}}</text>
+          </view>
+          <view class="period-option {{selectedPeriod === 'year' ? 'period-active' : ''}}" bindtap="selectPeriod" data-period="year">
+            <text class="period-label">年卡</text>
+            <text wx:if="{{pricing}}" class="period-price">¥{{pricing.unlimited.price_year || 499}}</text>
+            <text class="period-badge">省{{pricing ? Math.round((pricing.unlimited.price * 12 - pricing.unlimited.price_year) / (pricing.unlimited.price * 12) * 100) : 50}}%</text>
+          </view>
+        </view>
+
+        <!-- 支付按钮 -->
+        <button class="pay-btn" bindtap="doPayment" disabled="{{ordering}}">
+          <text wx:if="{{!ordering}}">立即支付 ¥{{getSelectedPrice()}}</text>
+          <text wx:if="{{ordering}}">处理中...</text>
+        </button>
+
+        <text class="pay-notice">支付即代表同意《会员服务协议》</text>
+      </view>
+    </view>
+
+    <!-- ===== 硬件设备区域 ===== -->
+    <view class="section-card" style="margin:20rpx;">
+      <view class="section-header" style="display:flex;justify-content:space-between;align-items:center;padding:24rpx;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <view>
+          <text style="font-size:28rpx;font-weight:600;color:#e0d8f0;">⌚ 硬件设备</text>
+          <text wx:if="{{huaweiConnected}}" style="font-size:22rpx;color:#4caf50;margin-left:12rpx;">● 已连接</text>
+          <text wx:else style="font-size:22rpx;color:#ff6b6b;margin-left:12rpx;">● 未连接</text>
+        </view>
+        <text style="font-size:24rpx;color:#667eea;cursor:pointer;">›</text>
+      </view>
+      <view class="section-body" style="padding:20rpx 24rpx;" bindtap="goBandPage" cursor="pointer">
+        <view style="display:flex;align-items:center;justify-content:space-between;">
+          <view style="flex:1;">
+            <text style="font-size:26rpx;color:#ccc;display:block;">华为手环 11 Pro</text>
+            <text style="font-size:22rpx;color:#888;display:block;margin-top:6rpx;">
+              {{huaweiConnected ? '每日自动同步睡眠数据' : '连接手环获得精准睡眠监测'}}
+            </text>
+          </view>
+          <text style="font-size:40rpx;">{{huaweiConnected ? '✅' : '⌚'}}</text>
+        </view>
+      </view>
+      <view class="section-footer" style="padding:16rpx 24rpx;border-top:1px solid rgba(255,255,255,0.04);" wx:if="{{huaweiConnected && lastSyncText}}">
+        <text style="font-size:22rpx;color:#666;">最后同步: {{lastSyncText}}</text>
+      </view>
+    </view>
+
+    <!-- ===== 冥想库入口 ===== -->
+    <view class="section-card" style="margin:20rpx;" bindtap="goMeditationLibrary" cursor="pointer">
+      <view style="display:flex;align-items:center;padding:24rpx;">
+        <text style="font-size:40rpx;margin-right:20rpx;">🧘</text>
+        <view style="flex:1;">
+          <text style="font-size:28rpx;font-weight:600;color:#e0d8f0;display:block;">眠小兔原创冥想库</text>
+          <text style="font-size:22rpx;color:#888;display:block;margin-top:4rpx;">
+            200+ 原创冥想 · 艺术/植物/行走/助眠
+          </text>
+        </view>
+        <text style="font-size:28rpx;color:#667eea;">›</text>
+      </view>
+    </view>
+  </view>
+</view>

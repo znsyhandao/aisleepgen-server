@@ -1,0 +1,76 @@
+<view class="page">
+  <!-- 粒子背景 -->
+  <canvas type="2d" id="particleCanvas" class="particle-layer"></canvas>
+  
+  <!-- 全息光晕 -->
+  <view class="holographic-bg"></view>
+
+  <!-- 顶部信息 -->
+  <view class="top-bar">
+    <text class="protocol-label">{{protocolLabel}}</text>
+    <view class="top-actions">
+      <view class="sound-toggle" catchtap="toggleSound">
+        <text class="sound-icon">{{soundOn ? '🔊' : '🔇'}}</text>
+      </view>
+      <view class="close-btn" catchtap="closeNow">
+        <text class="close-icon">✕</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 核心内容区 ===== -->
+  <view class="center-area">
+
+    <!-- 呼吸动画（仅呼吸阶段显示） -->
+    <view class="breath-circle-wrap" wx:if="{{showBreathCircle}}">
+      <view class="breath-circle {{breathPhase}}" style="transform: scale({{scale}});">
+        <view class="breath-glow {{breathPhase}}"></view>
+      </view>
+      <text class="breath-phase-text">{{breathPhaseText}}</text>
+      <text class="breath-count-text">{{breathCount}}</text>
+    </view>
+
+    <!-- 扫描动画（仅扫描阶段显示） -->
+    <view class="scan-area" wx:if="{{showScanArea}}">
+      <view class="scan-ring"></view>
+      <view class="scan-body">
+        <view class="body-part {{currentAreaIndex >= 0 ? 'active' : ''}}">
+          <view class="part-glow"></view>
+        </view>
+      </view>
+      <text class="scan-text">{{guideText}}</text>
+    </view>
+
+    <!-- 安静监测（仅监测阶段显示） -->
+    <view class="monitor-area" wx:if="{{showMonitorArea}}">
+      <view class="monitor-pulse {{monitorPulse ? 'pulse' : ''}}"></view>
+      <text class="monitor-text">{{guideText}}</text>
+      <text class="monitor-hint">{{guideHint}}</text>
+    </view>
+
+    <!-- 渐弱退出 -->
+    <view class="release-area" wx:if="{{showReleaseArea}}">
+      <view class="release-wave"></view>
+      <text class="release-text">{{guideText}}</text>
+    </view>
+
+    <!-- 完成 -->
+    <view class="done-area" wx:if="{{companionDone}}">
+      <text class="done-icon">🌙</text>
+      <text class="done-text">晚安</text>
+      <text class="done-sub">好梦</text>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar" wx:if="{{!companionDone}}">
+    <button class="bottom-btn" catchtap="cancelCompanion">
+      <text>不想继续了</text>
+    </button>
+  </view>
+  <view class="bottom-bar" wx:else>
+    <button class="bottom-btn primary" catchtap="goBack">
+      <text>返回首页</text>
+    </button>
+  </view>
+</view>

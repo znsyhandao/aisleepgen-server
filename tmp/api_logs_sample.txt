@@ -1,0 +1,500 @@
+127.0.0.1 - - [14/Jul/2026 17:44:27] "POST /api/chat HTTP/1.1" 200 -
+
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[PubmedFrontier] 开始每日自动更新...
+[PubmedFrontier] 找到5篇潜在文献，开始拉取详情...
+[PubmedFrontier] 成功解析5篇文献
+[PubmedFrontier] 合并完成: 新增0篇, 总计48篇
+[PubmedFrontier] 每日更新完成: 找到5篇, 新增0篇
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[SelfHeal] ⚠️ API异常: HTTP Error 402: Payment Required
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[Effectiveness] _maybe_build_trajectory_model error: No module named 'trajectory_model_db'
+[WM Debug] _handle_chat wm=WorldModelEngine
+[Coordinator] wm_physio_context inject failed: No module named 'world_model_coordinator'
+Traceback (most recent call last):
+  File "/opt/aisleepgen/deepseek_proxy.py", line 8532, in _handle_chat
+    from world_model_coordinator import WorldModelCoordinator
+ModuleNotFoundError: No module named 'world_model_coordinator'
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43378)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/opt/aisleepgen/deepseek_proxy.py", line 4480, in do_POST
+    self._handle_chat(data)
+  File "/opt/aisleepgen/deepseek_proxy.py", line 9534, in _handle_chat
+    history_context, expert_history = _build_history_context(openid)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aisleepgen/deepseek_proxy.py", line 2652, in _build_history_context
+    for s in reversed(summaries):
+                      ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'summaries' where it is not associated with a value
+----------------------------------------
+127.0.0.1 - - [14/Jul/2026 17:44:32] "POST /api/chat HTTP/1.1" 200 -
+[WM Debug] _handle_chat wm=WorldModelEngine
+[Coordinator] wm_physio_context inject failed: No module named 'world_model_coordinator'
+Traceback (most recent call last):
+  File "/opt/aisleepgen/deepseek_proxy.py", line 8532, in _handle_chat
+    from world_model_coordinator import WorldModelCoordinator
+ModuleNotFoundError: No module named 'world_model_coordinator'
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43392)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/opt/aisleepgen/deepseek_proxy.py", line 4480, in do_POST
+    self._handle_chat(data)
+  File "/opt/aisleepgen/deepseek_proxy.py", line 9534, in _handle_chat
+    history_context, expert_history = _build_history_context(openid)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/aisleepgen/deepseek_proxy.py", line 2652, in _build_history_context
+    for s in reversed(summaries):
+                      ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'summaries' where it is not associated with a value
+----------------------------------------
+168.144.31.109 - - [14/Jul/2026 18:14:01] "GET / HTTP/1.1" 200 -
+168.144.31.109 - - [14/Jul/2026 18:14:01] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Jul/2026 18:49:58] "GET //api/ HTTP/1.1" 404 -
+127.0.0.1 - - [14/Jul/2026 18:49:59] "GET //api/v1/ HTTP/1.1" 404 -
+127.0.0.1 - - [14/Jul/2026 18:49:59] "GET //api/v2/ HTTP/1.1" 404 -
+127.0.0.1 - - [14/Jul/2026 18:50:00] "GET //api/docs HTTP/1.1" 404 -
+127.0.0.1 - - [14/Jul/2026 18:50:39] "GET /api/.env HTTP/1.1" 404 -
+151.243.11.237 - - [14/Jul/2026 20:34:14] "GET / HTTP/1.1" 200 -
+151.243.11.237 - - [14/Jul/2026 20:34:14] "GET /favicon.ico HTTP/1.1" 404 -
+66.132.172.99 - - [14/Jul/2026 20:49:33] code 400, message Bad request version ('À\\x14À')
+66.132.172.99 - - [14/Jul/2026 20:49:33] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x05!t"ë:\x96Wú\x11(\x12\x80Û)+yuÙw\x0d\x7fmÆ\x89Åe¸ÀÑ\x83æ \x9fPØ^\x8aBV·\x1ef/\x92y½üë°ìïIÁ=\x93,ÔI¿\x00O©êÙ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+66.132.172.99 - - [14/Jul/2026 20:49:35] "GET / HTTP/1.1" 200 -
+66.132.172.99 - - [14/Jul/2026 20:49:36] code 505, message Invalid HTTP version (2.0)
+66.132.172.99 - - [14/Jul/2026 20:49:36] "PRI * HTTP/2.0" 505 -
+66.132.172.99 - - [14/Jul/2026 20:49:38] "GET /favicon.ico HTTP/1.1" 404 -
+66.132.172.99 - - [14/Jul/2026 20:50:21] code 400, message Bad request version ('À\\x14À')
+66.132.172.99 - - [14/Jul/2026 20:50:21] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x80îöA\x8fY\x87\x85\x169\x9ds\x8c­\x034¾{«}\x0eö3vëq'\x15Í÷ñ\x96 UMâ\x9f>\x0f¬ÖZm ¡ß¬E\x14?sò×\x7f"ã\x09Q\x97ßA\x0c¹\x06Ï\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+66.132.172.99 - - [14/Jul/2026 20:50:23] "GET /.well-known/security.txt HTTP/1.1" 404 -
+3.130.168.2 - - [14/Jul/2026 20:56:46] "GET / HTTP/1.1" 200 -
+3.130.168.2 - - [14/Jul/2026 20:58:36] "GET / HTTP/1.1" 200 -
+3.130.168.2 - - [14/Jul/2026 21:00:12] code 400, message Bad request version ('À\\x14À')
+3.130.168.2 - - [14/Jul/2026 21:00:12] "\x16\x03\x01\x01\x00\x01\x00\x00ü\x03\x03\x1ezÍÅ\x09\x83\x95|Ó÷êõ$Ü÷\x0f×Á-4=k-\x9e\x0f\x01`Ô\x1fÙ¤µ 0«d`\x8a\x95µÏ\x0f\x9c)µ\x8e\x04Ä{Æ\x1d\x16Û\x04¦ºt¾Cw\x00&4õñ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+3.130.168.2 - - [14/Jul/2026 21:01:46] code 400, message Bad request version ('À\\x14À')
+3.130.168.2 - - [14/Jul/2026 21:01:46] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03w«Ü\x84\x9aR\x0e_7B\x8e{+2\x95\x8b\x85W\x06Bðú®\x9f\x1fCÍë\x12oî» õI\x89ûE\x0bê÷û08\x9a\x0e¯\x85«²\x82\x0fw½>±±h\x1e}R)+,Ì\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+164.215.103.71 - - [14/Jul/2026 21:22:59] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Jul/2026 23:19:19] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 00:42:19] "GET /api/auth HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 00:42:25] "GET /api/aws HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 01:39:32] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 -
+45.198.224.5 - - [15/Jul/2026 02:23:54] "GET /login HTTP/1.1" 404 -
+172.236.228.39 - - [15/Jul/2026 02:46:23] code 400, message Bad request syntax ('\\x16\\x03\\x01\\x01')
+172.236.228.39 - - [15/Jul/2026 02:46:23] "\x16\x03\x01\x01" 400 -
+172.236.228.39 - - [15/Jul/2026 02:46:23] code 400, message Bad request syntax ('\\x16\\x03\\x01\\x01')
+172.236.228.39 - - [15/Jul/2026 02:46:23] "\x16\x03\x01\x01" 400 -
+45.194.67.29 - - [15/Jul/2026 03:33:47] "GET / HTTP/1.1" 200 -
+45.194.67.29 - - [15/Jul/2026 03:33:47] "GET /favicon.ico HTTP/1.1" 404 -
+212.73.148.38 - - [15/Jul/2026 03:41:00] "GET / HTTP/1.1" 200 -
+205.210.31.162 - - [15/Jul/2026 03:55:04] "GET / HTTP/1.0" 200 -
+79.124.40.74 - - [15/Jul/2026 04:25:03] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+79.124.40.74 - - [15/Jul/2026 04:25:03] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+79.124.40.74 - - [15/Jul/2026 04:25:03] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+79.124.40.74 - - [15/Jul/2026 04:25:03] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+----------------------------------------
+Exception occurred during processing of request from ('69.164.217.74', 48284)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 404, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 707, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+69.164.217.74 - - [15/Jul/2026 04:35:10] "GET / HTTP/1.1" 200 -
+173.255.225.25 - - [15/Jul/2026 04:40:48] "GET / HTTP/1.1" 200 -
+205.210.31.101 - - [15/Jul/2026 04:50:05] code 400, message Bad request version ('À\\x13À')
+205.210.31.101 - - [15/Jul/2026 04:50:05] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03£_\x07Z+È\x06oé\x83\x00Ld\x8e8¾\x80\x0f\x06*]\x0dSag*«]Ë-;\x84 µ#\x81³L¢\x01cIzÒ\x0dñüÕS\x85×;\x83"\x09° Î\x8ffÛ\x92ç½w\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À" 400 -
+205.210.31.101 - - [15/Jul/2026 04:50:05] code 400, message Bad request version ('À(À$À\\x14À')
+205.210.31.101 - - [15/Jul/2026 04:50:05] "\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03\x93\x9a\x872\x9ej\x8d\x8f%ð6Ì\x1cQ\x04$©\x9b\x14:Pãò®\x0d¨p|ÐN/\x98\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À" 400 -
+----------------------------------------
+Exception occurred during processing of request from ('45.33.12.122', 56064)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 404, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 707, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+45.33.12.122 - - [15/Jul/2026 05:33:40] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jul/2026 05:34:34] "GET /api/session/properties HTTP/1.1" 404 -
+45.79.181.223 - - [15/Jul/2026 05:35:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [15/Jul/2026 05:59:02] "GET /api/v1 HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 05:59:02] "GET /api/ HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 05:59:02] "GET /api/v2 HTTP/1.1" 404 -
+20.29.21.208 - - [15/Jul/2026 06:04:37] "GET / HTTP/1.1" 200 -
+20.29.21.208 - - [15/Jul/2026 06:04:37] code 400, message Bad request syntax ('MGLNDD_123.60.222.129_8090')
+20.29.21.208 - - [15/Jul/2026 06:04:37] "MGLNDD_123.60.222.129_8090" 400 -
+79.124.62.114 - - [15/Jul/2026 06:59:22] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+79.124.62.114 - - [15/Jul/2026 06:59:22] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+127.0.0.1 - - [15/Jul/2026 07:08:48] "GET /health HTTP/1.1" 200 -
+52.167.144.57 - - [15/Jul/2026 07:53:52] "GET /robots.txt HTTP/1.1" 404 -
+52.167.144.197 - - [15/Jul/2026 07:53:56] "GET /api/meditation-plan HTTP/1.1" 404 -
+223.104.204.28 - - [15/Jul/2026 08:12:24] "GET / HTTP/1.1" 200 -
+223.104.204.28 - - [15/Jul/2026 08:12:24] "GET /favicon.ico HTTP/1.1" 404 -
+223.104.204.28 - - [15/Jul/2026 08:12:31] "GET /health HTTP/1.1" 200 -
+223.104.204.28 - - [15/Jul/2026 08:12:43] "GET / HTTP/1.1" 200 -
+223.104.204.28 - - [15/Jul/2026 08:12:43] "GET /favicon.ico HTTP/1.1" 404 -
+223.104.204.28 - - [15/Jul/2026 08:12:47] "GET /api/sleep-report HTTP/1.1" 404 -
+223.104.204.28 - - [15/Jul/2026 08:26:40] "GET / HTTP/1.1" 200 -
+223.104.204.28 - - [15/Jul/2026 08:26:40] "GET /favicon.ico HTTP/1.1" 404 -
+79.124.62.114 - - [15/Jul/2026 09:25:01] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+79.124.62.114 - - [15/Jul/2026 09:25:01] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+176.123.6.142 - - [15/Jul/2026 10:08:41] "GET http://azenv.net/ HTTP/1.1" 200 -
+45.198.224.5 - - [15/Jul/2026 10:25:23] "GET /login HTTP/1.1" 404 -
+135.237.126.195 - - [15/Jul/2026 10:33:18] code 400, message Bad request syntax ('MGLNDD_123.60.222.129_8090')
+135.237.126.195 - - [15/Jul/2026 10:33:18] "MGLNDD_123.60.222.129_8090" 400 -
+195.206.182.215 - - [15/Jul/2026 11:04:12] "GET / HTTP/1.1" 200 -
+5.226.140.56 - - [15/Jul/2026 11:04:17] "GET / HTTP/1.1" 200 -
+5.226.140.40 - - [15/Jul/2026 11:04:18] "GET /favicon.ico HTTP/1.1" 404 -
+89.37.172.141 - - [15/Jul/2026 11:04:18] "POST /mcp HTTP/1.1" 404 -
+193.32.209.226 - - [15/Jul/2026 11:04:19] "POST / HTTP/1.1" 404 -
+5.226.140.2 - - [15/Jul/2026 11:04:20] "GET /sse HTTP/1.1" 404 -
+188.166.49.43 - - [15/Jul/2026 11:49:53] "GET / HTTP/1.1" 200 -
+188.166.49.43 - - [15/Jul/2026 11:49:54] "GET /favicon.ico HTTP/1.1" 404 -
+194.165.16.164 - - [15/Jul/2026 13:03:43] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+194.165.16.164 - - [15/Jul/2026 13:03:43] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+127.0.0.1 - - [15/Jul/2026 15:00:00] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 -
+64.62.156.108 - - [15/Jul/2026 15:03:17] "GET / HTTP/1.1" 200 -
+64.62.156.111 - - [15/Jul/2026 15:04:00] "GET /favicon.ico HTTP/1.1" 404 -
+64.62.156.110 - - [15/Jul/2026 15:04:17] "GET http://api.ipify.org/?format=json HTTP/1.1" 200 -
+64.62.156.108 - - [15/Jul/2026 15:04:23] code 501, message Unsupported method ('CONNECT')
+64.62.156.108 - - [15/Jul/2026 15:04:23] "CONNECT www.shadowserver.org:443 HTTP/1.1" 501 -
+141.98.11.205 - - [15/Jul/2026 15:19:25] "GET / HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('66.132.172.143', 13736)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 404, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 707, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+66.132.172.143 - - [15/Jul/2026 16:22:32] "GET / HTTP/1.1" 200 -
+66.132.172.143 - - [15/Jul/2026 16:22:39] code 400, message Bad HTTP/0.9 request type ('\\x16\\x03\\x01\\x00î\\x01\\x00\\x00ê\\x03\\x03Ñ,ôÖS+5lÖØ^\\x06\\x96\\x9aü\\x14\\xad:\\x93é\\x80Ï&¸\\x946*j\\x9fí¿Ý')
+66.132.172.143 - - [15/Jul/2026 16:22:39] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Ñ,ôÖS+5lÖØ^\x06\x96\x9aü\x14­:\x93é\x80Ï&¸\x946*j\x9fí¿Ý \x9co[H]W%\x10X9°P¸\x89O\x01Æ" 400 -
+66.132.172.143 - - [15/Jul/2026 16:22:40] "GET / HTTP/1.1" 200 -
+66.132.172.143 - - [15/Jul/2026 16:22:41] code 505, message Invalid HTTP version (2.0)
+66.132.172.143 - - [15/Jul/2026 16:22:41] "PRI * HTTP/2.0" 505 -
+66.132.172.143 - - [15/Jul/2026 16:22:42] "GET /favicon.ico HTTP/1.1" 404 -
+66.132.172.143 - - [15/Jul/2026 16:22:46] code 400, message Bad request version ('À\\x14À')
+66.132.172.143 - - [15/Jul/2026 16:22:46] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x92\x91!ç©\x8c\x0bu3f\x01©¿þP\x7fM[\x9a\x8c\x07c\x9bxÙL¾Í".ÄÁ \x03\x868JõIðmÛÒ\x0c}\x9dõ7àì²\x0dÊÁê¼\x0e¾dý\x1a´;¿Á\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+66.132.172.143 - - [15/Jul/2026 16:22:47] "GET /.well-known/security.txt HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 16:49:36] "GET /api/.env HTTP/1.1" 404 -
+45.198.224.54 - - [15/Jul/2026 17:01:16] "GET / HTTP/1.1" 200 -
+151.243.11.236 - - [15/Jul/2026 17:34:19] "GET / HTTP/1.1" 200 -
+151.243.11.236 - - [15/Jul/2026 17:34:19] "GET /favicon.ico HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:05:23] code 400, message Bad request version ('À\\x14À')
+216.180.246.27 - - [15/Jul/2026 18:05:23] "\x16\x03\x01\x00ý\x01\x00\x00ù\x03\x03Úò· ì\x8eò\x93Ø\x9c>4\x9døÊîèý)Ì-ÿ$Ä\x1eæý?\x19-ï¦ ß\\Ú^\x10\x99§¦aÙx\x06!Kè)Âõ\x1aÍÁßq\x9b\x18î\x99Ø\x12øÅt\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+216.180.246.27 - - [15/Jul/2026 18:05:55] "GET / HTTP/1.1" 200 -
+216.180.246.27 - - [15/Jul/2026 18:05:57] "GET /manage/account/login HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:05:58] "GET /admin/index.html HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:05:59] "GET /index.html HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:06:00] "GET /+CSCOE+/logon.html HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:06:01] "GET /cgi-bin/login.cgi HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:06:06] "GET /login.htm HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:06:12] "GET /login.html HTTP/1.1" 404 -
+216.180.246.27 - - [15/Jul/2026 18:06:14] "GET /login.jsp HTTP/1.1" 404 -
+87.251.64.22 - - [15/Jul/2026 18:21:21] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+87.251.64.22 - - [15/Jul/2026 18:21:21] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+127.0.0.1 - - [15/Jul/2026 19:08:55] "GET /api/.env HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 19:26:47] "GET /api/.env HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 20:02:15] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 -
+65.49.1.232 - - [15/Jul/2026 20:43:03] code 400, message Bad request version ('À\\x14À')
+65.49.1.232 - - [15/Jul/2026 20:43:03] "\x16\x03\x01\x00{\x01\x00\x00w\x03\x03oÚ¯\x8d\x15BÎa|í\x14I\x9cÐÏ\x94I¤ß\x90AJ0K\x08 ôË\x82Y3A\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À" 400 -
+127.0.0.1 - - [15/Jul/2026 21:25:51] "GET /api/config HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 21:25:51] "GET /api/env HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 21:25:52] "GET /api/env HTTP/1.1" 404 -
+127.0.0.1 - - [15/Jul/2026 21:25:52] "GET /api/config HTTP/1.1" 404 -
+183.57.179.136 - - [15/Jul/2026 21:48:53] "GET / HTTP/1.1" 200 -
+183.57.179.136 - - [15/Jul/2026 21:48:53] "GET /favicon.ico HTTP/1.1" 404 -
+52.167.144.57 - - [15/Jul/2026 21:55:25] "GET /robots.txt HTTP/1.1" 404 -
+52.167.144.139 - - [15/Jul/2026 21:55:32] "GET / HTTP/1.1" 200 -
+195.96.139.49 - - [15/Jul/2026 22:51:16] "GET / HTTP/1.1" 200 -
+87.251.64.22 - - [15/Jul/2026 23:14:29] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+87.251.64.22 - - [15/Jul/2026 23:14:29] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+127.0.0.1 - - [16/Jul/2026 00:43:23] "GET /api/.env HTTP/1.1" 404 -
+79.124.40.74 - - [16/Jul/2026 01:56:10] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+79.124.40.74 - - [16/Jul/2026 01:56:10] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+45.198.224.5 - - [16/Jul/2026 02:14:29] "GET /login HTTP/1.1" 404 -
+3.130.168.2 - - [16/Jul/2026 02:30:57] "GET / HTTP/1.1" 200 -
+3.130.168.2 - - [16/Jul/2026 02:32:42] code 400, message Bad request syntax ('\\x16\\x03\\x01\\x01\\x00\\x01\\x00\\x00ü\\x03\\x03ði\\x9d\\x8b\\x12\\x9e¾áóÂ¯ø®¡Ò')
+3.130.168.2 - - [16/Jul/2026 02:32:42] "\x16\x03\x01\x01\x00\x01\x00\x00ü\x03\x03ði\x9d\x8b\x12\x9e¾áóÂ¯ø®¡Ò" 400 -
+198.235.24.197 - - [16/Jul/2026 02:43:08] code 400, message Bad request version ('À\\x13À')
+198.235.24.197 - - [16/Jul/2026 02:43:08] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03ûøQûX&\x02?IS©d\x0blº\x1eèz»d\x0d\x1eÒáÜ3\x81\x93Ç½æú Ù\x89Û\x94r\x04õcK\x1a\x0eõFÍý\x8011¦\x0fC\x14\x02à*\x01'pÉC­ò\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À" 400 -
+198.235.24.197 - - [16/Jul/2026 02:43:09] code 400, message Bad HTTP/0.9 request type ("\\x16\\x03\\x01\\x00Ê\\x01\\x00\\x00Æ\\x03\\x03º\\x08ÙD²\\x04äÒ]AùD¾>$¯ã\\x10ÈæCo\\x96IIàypÑ\\x16\\x92ç\\x00\\x00hÌ\\x14Ì\\x13À/À+À0À,À\\x11À\\x07À'À#À\\x13À")
+198.235.24.197 - - [16/Jul/2026 02:43:09] "\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03º\x08ÙD²\x04äÒ]AùD¾>$¯ã\x10ÈæCo\x96IIàypÑ\x16\x92ç\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À" 400 -
+87.251.64.22 - - [16/Jul/2026 04:05:39] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+87.251.64.22 - - [16/Jul/2026 04:05:39] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+39.98.164.42 - - [16/Jul/2026 04:22:28] "GET / HTTP/1.1" 200 -
+39.98.164.42 - - [16/Jul/2026 04:22:28] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 04:23:34] "GET /api/.env HTTP/1.1" 404 -
+176.65.149.236 - - [16/Jul/2026 04:40:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jul/2026 04:45:55] "GET /api/.env HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 04:46:07] "GET /api/v1/.env HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 04:46:07] "GET /api/v2/.env HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 04:46:09] "GET /api/v3/.env HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 04:46:09] "GET /api/dev/.env HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 04:46:09] "GET /api/staging/.env HTTP/1.1" 404 -
+176.123.6.142 - - [16/Jul/2026 06:00:42] "GET http://azenv.net/ HTTP/1.1" 200 -
+69.5.169.120 - - [16/Jul/2026 06:13:54] "GET / HTTP/1.1" 200 -
+213.166.84.35 - - [16/Jul/2026 06:14:09] "GET / HTTP/1.1" 200 -
+195.206.182.196 - - [16/Jul/2026 06:14:11] "GET /favicon.ico HTTP/1.1" 404 -
+5.226.140.4 - - [16/Jul/2026 06:14:20] "POST / HTTP/1.1" 404 -
+31.14.254.43 - - [16/Jul/2026 06:14:22] "POST /mcp HTTP/1.1" 404 -
+188.240.59.10 - - [16/Jul/2026 06:14:26] "GET /sse HTTP/1.1" 404 -
+205.210.31.47 - - [16/Jul/2026 06:36:52] "GET / HTTP/1.0" 200 -
+127.0.0.1 - - [16/Jul/2026 06:40:01] "GET /api/.env HTTP/1.1" 404 -
+----------------------------------------
+Exception occurred during processing of request from ('167.94.146.61', 57476)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 404, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 707, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+167.94.146.61 - - [16/Jul/2026 08:15:21] "GET / HTTP/1.1" 200 -
+167.94.146.61 - - [16/Jul/2026 08:15:25] code 400, message Bad request version ('À\\x14À')
+167.94.146.61 - - [16/Jul/2026 08:15:25] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03x\x15\x15\x97\x9b7M\x0bUÚr~lc´\x9c\x85¤Å>Gÿb£\x0cBÉ-Ë¼\x81R AÉ\x82\x85ÉX\x8f\x102CVIúKJýíÂ÷\\\x96[\x16°\x12²¤F©\x13\x12¯\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+167.94.146.61 - - [16/Jul/2026 08:15:25] "GET / HTTP/1.1" 200 -
+167.94.146.61 - - [16/Jul/2026 08:15:26] code 505, message Invalid HTTP version (2.0)
+167.94.146.61 - - [16/Jul/2026 08:15:26] "PRI * HTTP/2.0" 505 -
+167.94.146.61 - - [16/Jul/2026 08:15:26] "GET /favicon.ico HTTP/1.1" 404 -
+167.94.146.61 - - [16/Jul/2026 08:15:30] code 400, message Bad request version ('À\\x14À')
+167.94.146.61 - - [16/Jul/2026 08:15:30] "\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x9b'\x9f¿\x89\x95#\x9a\x0ea+\x0fG]L^)5\x84>Ùú¦jq\x02sÉé\x8aLO µÔä\x97ºÞÌ\x0f¦iH\x8d\x1eY><¹ÙAt\x89ÐÙB\x8f¶Ë2½SdK\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À" 400 -
+167.94.146.61 - - [16/Jul/2026 08:15:31] "GET /security.txt HTTP/1.1" 404 -
+185.247.137.140 - - [16/Jul/2026 08:16:22] "GET / HTTP/1.1" 200 -
+222.91.197.8 - - [16/Jul/2026 09:07:50] "GET /health HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('222.91.197.8', 34223)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/opt/aisleepgen/deepseek_proxy.py", line 4496, in do_POST
+    self._handle_wx_login(data)
+  File "/opt/aisleepgen/deepseek_proxy.py", line 16831, in _handle_wx_login
+    from wx_login import handle_wx_login as wx_login_fn
+ModuleNotFoundError: No module named 'wx_login'
+----------------------------------------
+65.49.1.122 - - [16/Jul/2026 09:16:58] code 400, message Bad HTTP/0.9 request type ('\\x16\\x03\\x01\\x00{\\x01\\x00\\x00w\\x03\\x03\\x90aÐàûLR\\x8b»ð±)Ô+Ïdî"ª\\\\«êê\\x06Ó\\x19f;Âíÿ\\x1a\\x00\\x00\\x1aÀ/À+À\\x11À\\x07À\\x13À')
+65.49.1.122 - - [16/Jul/2026 09:16:58] "\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x90aÐàûLR\x8b»ð±)Ô+Ïdî"ª\\«êê\x06Ó\x19f;Âíÿ\x1a\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À" 400 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 52494)
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+    self.handle()
+  File "/usr/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/opt/aisleepgen/deepseek_proxy.py", line 4496, in do_POST
+    self._handle_wx_login(data)
+  File "/opt/aisleepgen/deepseek_proxy.py", line 16831, in _handle_wx_login
+    from wx_login import handle_wx_login as wx_login_fn
+ModuleNotFoundError: No module named 'wx_login'
+----------------------------------------
+127.0.0.1 - - [16/Jul/2026 09:40:56] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 -
+45.198.224.5 - - [16/Jul/2026 10:39:19] "GET /login HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 10:58:34] "GET /api/session/properties HTTP/1.1" 404 -
+87.251.64.22 - - [16/Jul/2026 11:14:53] code 400, message Bad HTTP/0.9 request type ('\\x03\\x00\\x00/*à\\x00\\x00\\x00\\x00\\x00Cookie:')
+87.251.64.22 - - [16/Jul/2026 11:14:53] "\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr" 400 -
+45.194.67.30 - - [16/Jul/2026 11:15:42] "GET / HTTP/1.1" 200 -
+45.194.67.30 - - [16/Jul/2026 11:15:42] "GET /favicon.ico HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:19:52] "GET / HTTP/1.0" 200 -
+139.162.119.146 - - [16/Jul/2026 11:21:24] "GET /webui HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:24] "GET /health HTTP/1.1" 200 -
+139.162.119.146 - - [16/Jul/2026 11:21:24] "GET /main.cfm HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:24] "GET /rest/applinks/1.0/manifest HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:24] "GET /cgi-mod/header_logo.cgi?size=big HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:25] "GET /start.pl HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:25] "GET /+CSCOE+/logon.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:25] "GET /confluence/rest/applinks/1.0/manifest HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:25] "GET / HTTP/1.1" 200 -
+139.162.119.146 - - [16/Jul/2026 11:21:25] "GET /favicon.ico HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:26] "GET /start.jsa HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:26] "GET /human.aspx?arg12=infotech HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:26] "GET /ise/img/rm-logo_small.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:26] "GET /dana-cached/hc/HostCheckerInstaller.osx HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:26] "GET /api/v2/about HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:26] "GET /start.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:27] "GET /images/logo.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:27] "GET /index.jsp HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:27] "GET /owa/ HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:27] "GET /phoenix/favicon.ico HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:27] "GET /owa/ HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:28] "GET /dana-na/nc/nc_gina_ver.txt HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:28] "GET /assets/png/favicon-abe32304.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:28] "GET /geoserver/web/wicket/bookmarkable/org.geoserver.web.AboutGeoServerPage HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:28] "GET /robots.txt HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:29] "GET /xml/info.xml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:29] "GET /login.php HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:29] "GET /home.shtml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:30] "GET /cgi-bin/info.cgi HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:30] "GET /App_Themes/Default/Images/favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 11:21:30] "GET /api/v1/check-version HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:30] "GET /index.html HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 11:21:31] "GET /api/v2/about HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:31] "GET /geoserver/ HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:31] "GET /localstart.asp HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:32] "GET / HTTP/1.1" 200 -
+139.162.119.146 - - [16/Jul/2026 11:21:32] code 400, message Bad request version (".$\\x00\\x9c\\x13\\x02\\x13\\x03\\x13\\x01\\x003\\x009\\x005\\x00/À,À0\\x00£\\x00\\x9fÌ©Ì¨ÌªÀ¯À\\xadÀ£À\\x9fÀ]ÀaÀWÀSÀ+À/\\x00¢\\x00\\x9eÀ®À¬À¢À\\x9eÀ\\\\À`ÀVÀRÀ$À(\\x00k\\x00jÀsÀw\\x00Ä\\x00ÃÀ#À'\\x00g\\x00@ÀrÀv\\x00¾\\x00½À")
+139.162.119.146 - - [16/Jul/2026 11:21:32] "\x16\x03\x01\x02\x00\x01\x00\x01ü\x03\x03Ê°\x01&\x13¾Í=\x1bo@öö§ZP1Ê×ä\x88þ È\x800JðEr|\x8d ç\x91\x04v=\x91pü\x9f\x8aÑvÔÈÈû¹h\x87m\x9d¾K{é\x81APý\x85.$\x00\x9c\x13\x02\x13\x03\x13\x01\x003\x009\x005\x00/À,À0\x00£\x00\x9fÌ©Ì¨ÌªÀ¯À­À£À\x9fÀ]ÀaÀWÀSÀ+À/\x00¢\x00\x9eÀ®À¬À¢À\x9eÀ\\À`ÀVÀRÀ$À(\x00k\x00jÀsÀw\x00Ä\x00ÃÀ#À'\x00g\x00@ÀrÀv\x00¾\x00½À" 400 -
+139.162.119.146 - - [16/Jul/2026 11:21:32] "GET /localstart.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:33] "GET /webui HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:33] "GET /assets/img/favicon.ico HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:34] "GET /main.jsp HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:35] "GET /geoserver/index.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:35] "GET /apps/zxtm/login.cgi HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 11:21:35] "GET /api/version HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:35] "GET / HTTP/1.1" 200 -
+139.162.119.146 - - [16/Jul/2026 11:21:35] "GET /home.cgi HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:35] "GET /themes/admin/default/build/assets/favicon-19fbef86.svg HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:35] "GET / HTTP/1.0" 200 -
+127.0.0.1 - - [16/Jul/2026 11:21:35] "GET /api/vip/i18n/api/v2/translation/products/vRNIUI/versions/1 HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:41] "GET /nmaplowercheck1784172083 HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /inicio.cgi HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /dashboard/favicon.ico HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /favicon.ico HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /dashboard/ HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /evox/about HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /language/en-GB/en-GB.xml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /cluster/list.query HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /localstart.cfm HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /kubepi/fav.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /administrator/manifests/files/joomla.xml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:42] "GET /webui/index.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:43] "GET /versa/login HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:43] "GET /HNAP1 HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:43] "GET /index.jhtml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:43] "GET /routes HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /start.php HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /login.html HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 11:21:44] "GET /api/v1.0/environment HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /public/static/favicon.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /default.cfm HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /assets/favicon.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /api/version HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:44] "GET /portal/ HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:45] "GET /start.shtml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:45] "GET /favicon.png HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:45] "GET /status HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:45] "GET /info.asp HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:46] "GET /home.jsa HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:46] "GET /lms/db HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:47] "GET /CFIDE/componentutils/ HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:47] "GET /cgi-bin/param.cgi?get_device_conf HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:47] "GET /admin.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:47] "GET /login/login.html HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:48] "GET /admin.shtml HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:48] "GET /ext-js/app/common/zld_product_spec.js HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 11:21:49] "GET /api/v1/version HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:49] "GET /versions HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:49] "GET /index.aspx HTTP/1.1" 404 -
+127.0.0.1 - - [16/Jul/2026 11:21:49] "GET /api/v3/meta HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:50] "GET /r-seenet/index.php HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:50] "GET /admin.php HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:51] "POST /sdk HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:52] "GET /base.inc HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:53] "GET / HTTP/1.1" 200 -
+139.162.119.146 - - [16/Jul/2026 11:21:53] "GET /helpdesk/WebObjects/Helpdesk.woa HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:21:57] "GET /api/vip/i18n/api/v2/translation/products/vRNIUI/versions/1 HTTP/1.1" 404 -
+139.162.119.146 - - [16/Jul/2026 11:22:04] "GET / HTTP/1.0" 200 -
+139.162.119.146 - - [16/Jul/2026 11:22:04] "GET / HTTP/1.1" 200 -
+152.32.192.230 - - [16/Jul/2026 11:38:23] "GET / HTTP/1.1" 200 -
+152.32.192.230 - - [16/Jul/2026 11:38:24] "GET / HTTP/1.1" 200 -
+152.32.192.230 - - [16/Jul/2026 11:38:24] "GET /favicon.ico HTTP/1.1" 404 -
+64.62.156.172 - - [16/Jul/2026 12:15:52] "GET / HTTP/1.1" 200 -
+64.62.156.181 - - [16/Jul/2026 12:16:13] "GET /favicon.ico HTTP/1.1" 404 -
+64.62.156.180 - - [16/Jul/2026 12:16:36] "GET http://api.ipify.org/?format=json HTTP/1.1" 200 -
+64.62.156.178 - - [16/Jul/2026 12:16:48] code 501, message Unsupported method ('CONNECT')
+64.62.156.178 - - [16/Jul/2026 12:16:48] "CONNECT www.shadowserver.org:443 HTTP/1.1" 501 -
+141.98.11.205 - - [16/Jul/2026 13:02:28] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Jul/2026 13:09:48] "GET /api/.env HTTP/1.1" 404 -

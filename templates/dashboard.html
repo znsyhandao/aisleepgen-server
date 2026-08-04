@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISleepGen - 实时监测仪表板</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            min-height: 100vh;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: #2d2d2d;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .card.high-risk { border-left-color: #f44336; }
+        .card.medium-risk { border-left-color: #ff9800; }
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .sensor-card {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .sensor-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .controls {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .btn {
+            padding: 0.8rem 2rem;
+            margin: 0 0.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-start { background: #4CAF50; color: white; }
+        .btn-stop { background: #f44336; color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .last-update { 
+            text-align: center; 
+            color: #888; 
+            margin-top: 1rem; 
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🌙 AISleepGen 实时监测仪表板</h1>
+            <div class="controls">
+                <button class="btn btn-start" onclick="startMonitoring()">开始监测</button>
+                <button class="btn btn-stop" onclick="stopMonitoring()">停止监测</button>
+            </div>
+        </div>
+        
+        <div id="statusCards" class="status-cards">
+            <!-- 状态卡片将通过JavaScript动态更新 -->
+        </div>
+        
+        <div id="sensorGrid" class="sensor-grid">
+            <!-- 传感器数据将通过JavaScript动态更新 -->
+        </div>
+        
+        <div class="last-update" id="lastUpdate">
+            最后更新: 尚未开始监测
+        </div>
+    </div>
+
+    <script>
+        let monitoringInterval;
+        
+        function startMonitoring() {
+            fetch('/api/start_monitoring', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: 'web_user' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('监测已开始！');
+                    startDataRefresh();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+        
+        function stopMonitoring() {
+            fetch('/api/stop_monitoring', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: 'web_user' })
+            })
+            .then(() => {
+                alert('监测已停止');
+                clearInterval(monitoringInterval);
+            });
+        }
+        
+        function startDataRefresh() {
+            monitoringInterval = setInterval(updateDashboard, 2000);
+        }
+        
+        function updateDashboard() {
+            fetch('/api/dashboard_data?user_id=web_user')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderDashboard(data.data);
+                    }
+                });
+        }
+        
+        function renderDashboard(data) {
+            // 更新状态卡片
+            const analysis = data.latest_analysis?.analysis;
+            if (analysis) {
+                document.getElementById('statusCards').innerHTML = `
+                    <div class="card">
+                        <h3>💤 睡眠阶段</h3>
+                        <div class="sensor-value">${analysis.sleep_stage}</div>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 清道夫效率</h3>
+                        <div class="sensor-value">${analysis.efficiency_score}/100</div>
+                    </div>
+                    <div class="card ${analysis.risk_level === '高风险' ? 'high-risk' : analysis.risk_level === '中风险' ? 'medium-risk' : ''}">
+                        <h3>⚠️ 风险等级</h3>
+                        <div class="sensor-value">${analysis.risk_level}</div>
+                    </div>
+                    <div class="card">
+                        <h3>💡 干预建议</h3>
+                        <div>${analysis.recommendation}</div>
+                    </div>
+                `;
+            }
+            
+            // 更新传感器数据
+            if (data.sensor_data) {
+                let sensorHTML = '';
+                for (const [sensorType, sensorData] of Object.entries(data.sensor_data)) {
+                    sensorHTML += `<div class="sensor-card">
+                        <h3>${sensorType.toUpperCase()} 传感器</h3>
+                        <div class="sensor-values">`;
+                    
+                    for (const [key, value] of Object.entries(sensorData.values)) {
+                        sensorHTML += `<div>${key}: <span class="sensor-value">${typeof value === 'number' ? value.toFixed(3) : value}</span></div>`;
+                    }
+                    
+                    sensorHTML += `</div></div>`;
+                }
+                document.getElementById('sensorGrid').innerHTML = sensorHTML;
+            }
+            
+            // 更新最后更新时间
+            document.getElementById('lastUpdate').textContent = `最后更新: ${data.last_update}`;
+        }
+        
+        // 页面加载时尝试获取数据
+        window.onload = function() {
+            updateDashboard();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+signal:
+  range: [-500, 500]
+  length: 3000
+  expected_max: 500.0
+model:
+  path: "models/v1/cnn_sleep.pth"
+

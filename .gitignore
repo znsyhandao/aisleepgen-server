@@ -1,0 +1,103 @@
+# ===== AISleepGen .gitignore (2026-08-04 重写 v3, UTF-8 无 BOM) =====
+
+# Python 虚拟环境
+venv/
+newenv/
+newenv2/
+.venv/
+aisleep-venv/
+aisleep_venv/
+aisleep_ven/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# 日志
+*.log
+*.tfevents
+
+# 备份目录（不进版本库）
+.surgical_backups/
+.full_backups/
+.experiment_backups/
+profile_backups/
+.backup/
+*.bak
+*.bak_*
+*.math_bak*
+*.old
+*.orig
+
+# 模型/权重文件
+*.pth
+*.h5
+*.ckpt
+*.safetensors
+*.pt
+*.caffemodel
+*.onnx
+
+# 音频/视频/压缩素材（大文件）
+*.mp3
+*.flac
+*.wav
+*.aac
+*.tar.gz
+*.rar
+*.zip
+
+# 数据目录
+data/
+tests/data/
+benchmark/
+sleep-edf-database/
+sleep_edf_validate/
+src/data/
+demo_data_warehouse/
+data_masked/
+models_backup/
+labeling/
+runs/
+scavenger_results/
+
+# 生成/缓存目录
+wandb/
+transformers-main/
+tts_outputs/
+wx_user_data/
+user_profiles/
+user_pomdp/
+web/
+assets/
+compliance/
+neuroforge_cache/
+neuroforge_models/
+neuroforge_logs/
+aisleepgen-netlify/
+docker/
+dev_tools/audio/
+static/audio/
+static/raw_audio_caizhi/
+runtime_hotfixes/
+openclaw_skill/
+.git.new/
+
+# 算法数据（走 landing_sync 管线，不进 git）
+core_dev/injected_algorithms/
+core_dev/experiments/
+core_dev/injected_manifest.json
+core_dev/algo_registry.json
+core_dev/algo_quality_report.json
+injected_algorithms/
+_fix8/
+sandbox_generated/
+
+# 运行时数据
+eco_data.json
+user_profile.json
+expert_reputation.json
+_eco_history.json
+
+# 模型缓存
+.toto_cache/

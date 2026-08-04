@@ -1,0 +1,344 @@
+groups:
+- name: payment-alerts
+  interval: 5m
+  rules:
+ 
+
+  # 新增渠道专属成功率告警
+  - alert: WechatSuccessRateDrop
+    expr: (1 - (rate(payment_processed_total{status="failed",method="wechat"}[5m]) / rate(payment_processed_total{method="wechat"}[5m]))) < 0.95
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "微信支付成功率低于95%"
+      description: "当前成功率: {{ $value | humanizePercentage }}"
+
+  - alert: AlipaySuccessRateDrop
+    expr: (1 - (rate(payment_processed_total{status="failed",method="alipay"}[5m]) / rate(payment_processed_total{method="alipay"}[5m]))) < 0.9
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "支付宝支付成功率低于90%"
+      description: "当前成功率: {{ $value | humanizePercentage }}"
+
+  # 更新大额支付告警（渠道差异化阈值）
+  - alert: WechatHighValuePaymentFailure
+    expr: sum(rate(payment_processed_total{status="failed",method="wechat",amount>5000}[5m])) > 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "微信大额支付失败(>5000元)"
+      description: "失败订单ID: {{ $labels.order_id }}"
+
+  - alert: AlipayHighValuePaymentFailure
+    expr: sum(rate(payment_processed_total{status="failed",method="alipay",amount>10000}[5m])) > 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "支付宝大额支付失败(>10000元)"
+      description: "失败订单ID: {{ $labels.order_id }}"
+
+
+  # 业务连续性保障（添加处理建议）
+  - alert: ContinuousPaymentErrors
+    expr: count_over_time(payment_processed_total{status="failed"}[1h]) > 100
+    for: 30m
+    labels:
+      severity: page
+    annotations:
+      summary: "持续支付错误（1小时内>100次）"
+      description: "建议立即检查支付网关和银行接口"    
+
+  # 支付延迟告警
+  - alert: HighPaymentLatency
+    expr: histogram_quantile(0.95, sum(rate(payment_processing_time_bucket[5m])) by (le)) > 3
+    for: 5m
+    labels:
+      severity: warning
+      alert_group: payment
+    annotations:
+      summary: "支付处理延迟过高"
+      description: "P95延迟: {{ $value }}秒"
+
+  # 支付成功率下降告警
+  - alert: PaymentSuccessRateDrop
+    expr: (1 - (rate(payment_processed_total{status="failed"}[5m]) / rate(payment_processed_total[5m]))) < 0.9
+    for: 15m
+    labels:
+      severity: warning
+      alert_group: payment
+    annotations:
+      summary: "支付成功率低于90%"
+      description: "当前成功率: {{ $value | humanizePercentage }}"
+
+  # 严重支付故障告警
+  - alert: CriticalPaymentFailure
+    expr: rate(payment_processed_total{status="failed"}[5m]) > 0.2
+    for: 5m
+    labels:
+      severity: page
+      alert_group: payment
+    annotations:
+      summary: "严重支付故障"
+      description: "支付失败率超过20%: {{ $value | humanizePercentage }}"
+
+  # 支付服务不可用告警
+  - alert: PaymentServiceDown
+    expr: up{job="payment_service"} == 0
+    for: 1m
+    labels:
+      severity: critical
+      alert_group: payment
+    annotations:
+      summary: "支付服务不可用"
+      description: "支付服务已停止响应"
+  #金额维度监控（新增规则）：
+  - alert: HighValuePaymentFailure
+    expr: sum by (method) (rate(payment_processed_total{status="failed",amount>10000}[5m])) > 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "大额支付失败"
+
+# ... 保留已有告警规则 ...
+
+  # 新增渠道专属延迟告警
+  - alert: WechatPaymentLatency
+    expr: histogram_quantile(0.95, sum(rate(payment_processing_time_bucket{method="wechat"}[5m])) by (le)) > 2
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "微信支付延迟过高"
+      description: "微信P95延迟: {{ $value }}秒 (阈值:2秒)"
+
+  - alert: AlipayPaymentLatency
+    expr: histogram_quantile(0.95, sum(rate(payment_processing_time_bucket{method="alipay"}[5m])) by (le)) > 3
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "支付宝支付延迟过高"
+      description: "支付宝P95延迟: {{ $value }}秒 (阈值:3秒)"
+
+  # 更新通用延迟告警（排除已监控的渠道）
+  - alert: OtherPaymentLatency
+    expr: histogram_quantile(0.95, sum(rate(payment_processing_time_bucket{method!~"wechat|alipay"}[5m])) by (le)) > 3
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "其他支付渠道延迟过高"
+      description: "P95延迟: {{ $value }}秒"
+
+
+  # 新增业务类型告警（VIP订阅）
+  - alert: VIPSubscriptionPaymentFailure
+    expr: rate(payment_processed_total{status="failed",business="vip_subscription"}[5m]) > 0.03
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "VIP订阅支付失败(>3%)"
+      description: |-
+        失败率: {{ $value | humanizePercentage }}
+        订单样例: {{ with printf "payment_processed_total{business=\"vip_subscription\",status=\"failed\"}[5m]" | query }}{{ . | first | label "order_id" }}{{ end }}
+        处理链接: https://admin.aisleep.com/payment/{{ $labels.order_id }}
+
+  # 新增业务类型告警（单次购买）  
+  - alert: SinglePurchasePaymentFailure
+    expr: rate(payment_processed_total{status="failed",business="single_purchase"}[5m]) > 0.1
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "单次购买支付失败(>10%)"
+      description: |-
+        失败率: {{ $value | humanizePercentage }}
+        订单样例: {{ with printf "payment_processed_total{business=\"single_purchase\",status=\"failed\"}[5m]" | query }}{{ . | first | label "order_id" }}{{ end }}
+        处理链接: https://admin.aisleep.com/payment/{{ $labels.order_id }}
+
+  # 更新大额支付告警（添加业务类型）
+  - alert: WechatHighValuePaymentFailure
+    expr: sum by (business) (rate(payment_processed_total{status="failed",method="wechat",amount>5000}[5m])) > 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "微信大额支付失败(>5000元)"
+      description: |-
+        业务类型: {{ $labels.business }}
+        订单ID: {{ $labels.order_id }}
+        金额: {{ $labels.amount }}元
+        处理链接: https://admin.aisleep.com/payment/{{ $labels.order_id }}
+# ... 保留已有告警规则 ...
+
+  # 新增智能降噪规则（自动抑制已知问题）
+  - alert: AutoSuppressedAlerts
+    expr: avg_over_time(known_issues[1h]) > 0
+    for: 0m
+    labels:
+      severity: none
+    annotations:
+      summary: "已自动抑制已知问题告警"
+      description: "问题ID: {{ $labels.issue_id }}"
+
+  # 新增自动恢复检测
+  - alert: PaymentAutoRecovered
+    expr: (rate(payment_processed_total{status="failed"}[5m]) < 0.01) and ON (vector(1)) (rate(payment_processed_total{status="failed"}[5m]) > 0.1)
+    for: 1m
+    labels:
+      severity: info
+    annotations:
+      summary: "支付系统已自动恢复"
+      description: "失败率从{{ $value }}降至正常水平"
+
+  # 更新业务类型告警（添加降噪标签）
+  - alert: VIPSubscriptionPaymentFailure
+    # ... 保留原有配置 ...
+    labels:
+      severity: critical
+      noise_reduction: auto_retry  # 新增降噪标签
+
+  - alert: SinglePurchasePaymentFailure
+    # ... 保留原有配置 ...
+    labels:
+      severity: warning 
+      noise_reduction: auto_retry
+
+
+  # 新增智能响应级别
+  - alert: WechatPaymentErrorRate
+    # ... 保留原有配置 ...
+    labels:
+      severity: critical
+      response_level: auto_retry  # 新增响应级别
+      escalation: "2h"  # 升级时间
+
+  # 新增自动修复建议
+  - alert: PaymentAutoFixSuggestions
+    expr: rate(payment_processed_total{status="failed"}[5m]) > 0.1
+    for: 5m
+    labels:
+      severity: info
+    annotations:
+      summary: "支付失败自动修复建议"
+      description: |
+        检测到支付失败率升高，建议操作：
+        {{ if $labels.method == "wechat" }}
+        1. 检查微信支付证书有效期
+        2. 验证商户配置
+        {{ else if $labels.method == "alipay" }}
+        1. 检查支付宝网关连通性
+        2. 验证应用密钥
+        {{ end }}
+        参考文档: https://docs.aisleep.com/payment-troubleshooting
+
+  # 更新业务告警添加响应策略
+  - alert: VIPSubscriptionPaymentFailure
+    # ... 保留原有配置 ...
+    labels:
+      severity: critical
+      response_level: immediate
+      escalation: "30m"
+      runbook: "https://runbook.aisleep.com/vip-payment-failure"
+
+
+  # 新增根因分析告警
+  - alert: PaymentRootCauseAnalysis
+    expr: |
+      (
+        rate(payment_processed_total{status="failed"}[5m]) > 0.1
+        and on() (avg_over_time(upstream_api_errors[5m]) > 0)
+      ) or on() (
+        rate(payment_processed_total{status="failed"}[5m]) > 0.1
+        and on() (avg_over_time(db_latency_seconds[5m]) > 1)
+      )
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "支付失败根因分析"
+      description: |
+        {{ if $value.upstream_api_errors > 0 }}
+        可能原因: 上游API服务异常(错误率: {{ $value.upstream_api_errors }})
+        {{ else if $value.db_latency_seconds > 1 }}
+        可能原因: 数据库延迟过高(当前: {{ $value.db_latency_seconds }}秒)
+        {{ end }}
+        自动修复中...
+
+  # 新增自动修复工作流
+  - alert: PaymentAutoRemediation
+    expr: rate(payment_processed_total{status="failed"}[5m]) > 0.2
+    for: 2m
+    labels:
+      severity: info
+      auto_remediate: "true"
+    annotations:
+      summary: "支付系统自动修复启动"
+      description: |
+        检测到严重支付失败({{ $value }})
+        已执行:
+        1. 自动切换备用支付网关
+        2. 重启无状态服务
+        3. 清理数据库连接池
+
+  # 更新VIP订阅告警添加自动补偿
+  - alert: VIPSubscriptionPaymentFailure
+    # ... 保留原有配置 ...
+    labels:
+      severity: critical
+      auto_compensate: "true"
+    annotations:
+      description: |
+        {{ if $value > 0.05 }}
+        已自动补偿受影响用户:
+        - 延长VIP有效期24小时
+        - 发放补偿优惠券
+        {{ end }}
+        {{原有描述内容}}
+
+  # 新增支付容量预测告警
+  - alert: PaymentCapacityWarning
+    expr: predict_linear(payment_request_rate[1h], 3600) > payment_capacity_threshold
+    for: 30m
+    labels:
+      severity: warning
+    annotations:
+      summary: "支付系统容量预警"
+      description: |
+        预测1小时后请求量将达到{{ $value }} TPS
+        当前容量阈值: {{ $labels.payment_capacity_threshold }} TPS
+        建议: 
+        - 扩容支付节点
+        - 预热数据库连接池
+
+  # 新增季节性流量预测
+  - alert: SeasonalTrafficPeak
+    expr: abs(delta(payment_request_rate[1h])) > 2 * stddev_over_time(payment_request_rate[1w])
+    for: 1h
+    labels:
+      severity: info
+    annotations:
+      summary: "季节性流量波动检测"
+      description: |
+        检测到异常流量变化: {{ $value }}%
+        历史同期数据: {{ $labels.historical_avg }} TPS
+        建议调整:
+        - 自动扩展规则
+        - 限流阈值
+
+  # 更新自动修复添加容量预测
+  - alert: PaymentAutoRemediation
+    # ... 保留原有配置 ...
+    annotations:
+      description: |
+        {{ if predict_linear(payment_request_rate[30m], 1800) > payment_capacity_threshold }}
+        注意: 预测30分钟后将达容量极限
+        {{ end }}
+        {{原有描述内容}}

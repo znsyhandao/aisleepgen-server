@@ -1,0 +1,5 @@
+{"ts": "2026-05-23T20:34:48.499727", "employee": "product_manager", "event": "model.trained", "payload_summary": "{'new_mae': 2.5, 'old_mae': 2.9}"}
+{"ts": "2026-05-24T08:00:28.708258", "employee": "product_manager", "event": "staff.clocked", "payload_summary": "{'ok': 16, 'fail': 0, 'total': 16}"}
+{"ts": "2026-05-25T08:21:23.506599", "employee": "product_manager", "event": "staff.clocked", "payload_summary": "{'ok': 16, 'fail': 0, 'total': 16}"}
+{"ts": "2026-05-27T08:21:44.341562", "employee": "product_manager", "event": "staff.clocked", "payload_summary": "{'ok': 16, 'fail': 0, 'total': 16}"}
+{"ts": "2026-05-28T09:19:43.296558", "employee": "product_manager", "event": "staff.clocked", "payload_summary": "{'ok': 16, 'fail': 0, 'total': 16}"}

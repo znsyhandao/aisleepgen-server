@@ -1,0 +1,35 @@
+{
+  "stability": {
+    "deep_pct+night_hr_avg": {
+      "count": 1,
+      "fitnesses": [
+        0.572
+      ],
+      "first_seen": "17:07:52",
+      "last_seen": "17:07:52"
+    },
+    "bedtime_variance+deep_pct+interruptions+night_hr": {
+      "count": 1,
+      "fitnesses": [
+        0.534
+      ],
+      "first_seen": "17:07:52",
+      "last_seen": "17:07:52"
+    }
+  },
+  "stable": [],
+  "deployed": [
+    {
+      "key": "deep_pct+night_hr_avg",
+      "name": "ForgeExpert_DN",
+      "fitness": 0.572,
+      "time": "\u5386\u53f2"
+    },
+    {
+      "key": "bedtime_variance+deep_pct+interruptions+night_hr",
+      "name": "ForgeExpert_NDBI",
+      "fitness": 0.534,
+      "time": "\u5386\u53f2"
+    }
+  ]
+}

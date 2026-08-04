@@ -1,0 +1,114 @@
+<!-- pages/analyze/analyze.wxml — 数据看板版 -->
+<view class="page">
+  
+  <!-- ===== 加载骨架屏 ===== -->
+  <view class="skeleton" wx:if="{{loading}}">
+    <view class="s-block" style="width:60%;height:40rpx;margin:40rpx auto 20rpx;"></view>
+    <view class="s-block" style="width:80%;height:200rpx;margin:20rpx auto;"></view>
+    <view class="s-row-content"></view>
+  </view>
+  <view class="content" wx:else>
+    
+    <!-- ✅ 页面标题 -->
+    <view class="page-header">
+      <text class="page-title">📊 数据趋势</text>
+      <text class="page-sub">你的睡眠改善轨迹</text>
+    </view>
+    
+    <!-- ✅ 数据概览行 -->
+    <view class="stat-row">
+      <view class="stat-card">
+        <text class="stat-value">{{lastScore || '--'}}</text>
+        <text class="stat-label">最新评分</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{avgScore || '--'}}</text>
+        <text class="stat-label">平均分</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value fire">{{streakDays || 0}}</text>
+        <text class="stat-label">连续🔥</text>
+      </view>
+    </view>
+    
+    <!-- ✅ 评分趋势图 -->
+    <view class="card" wx:if="{{showChart}}">
+      <view class="card-header">
+        <text class="card-title">📈 评分趋势</text>
+      </view>
+      <view class="chart-bar-container">
+        <view class="chart-bar-group" wx:for="{{chartScores}}" wx:key="index">
+          <view class="chart-bar-bg">
+            <view class="chart-bar-fill" style="height: {{(item / 100) * 100}}%;">
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- ✅ 干预效果 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-title">🛌 干预效果</text>
+      </view>
+      <view class="effect-grid">
+        <view class="effect-item">
+          <text class="effect-value">{{relaxTotal}}</text>
+          <text class="effect-label">干预次数</text>
+        </view>
+        <view class="effect-item">
+          <text class="effect-value">{{relaxCompleted}}</text>
+          <text class="effect-label">完成干预</text>
+        </view>
+        <view class="effect-item">
+          <text class="effect-value">{{relaxAvgDuration}}s</text>
+          <text class="effect-label">平均时长</text>
+        </view>
+        <view class="effect-item">
+          <text class="effect-value fire">{{relaxStreakDays}}</text>
+          <text class="effect-label">干预连续🔥</text>
+        </view>
+      </view>
+      <view class="stress-type" wx:if="{{stressTypes && Object.keys(stressTypes).length > 0}}">
+        <text class="stress-title">压力类型分布</text>
+        <view class="stress-tags">
+          <text class="stress-tag" wx:for="{{stressTypes}}" wx:for-item="cnt" wx:for-index="type" wx:key="type">
+            {{type}}·{{cnt}}次
+          </text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- ✅ 最近记录列表 -->
+    <view class="card" wx:if="{{records.length > 0}}">
+      <view class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <text class="card-title">📋 最近分析</text>
+        <text class="card-more" bindtap="goToHistory">查看全部 ›</text>
+      </view>
+      <view class="record-item" wx:for="{{records}}" wx:key="index" bindtap="viewDetail" data-index="{{index}}">
+        <view class="record-left">
+          <text class="record-date">{{item.date}}</text>
+          <text class="record-dur">{{item.duration}}</text>
+        </view>
+        <view class="record-right">
+          <text class="record-score">{{item.score}}</text>
+          <text class="record-unit">分</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- ✅ 无记录引导 -->
+    <view class="empty-block" wx:if="{{records.length === 0 && !loading}}">
+      <text class="empty-text">暂无睡眠分析记录</text>
+      <text class="empty-hint">点击上方按钮开始第一次分析</text>
+    </view>
+    
+    <!-- ✅ 快捷分析按钮 -->
+    <view class="cta-section">
+      <button class="cta-btn" bindtap="startAnalysis">+ 新分析</button>
+    </view>
+    
+  </view>
+  
+</view>

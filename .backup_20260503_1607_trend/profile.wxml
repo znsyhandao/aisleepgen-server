@@ -1,0 +1,200 @@
+<!-- pages/profile/profile.wxml — 用户中心（专业版 + 推送） -->
+<view class="container">
+  
+  <view wx:if="{{loading}}" class="loading-layer">
+    <view class="spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <scroll-view class="profile-scroll" scroll-y wx:else show-scrollbar="{{false}}">
+    
+    <!-- ===== 用户卡片 ===== -->
+    <view class="user-hero-card">
+      <view class="hero-glow"></view>
+      
+      <view class="avatar-area">
+        <button wx:if="{{!userInfo.avatarUrl}}" class="avatar-btn" open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+          <view class="avatar-placeholder">👤</view>
+        </button>
+        <image wx:else class="avatar-img" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        
+        <view class="user-meta">
+          <text class="user-name">{{userInfo.nickname}}</text>
+          <view class="level-badge" style="background: {{getLevelInfo(member.level).color}}15; border-color: {{getLevelInfo(member.level).color}}30;">
+            <text>{{getLevelInfo(member.level).icon}} {{getLevelInfo(member.level).label}}</text>
+          </view>
+          <text class="joined-date">加入 {{member.joinedAt}}</text>
+        </view>
+      </view>
+      
+      <!-- 统计行 -->
+      <view class="stats-row">
+        <view class="stat-item">
+          <text class="stat-value">{{member.totalSessions}}</text>
+          <text class="stat-label">分析次数</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value">{{member.avgScore}}</text>
+          <text class="stat-label">总平均分</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value">{{member.avgScore7d}}</text>
+          <text class="stat-label">近7日平均</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value highlight">{{member.streakDays}}</text>
+          <text class="stat-label">连续🔥</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-value">{{member.activeDays}}</text>
+          <text class="stat-label">本周活跃</text>
+        </view>
+      </view>
+      
+      <!-- 本周趋势图 -->
+      <view class="trend-section" wx:if="{{trendLabels.length > 0}}">
+        <canvas id="profileTrendCanvas" type="2d" class="trend-canvas"></canvas>
+      </view>
+    </view>
+
+    <!-- ===== 推送通知模块 ===== -->
+    <view class="menu-section">
+      <text class="menu-section-label">💬 睡眠关怀</text>
+      
+      <view class="menu-list">
+        <!-- 订阅推送 -->
+        <view class="menu-item" bindtap="handleSubscribePush">
+          <view class="menu-icon-wrap">
+            <text class="menu-icon">{{pushEnabled ? '🔔' : '🔕'}}</text>
+          </view>
+          <view class="menu-content">
+            <text class="menu-text">{{pushEnabled ? '已开启睡眠关怀' : '开启睡眠关怀'}}</text>
+            <text class="menu-desc">{{pushEnabled ? '每天早上/晚间推送个性化睡眠建议' : '订阅后每天收到专属睡眠提醒'}}</text>
+          </view>
+          <view class="push-toggle {{pushEnabled ? 'on' : ''}}">
+            <view class="push-toggle-knob"></view>
+          </view>
+        </view>
+
+        <!-- 待处理推送（有未读时显示） -->
+        <view class="menu-item" wx:if="{{pushCount > 0}}" bindtap="showPushPanel">
+          <view class="menu-icon-wrap">
+            <text class="menu-icon">📬</text>
+          </view>
+          <view class="menu-content">
+            <text class="menu-text">待读消息</text>
+            <text class="menu-desc">{{pushCount}} 条未读消息</text>
+          </view>
+          <view class="push-badge">{{pushCount}}</view>
+        </view>
+      </view>
+
+      <!-- 推送面板（弹窗） -->
+      <view class="push-overlay" wx:if="{{showPushPanel}}" bindtap="hidePushPanel">
+        <view class="push-panel" catchtap="">
+          <view class="push-panel-header">
+            <text class="push-panel-title">睡眠关怀消息</text>
+            <text class="push-panel-close" bindtap="hidePushPanel">✕</text>
+          </view>
+          <scroll-view class="push-list" scroll-y>
+            <view class="push-item" wx:for="{{pendingPushes}}" wx:key="id" data-id="{{item.id}}">
+              <view class="push-item-header">
+                <text class="push-item-title">{{item.title}}</text>
+                <text class="push-item-time">{{formatTime(item.pushed_at)}}</text>
+              </view>
+              <text class="push-item-content">{{item.content}}</text>
+              <view class="push-item-actions">
+                <view class="push-action-btn primary" bindtap="markPushAccepted" data-id="{{item.id}}">知道了</view>
+                <view class="push-action-btn" bindtap="markPushRead" data-id="{{item.id}}">稍后看</view>
+              </view>
+            </view>
+            <view wx:if="{{pendingPushes.length === 0}}" class="push-empty">
+              <text>暂无消息</text>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 功能导航 ===== -->
+    <view class="menu-section">
+      <text class="menu-section-label">功能导航</text>
+      
+      <view class="menu-list">
+        <view class="menu-item" data-page="history" bindtap="goHistory">
+          <view class="menu-icon-wrap">
+            <text class="menu-icon">📊</text>
+          </view>
+          <view class="menu-content">
+            <text class="menu-text">历史记录</text>
+            <text class="menu-desc">查看所有睡眠分析记录</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item" data-page="privacy" bindtap="goPrivacy">
+          <view class="menu-icon-wrap">
+            <text class="menu-icon">🔒</text>
+          </view>
+          <view class="menu-content">
+            <text class="menu-text">隐私设置</text>
+            <text class="menu-desc">管理数据与隐私偏好</text>
+          </view>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 减压画像 ===== -->
+    <view class="menu-section" wx:if="{{relaxStats.total_sessions > 0}}">
+      <text class="menu-section-label">🧘 减压画像</text>
+      
+      <view class="relax-card">
+        <view class="relax-grid">
+          <view class="relax-item">
+            <text class="relax-val highlight">{{relaxStats.total_sessions}}</text>
+            <text class="relax-lbl">减压次数</text>
+          </view>
+          <view class="relax-item">
+            <text class="relax-val">{{relaxStats.completed_sessions}}</text>
+            <text class="relax-lbl">完整完成</text>
+          </view>
+          <view class="relax-item">
+            <text class="relax-val highlight">{{relaxStats.relax_streak_days}}</text>
+            <text class="relax-lbl">连续减压🔥</text>
+          </view>
+          <view class="relax-item">
+            <text class="relax-val">{{formatDuration(relaxStats.avg_duration)}}</text>
+            <text class="relax-lbl">平均时长</text>
+          </view>
+        </view>
+
+        <view class="stress-tags" wx:if="{{relaxStats.stress_types.length > 0}}">
+          <text class="stress-tag" wx:for="{{relaxStats.stress_types}}" wx:key="type">
+            {{item.type}} ×{{item.count}}
+          </text>
+        </view>
+
+        <view class="completion-row" wx:if="{{relaxStats.total_sessions > 0}}">
+          <text class="completion-lbl">完成率</text>
+          <view class="completion-bar">
+            <view class="completion-fill" style="width: {{relaxStats.total_sessions > 0 ? (relaxStats.completed_sessions / relaxStats.total_sessions * 100) : 0}}%"></view>
+          </view>
+          <text class="completion-pct">{{relaxStats.total_sessions > 0 ? Math.round(relaxStats.completed_sessions / relaxStats.total_sessions * 100) : 0}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 版本信息 ===== -->
+    <view class="footer-info">
+      <text class="footer-name">AISleepGen</text>
+      <text class="footer-version">v{{version}}</text>
+      <text class="footer-tagline">AI 驱动的睡眠分析助手</text>
+    </view>
+    
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+</view>

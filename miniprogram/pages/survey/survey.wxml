@@ -1,0 +1,158 @@
+<!-- pages/survey/survey.wxml — 三步睡眠记录向导 -->
+<view class="page">
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" bindtap="goBack" wx:if="{{showBack}}">
+    <text class="back-icon">←</text>
+  </view>
+
+  <!-- 步骤进度条 -->
+  <view class="progress-bar">
+    <view class="progress-fill" style="width: {{progress * 100 / 3}}%"></view>
+  </view>
+  <view class="step-dots">
+    <view class="step-dot {{step >= 1 ? 'active' : ''}}"><text class="dot-num" wx:if="{{step >= 1}}">✓</text><text class="dot-num" wx:if="{{step < 1}}">1</text></view>
+    <view class="step-line {{step >= 2 ? 'active' : ''}}"></view>
+    <view class="step-dot {{step >= 2 ? 'active' : ''}}"><text class="dot-num" wx:if="{{step >= 2}}">✓</text><text class="dot-num" wx:if="{{step < 2}}">2</text></view>
+    <view class="step-line {{step >= 3 ? 'active' : ''}}"></view>
+    <view class="step-dot {{step >= 3 ? 'active' : ''}}"><text class="dot-num" wx:if="{{step >= 3}}">✓</text><text class="dot-num" wx:if="{{step < 3}}">3</text></view>
+  </view>
+
+  <!-- ===== 第一步：入睡时间 ===== -->
+  <view class="step-content" wx:if="{{step == 1}}">
+    <view class="question-area">
+      <text class="q-number">01</text>
+      <text class="q-title">昨晚几点睡的？</text>
+      <text class="q-hint">选一个大概的时间就好</text>
+    </view>
+    <view class="option-grid">
+      <view class="option-btn {{data.bedtime == '22:00' ? 'selected' : ''}}" bindtap="selectBedtime" data-time="22:00">
+        <text class="option-emoji">🌙</text>
+        <text class="option-text">10点</text>
+      </view>
+      <view class="option-btn {{data.bedtime == '23:00' ? 'selected' : ''}}" bindtap="selectBedtime" data-time="23:00">
+        <text class="option-emoji">🌙</text>
+        <text class="option-text">11点</text>
+      </view>
+      <view class="option-btn {{data.bedtime == '00:00' ? 'selected' : ''}}" bindtap="selectBedtime" data-time="00:00">
+        <text class="option-emoji">🌜</text>
+        <text class="option-text">12点</text>
+      </view>
+      <view class="option-btn {{data.bedtime == '01:00' ? 'selected' : ''}}" bindtap="selectBedtime" data-time="01:00">
+        <text class="option-emoji">🌜</text>
+        <text class="option-text">1点</text>
+      </view>
+      <view class="option-btn {{data.bedtime == '02:00' ? 'selected' : ''}}" bindtap="selectBedtime" data-time="02:00">
+        <text class="option-emoji">🌚</text>
+        <text class="option-text">2点+</text>
+      </view>
+    </view>
+    <view class="nav-row">
+      <view class="nav-btn disabled">取消</view>
+      <view class="nav-btn primary {{data.bedtime ? '' : 'disabled'}}" bindtap="nextStep">下一步 →</view>
+    </view>
+  </view>
+
+  <!-- ===== 第二步：入睡时长 ===== -->
+  <view class="step-content" wx:if="{{step == 2}}">
+    <view class="question-area">
+      <text class="q-number">02</text>
+      <text class="q-title">大概多久睡着的？</text>
+      <text class="q-hint">从躺下到睡着的时间（睡不着选"超过1小时"）</text>
+    </view>
+    <view class="option-grid narrow">
+      <view class="option-btn {{data.latency == 5 ? 'selected' : ''}}" bindtap="selectLatency" data-min="5">
+        <text class="option-emoji">😊</text>
+        <text class="option-text">很快 5分钟</text>
+      </view>
+      <view class="option-btn {{data.latency == 15 ? 'selected' : ''}}" bindtap="selectLatency" data-min="15">
+        <text class="option-emoji">🙂</text>
+        <text class="option-text">还行 15分钟</text>
+      </view>
+      <view class="option-btn {{data.latency == 30 ? 'selected' : ''}}" bindtap="selectLatency" data-min="30">
+        <text class="option-emoji">😐</text>
+        <text class="option-text">有点慢 30分钟</text>
+      </view>
+      <view class="option-btn {{data.latency == 60 ? 'selected' : ''}}" bindtap="selectLatency" data-min="60">
+        <text class="option-emoji">😣</text>
+        <text class="option-text">好慢 1小时</text>
+      </view>
+      <view class="option-btn {{data.latency == 90 ? 'selected' : ''}}" bindtap="selectLatency" data-min="90">
+        <text class="option-emoji">😫</text>
+        <text class="option-text">超过1小时</text>
+      </view>
+    </view>
+    <view class="nav-row">
+      <view class="nav-btn" bindtap="prevStep">← 上一步</view>
+      <view class="nav-btn primary {{data.latency ? '' : 'disabled'}}" bindtap="nextStep">下一步 →</view>
+    </view>
+  </view>
+
+  <!-- ===== 第三步：醒来次数 + 总睡眠时长 ===== -->
+  <view class="step-content" wx:if="{{step == 3}}">
+    <view class="question-area">
+      <text class="q-number">03</text>
+      <text class="q-title">晚上醒了几次？</text>
+      <text class="q-hint">半夜醒来又睡着的次数（不包括最终起床）</text>
+    </view>
+    <view class="option-grid">
+      <view class="option-btn {{data.awakeTimes == 0 ? 'selected' : ''}}" bindtap="selectAwake" data-times="0">
+        <text class="option-emoji">😴</text>
+        <text class="option-text">一觉到天亮</text>
+      </view>
+      <view class="option-btn {{data.awakeTimes == 1 ? 'selected' : ''}}" bindtap="selectAwake" data-times="1">
+        <text class="option-emoji">🙂</text>
+        <text class="option-text">醒了1次</text>
+      </view>
+      <view class="option-btn {{data.awakeTimes == 2 ? 'selected' : ''}}" bindtap="selectAwake" data-times="2">
+        <text class="option-emoji">😐</text>
+        <text class="option-text">醒了2次</text>
+      </view>
+      <view class="option-btn {{data.awakeTimes == 3 ? 'selected' : ''}}" bindtap="selectAwake" data-times="3">
+        <text class="option-emoji">😣</text>
+        <text class="option-text">醒了3次</text>
+      </view>
+      <view class="option-btn {{data.awakeTimes == 4 ? 'selected' : ''}}" bindtap="selectAwake" data-times="4">
+        <text class="option-emoji">😫</text>
+        <text class="option-text">4次以上</text>
+      </view>
+    </view>
+
+    <!-- 总睡眠时长 -->
+    <view class="sub-question" wx:if="{{data.awakeTimes !== null}}">
+      <text class="q-title small">大概总时长？</text>
+      <view class="option-grid three">
+        <view class="option-btn {{data.duration == 4 ? 'selected' : ''}}" bindtap="selectDuration" data-hours="4">
+          <text class="option-text">约4小时</text>
+        </view>
+        <view class="option-btn {{data.duration == 5 ? 'selected' : ''}}" bindtap="selectDuration" data-hours="5">
+          <text class="option-text">约5小时</text>
+        </view>
+        <view class="option-btn {{data.duration == 6 ? 'selected' : ''}}" bindtap="selectDuration" data-hours="6">
+          <text class="option-text">约6小时</text>
+        </view>
+        <view class="option-btn {{data.duration == 7 ? 'selected' : ''}}" bindtap="selectDuration" data-hours="7">
+          <text class="option-text">约7小时</text>
+        </view>
+        <view class="option-btn {{data.duration == 8 ? 'selected' : ''}}" bindtap="selectDuration" data-hours="8">
+          <text class="option-text">约8小时</text>
+        </view>
+        <view class="option-btn {{data.duration == 9 ? 'selected' : ''}}" bindtap="selectDuration" data-hours="9">
+          <text class="option-text">8小时+</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="nav-row">
+      <view class="nav-btn" bindtap="prevStep">← 上一步</view>
+      <view class="nav-btn primary {{canSubmit ? '' : 'disabled'}}" bindtap="submitSurvey">✓ 完成记录</view>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view class="loading-overlay" wx:if="{{saving}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在分析你的睡眠...</text>
+  </view>
+
+</view>

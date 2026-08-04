@@ -1,0 +1,9 @@
+[2026-03-15 16:41:29] Creating synthetic data: 200 samples
+[2026-03-15 16:41:29] Synthetic data created: X=(200, 34), y=(200,)
+[2026-03-15 16:41:29] Class distribution: [32 39 38 52 39]
+[2026-03-15 16:41:29] Training baseline model...
+[2026-03-15 16:41:29] Training set: 160 samples
+[2026-03-15 16:41:29] Test set: 40 samples
+[2026-03-15 16:41:29] Performing cross-validation...
+[2026-03-15 16:41:31] Cross-validation: 0.181 (±0.061)
+[2026-03-15 16:41:32] Test accuracy: 0.200

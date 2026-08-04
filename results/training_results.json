@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-05-28 13:21:28",
+  "model": "flatten_mlp_v1",
+  "n_samples": 38,
+  "feature_dim": 564,
+  "avg_err_pct": 53.45,
+  "model_path": "D:\\AISleepGen_Optimized\\models\\mlp\\flatten_mlp_v1.pth"
+}

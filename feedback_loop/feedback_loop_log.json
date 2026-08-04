@@ -1,0 +1,67 @@
+{
+  "ts": "2026-07-04T21:29:27.796057",
+  "total_loops": 7,
+  "pass": 2,
+  "warning": 2,
+  "fail": 2,
+  "results": [
+    {
+      "loop_id": "model_shadow",
+      "upstream": "model_trainer",
+      "downstream": "shadow_bridge",
+      "verdict": "pass",
+      "metric": "shadow_divergence",
+      "value": 0,
+      "detail": "model_trainer 产出合格"
+    },
+    {
+      "loop_id": "model_ab",
+      "upstream": "model_trainer",
+      "downstream": "ab_engineer",
+      "verdict": "warning",
+      "metric": "mae_improvement",
+      "value": 0,
+      "detail": "model_trainer 产出需关注"
+    },
+    {
+      "loop_id": "security_regression",
+      "upstream": "ai_defender",
+      "downstream": "security_regression",
+      "verdict": "fail",
+      "metric": "regression_pass_rate",
+      "value": 0,
+      "detail": "ai_defender 产出不合格! 自动回滚/告警触发"
+    },
+    {
+      "loop_id": "medical_audit",
+      "upstream": "deepseek_proxy",
+      "downstream": "compliance_officer",
+      "verdict": "pass",
+      "metric": "medical_risk_rate",
+      "value": 0,
+      "detail": "deepseek_proxy 产出合格"
+    },
+    {
+      "loop_id": "sre_uptime",
+      "upstream": "sre_watchdog",
+      "downstream": "product_manager",
+      "verdict": "fail",
+      "metric": "server_uptime_pct",
+      "value": 0,
+      "detail": "sre_watchdog 产出不合格! 自动回滚/告警触发"
+    },
+    {
+      "loop_id": "data_flywheel",
+      "verdict": "warning",
+      "metric": "flywheel_health",
+      "value": 0.33,
+      "detail": "飞轮: 使用率=19%, 回访率=49%, 深度率=25%, 健康度=0.33 → 飞轮需关注"
+    },
+    {
+      "loop_id": "grpo_evaluation",
+      "verdict": "unknown",
+      "detail": "数据不足(evaluated_users=2 < 5)"
+    }
+  ],
+  "health": "UNHEALTHY"
+}

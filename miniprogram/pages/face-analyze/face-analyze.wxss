@@ -1,0 +1,346 @@
+/* face-analyze.wxss — 面容疲劳分析页 */
+page {
+  background: #0f0f23;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.page {
+  padding: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 顶部 */
+.top-glow {
+  position: fixed; top: -100rpx; right: -100rpx;
+  width: 400rpx; height: 400rpx;
+  background: radial-gradient(circle, rgba(102,126,234,0.15), transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.title-section {
+  width: 100%;
+  margin-bottom: 40rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.title-section .title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #f0f0ff;
+}
+
+.title-section .subtitle {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.5);
+  margin-top: 8rpx;
+}
+
+/* 拍照区域 */
+.camera-area {
+  width: 450rpx;
+  height: 500rpx;
+  background: rgba(255,255,255,0.04);
+  border: 2rpx dashed rgba(255,255,255,0.15);
+  border-radius: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 30rpx;
+  overflow: hidden;
+}
+
+.camera-area.preview {
+  border-style: solid;
+  border-color: rgba(102,126,234,0.4);
+}
+
+.camera-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.camera-hint {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+.camera-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 模式切换 */
+.mode-selector {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.mode-btn {
+  padding: 14rpx 36rpx;
+  border-radius: 50rpx;
+  font-size: 24rpx;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  transition: all 0.3s;
+}
+
+.mode-btn.active {
+  background: rgba(102,126,234,0.25);
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* 操作按钮 */
+.btn-area {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-photo, .btn-analyze {
+  padding: 20rpx 50rpx;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.btn-photo {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.btn-analyze {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: 1rpx solid rgba(255,255,255,0.12);
+}
+
+/* Loading */
+.loading-area {
+  margin: 30rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(102,126,234,0.2);
+  border-top: 4rpx solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+/* 结果卡片 */
+.result-card {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1rpx solid rgba(255,255,255,0.1);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 1;
+  margin-top: 10rpx;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.result-emoji {
+  font-size: 50rpx;
+}
+
+.result-level {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.result-score {
+  margin-left: auto;
+  font-size: 48rpx;
+  font-weight: 800;
+}
+
+.result-score-unit {
+  font-size: 24rpx;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.result-trend {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+  flex-wrap: wrap;
+}
+
+.trend-item {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16rpx;
+  padding: 12rpx 18rpx;
+  min-width: 140rpx;
+}
+
+.trend-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+.trend-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #f0f0ff;
+  margin-top: 4rpx;
+}
+
+.trend-good {
+  color: #3acf6b;
+}
+
+.trend-bad {
+  color: #e85353;
+}
+
+/* 含义条 */
+.meaning-bar {
+  height: 8rpx;
+  border-radius: 4rpx;
+  margin: 10rpx 0 20rpx;
+  position: relative;
+  width: 100%;
+}
+
+.meaning-bar-label {
+  position: absolute;
+  top: 14rpx;
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.35);
+}
+
+/* 子指标 */
+.sub-metrics {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 10rpx;
+}
+
+.sub-metric {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12rpx;
+  padding: 8rpx 16rpx;
+  text-align: center;
+}
+
+.sub-metric-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.4);
+  display: block;
+}
+
+.sub-metric-value {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+}
+
+/* 建议列表 */
+.suggestions {
+  margin-top: 20rpx;
+}
+
+.suggestions-title {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 12rpx;
+}
+
+.suggestion-item {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.suggestion-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+}
+
+.suggestion-content {
+  flex: 1;
+}
+
+.suggestion-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #f0f0ff;
+}
+
+.suggestion-desc {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4rpx;
+}
+
+.suggestion-badge {
+  font-size: 18rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  background: rgba(102,126,234,0.2);
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+/* 错误 */
+.error-text {
+  font-size: 24rpx;
+  color: #e53935;
+  text-align: center;
+  margin: 20rpx 0;
+}
+
+/* 回首页 */
+.back-btn {
+  margin-top: 30rpx;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.4);
+  padding: 20rpx;
+}

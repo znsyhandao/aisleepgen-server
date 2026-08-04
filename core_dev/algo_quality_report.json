@@ -1,0 +1,997 @@
+{
+ "generated": "2026-08-03 21:38:29",
+ "total": 141,
+ "pass": 141,
+ "crash": 0,
+ "untested": 0,
+ "fail": 0,
+ "results": [
+  {
+   "algo": "Hybrid_Kohonen自组织映射_SOM__x_Neural_ODE神经常微分方程",
+   "file": "Hybrid_Kohonen自组织映射_SOM__x_Neural_ODE神经常微分方程.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Hybrid_transplant__skin_x_Kohonen自组织映射_SOM_",
+   "file": "Hybrid_transplant__skin_x_Kohonen自组织映射_SOM_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Hybrid_注意力残留_Attention_Residue__x_Kohonen自组织映射_SOM_",
+   "file": "Hybrid_注意力残留_Attention_Residue__x_Kohonen自组织映射_SOM_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Hybrid_认知负荷理论_x_Kohonen自组织映射_SOM_",
+   "file": "Hybrid_认知负荷理论_x_Kohonen自组织映射_SOM_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_TEST_deepfix_verify",
+   "file": "Mut_TEST_deepfix_verify.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v112",
+   "file": "Mut_循环_Transformer网络_v112.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v19",
+   "file": "Mut_循环_Transformer网络_v19.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v2",
+   "file": "Mut_循环_Transformer网络_v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v25",
+   "file": "Mut_循环_Transformer网络_v25.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v30",
+   "file": "Mut_循环_Transformer网络_v30.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v35",
+   "file": "Mut_循环_Transformer网络_v35.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v43",
+   "file": "Mut_循环_Transformer网络_v43.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v83",
+   "file": "Mut_循环_Transformer网络_v83.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_循环_Transformer网络_v87",
+   "file": "Mut_循环_Transformer网络_v87.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v1",
+   "file": "Mut_思维链_CoT__v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v102",
+   "file": "Mut_思维链_CoT__v102.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v12",
+   "file": "Mut_思维链_CoT__v12.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v4",
+   "file": "Mut_思维链_CoT__v4.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v66",
+   "file": "Mut_思维链_CoT__v66.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v80",
+   "file": "Mut_思维链_CoT__v80.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v84",
+   "file": "Mut_思维链_CoT__v84.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_思维链_CoT__v99",
+   "file": "Mut_思维链_CoT__v99.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_慢波传播波_Slow_Wave_Propagation__v1",
+   "file": "Mut_慢波传播波_Slow_Wave_Propagation__v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_慢波传播波_Slow_Wave_Propagation__v101",
+   "file": "Mut_慢波传播波_Slow_Wave_Propagation__v101.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_慢波传播波_Slow_Wave_Propagation__v22",
+   "file": "Mut_慢波传播波_Slow_Wave_Propagation__v22.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_慢波传播波_Slow_Wave_Propagation__v24",
+   "file": "Mut_慢波传播波_Slow_Wave_Propagation__v24.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_慢波传播波_Slow_Wave_Propagation__v26",
+   "file": "Mut_慢波传播波_Slow_Wave_Propagation__v26.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_扩散模型_v16",
+   "file": "Mut_扩散模型_v16.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_扩散模型_v25",
+   "file": "Mut_扩散模型_v25.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_扩散模型_v3",
+   "file": "Mut_扩散模型_v3.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_扩散模型_v49",
+   "file": "Mut_扩散模型_v49.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_扩散模型_v58",
+   "file": "Mut_扩散模型_v58.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_扩散模型_v7",
+   "file": "Mut_扩散模型_v7.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_拓扑数据分析_v1",
+   "file": "Mut_拓扑数据分析_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_拓扑数据分析_v11",
+   "file": "Mut_拓扑数据分析_v11.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_拓扑数据分析_v112",
+   "file": "Mut_拓扑数据分析_v112.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_拓扑数据分析_v2",
+   "file": "Mut_拓扑数据分析_v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_拓扑数据分析_v76",
+   "file": "Mut_拓扑数据分析_v76.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_探索-利用策略_v103",
+   "file": "Mut_探索-利用策略_v103.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_探索-利用策略_v107",
+   "file": "Mut_探索-利用策略_v107.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_探索-利用策略_v19",
+   "file": "Mut_探索-利用策略_v19.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_探索-利用策略_v46",
+   "file": "Mut_探索-利用策略_v46.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_探索-利用策略_v74",
+   "file": "Mut_探索-利用策略_v74.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_支持向量机_v1",
+   "file": "Mut_支持向量机_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_支持向量机_v16",
+   "file": "Mut_支持向量机_v16.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_支持向量机_v23",
+   "file": "Mut_支持向量机_v23.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_支持向量机_v5",
+   "file": "Mut_支持向量机_v5.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_支持向量机_v7",
+   "file": "Mut_支持向量机_v7.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_支持向量机_v74",
+   "file": "Mut_支持向量机_v74.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_时间序列分解_v1",
+   "file": "Mut_时间序列分解_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_时间序列分解_v2",
+   "file": "Mut_时间序列分解_v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_时间序列分解_v20",
+   "file": "Mut_时间序列分解_v20.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_时间序列分解_v6",
+   "file": "Mut_时间序列分解_v6.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_曲线拟合_v13",
+   "file": "Mut_曲线拟合_v13.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_曲线拟合_v2",
+   "file": "Mut_曲线拟合_v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_曲线拟合_v26",
+   "file": "Mut_曲线拟合_v26.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_曲线拟合_v37",
+   "file": "Mut_曲线拟合_v37.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_曲线拟合_v6",
+   "file": "Mut_曲线拟合_v6.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_曲线拟合_v7",
+   "file": "Mut_曲线拟合_v7.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_检索增强_RAG__v1",
+   "file": "Mut_检索增强_RAG__v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_检索增强_RAG__v14",
+   "file": "Mut_检索增强_RAG__v14.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_检索增强_RAG__v3",
+   "file": "Mut_检索增强_RAG__v3.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_检索增强_RAG__v34",
+   "file": "Mut_检索增强_RAG__v34.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_检索增强_RAG__v7",
+   "file": "Mut_检索增强_RAG__v7.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v10",
+   "file": "Mut_模拟退火_v10.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v101",
+   "file": "Mut_模拟退火_v101.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v2",
+   "file": "Mut_模拟退火_v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v3",
+   "file": "Mut_模拟退火_v3.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v31",
+   "file": "Mut_模拟退火_v31.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v61",
+   "file": "Mut_模拟退火_v61.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_模拟退火_v91",
+   "file": "Mut_模拟退火_v91.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v1",
+   "file": "Mut_注意力残留_Attention_Residue__v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v15",
+   "file": "Mut_注意力残留_Attention_Residue__v15.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v17",
+   "file": "Mut_注意力残留_Attention_Residue__v17.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v2",
+   "file": "Mut_注意力残留_Attention_Residue__v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v3",
+   "file": "Mut_注意力残留_Attention_Residue__v3.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v35",
+   "file": "Mut_注意力残留_Attention_Residue__v35.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v6",
+   "file": "Mut_注意力残留_Attention_Residue__v6.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_注意力残留_Attention_Residue__v90",
+   "file": "Mut_注意力残留_Attention_Residue__v90.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v1",
+   "file": "Mut_流形学习_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v10",
+   "file": "Mut_流形学习_v10.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v19",
+   "file": "Mut_流形学习_v19.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v4",
+   "file": "Mut_流形学习_v4.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v42",
+   "file": "Mut_流形学习_v42.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v45",
+   "file": "Mut_流形学习_v45.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v51",
+   "file": "Mut_流形学习_v51.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_流形学习_v73",
+   "file": "Mut_流形学习_v73.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v18",
+   "file": "Mut_深度神经网络_v18.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v2",
+   "file": "Mut_深度神经网络_v2.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v24",
+   "file": "Mut_深度神经网络_v24.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v25",
+   "file": "Mut_深度神经网络_v25.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v31",
+   "file": "Mut_深度神经网络_v31.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v34",
+   "file": "Mut_深度神经网络_v34.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v7",
+   "file": "Mut_深度神经网络_v7.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v73",
+   "file": "Mut_深度神经网络_v73.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_深度神经网络_v91",
+   "file": "Mut_深度神经网络_v91.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_混沌理论_v1",
+   "file": "Mut_混沌理论_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_混沌理论_v114",
+   "file": "Mut_混沌理论_v114.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_混沌理论_v49",
+   "file": "Mut_混沌理论_v49.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v1",
+   "file": "Mut_睡眠分期算法_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v12",
+   "file": "Mut_睡眠分期算法_v12.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v13",
+   "file": "Mut_睡眠分期算法_v13.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v15",
+   "file": "Mut_睡眠分期算法_v15.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v22",
+   "file": "Mut_睡眠分期算法_v22.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v34",
+   "file": "Mut_睡眠分期算法_v34.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v47",
+   "file": "Mut_睡眠分期算法_v47.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_睡眠分期算法_v67",
+   "file": "Mut_睡眠分期算法_v67.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v107",
+   "file": "Mut_粒子滤波_v107.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v13",
+   "file": "Mut_粒子滤波_v13.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v28",
+   "file": "Mut_粒子滤波_v28.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v31",
+   "file": "Mut_粒子滤波_v31.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v58",
+   "file": "Mut_粒子滤波_v58.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v76",
+   "file": "Mut_粒子滤波_v76.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_粒子滤波_v9",
+   "file": "Mut_粒子滤波_v9.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_聚类分析_v1",
+   "file": "Mut_聚类分析_v1.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_聚类分析_v33",
+   "file": "Mut_聚类分析_v33.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_聚类分析_v37",
+   "file": "Mut_聚类分析_v37.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_聚类分析_v46",
+   "file": "Mut_聚类分析_v46.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_聚类分析_v55",
+   "file": "Mut_聚类分析_v55.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_聚类分析_v6",
+   "file": "Mut_聚类分析_v6.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_胎儿冥想引导睡眠成熟度评估算法_v103",
+   "file": "Mut_胎儿冥想引导睡眠成熟度评估算法_v103.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_胎儿冥想引导睡眠成熟度评估算法_v112",
+   "file": "Mut_胎儿冥想引导睡眠成熟度评估算法_v112.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "Mut_胎儿冥想引导睡眠成熟度评估算法_v116",
+   "file": "Mut_胎儿冥想引导睡眠成熟度评估算法_v116.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "上下文学习_ICL_",
+   "file": "上下文学习_ICL_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "交叉验证",
+   "file": "交叉验证.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "信号处理",
+   "file": "信号处理.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "信息论",
+   "file": "信息论.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "双过程睡眠模型",
+   "file": "双过程睡眠模型.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "在线学习e_sleep",
+   "file": "在线学习e_sleep.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "在线学习e_stock",
+   "file": "在线学习e_stock.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "思维链_CoT_",
+   "file": "思维链_CoT_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "探索-利用策略",
+   "file": "探索-利用策略.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": false
+  },
+  {
+   "algo": "时间序列分解",
+   "file": "时间序列分解.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "昼夜节律_Kronauer-Jewett_",
+   "file": "昼夜节律_Kronauer-Jewett_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "检索增强_RAG_",
+   "file": "检索增强_RAG_.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "相关分析",
+   "file": "相关分析.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "统计描述",
+   "file": "统计描述.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "能量景观_吸引子动力学",
+   "file": "能量景观_吸引子动力学.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "语义嵌入搜索",
+   "file": "语义嵌入搜索.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "贝叶斯优化",
+   "file": "贝叶斯优化.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  },
+  {
+   "algo": "预测编码",
+   "file": "预测编码.py",
+   "status": "pass",
+   "detail": "selftest ok",
+   "legacy": true
+  }
+ ]
+}

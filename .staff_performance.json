@@ -1,0 +1,130 @@
+{
+  "reviews": [
+    {
+      "timestamp": "2026-05-23 12:42:13",
+      "total": 14,
+      "ok": 13,
+      "warn": 1,
+      "fail": 0,
+      "results": [
+        {
+          "id": "face_photographer",
+          "name": "📷 面部拍照员",
+          "department": "数据采集",
+          "kpi_metric": "每日检测到人脸照片数",
+          "kpi_value": "1000",
+          "status": "✅"
+        },
+        {
+          "id": "feature_extractor_v9",
+          "name": "🔬 特征提取员(v9)",
+          "department": "数据采集",
+          "kpi_metric": "facial_features_v9.csv行数",
+          "kpi_value": "892",
+          "status": "✅"
+        },
+        {
+          "id": "audio_analyst",
+          "name": "🎤 录音分析员",
+          "department": "数据采集",
+          "kpi_metric": "analyzed JSON数",
+          "kpi_value": "88",
+          "status": "✅"
+        },
+        {
+          "id": "band_data_collector",
+          "name": "⌚ 手环数据员",
+          "department": "数据采集",
+          "kpi_metric": "sleep_data_log有评分天数",
+          "kpi_value": "13",
+          "status": "✅"
+        },
+        {
+          "id": "data_scientist",
+          "name": "📊 数据科学专家 (align_data_sources)",
+          "department": "数据预处理",
+          "kpi_metric": "aligned_features.csv天数和列数",
+          "kpi_value": "37天 x 192列",
+          "status": "✅"
+        },
+        {
+          "id": "data_augmenter",
+          "name": "🧪 数据增强专家 (augment_training_data)",
+          "department": "数据预处理",
+          "kpi_metric": "增强CSV是否存在",
+          "kpi_value": "待激活",
+          "status": "⚠️"
+        },
+        {
+          "id": "skin_change_analyst",
+          "name": "🔄 皮肤对比分析员",
+          "department": "数据预处理",
+          "kpi_metric": "skin_change_vs_sleep.json天数",
+          "kpi_value": "1",
+          "status": "✅"
+        },
+        {
+          "id": "lgb_trainer",
+          "name": "🏋️ LightGBM训练师",
+          "department": "模型训练",
+          "kpi_metric": "R²=0.3908 MAE=2.1%",
+          "kpi_value": "443样本 68维",
+          "status": "✅"
+        },
+        {
+          "id": "ridge_trainer",
+          "name": "🏛 Ridge回归(旧管线)",
+          "department": "模型训练",
+          "kpi_metric": "模型状态",
+          "kpi_value": "已就绪",
+          "status": "✅"
+        },
+        {
+          "id": "toto2_trainer",
+          "name": "🧠 Toto2时序训练师",
+          "department": "模型训练",
+          "kpi_metric": "待跑基线",
+          "kpi_value": "训练中-解码太慢待优化",
+          "status": "✅"
+        },
+        {
+          "id": "deepseek_server",
+          "name": "🤖 DeepSeek推理服务器",
+          "department": "在线推理",
+          "kpi_metric": "服务运行状态",
+          "kpi_value": "已停止",
+          "status": "✅"
+        },
+        {
+          "id": "world_model_10experts",
+          "name": "🧬 WorldModelEngine (10专家会诊)",
+          "department": "在线推理",
+          "kpi_metric": "专家数",
+          "kpi_value": "10 (ClinicalPsych, CBT, SleepPhysician, ChronoBio, LifeSci, RiskMgr, StressRelax, ExerciseRehab, CardiacMonitor, NutriMetab)",
+          "status": "✅"
+        },
+        {
+          "id": "face_predictor_online",
+          "name": "👁️ 面部实时预测 (face_analyzer)",
+          "department": "在线推理",
+          "kpi_metric": "模型版本",
+          "kpi_value": "ensemble_v1 (8维旧模型)",
+          "status": "✅"
+        },
+        {
+          "id": "pubmed_frontier",
+          "name": "📖 PubmedFrontier (循证更新)",
+          "department": "在线推理",
+          "kpi_metric": "循证证据数",
+          "kpi_value": "44",
+          "status": "✅"
+        }
+      ],
+      "warnings": [],
+      "evolution_triggers": []
+    }
+  ],
+  "warnings": [],
+  "evolutions": [],
+  "last_review": "2026-05-23 12:42:13"
+}

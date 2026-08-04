@@ -1,0 +1,128 @@
+<!-- 睡眠录音页面 -->
+<view class="container">
+
+  <!-- ===== 空闲/开始状态 ===== -->
+  <view class="idle-state" wx:if="{{phase == 'idle'}}">
+    <view class="moon-icon">🌙</view>
+    <text class="title-tip">{{statusText}}</text>
+    
+    <view class="tips-card">
+      <text class="tips-title">💡 录音小贴士</text>
+      <text class="tips-item">• 手机放在枕边或床头柜</text>
+      <text class="tips-item">• 保持安静环境效果更佳</text>
+      <text class="tips-item">• 录音最长支持10小时</text>
+    </view>
+    
+    <button class="start-btn" bindtap="startRecording">
+      <text class="start-icon">🎤</text>
+      <text> 开始录音</text>
+    </button>
+  </view>
+  
+  <!-- ===== 录音中 ===== -->
+  <view class="recording-state" wx:if="{{phase == 'recording'}}">
+    <view class="record-animation">
+      <view class="pulse-ring"></view>
+      <view class="mic-icon">🎤</view>
+    </view>
+    
+    <text class="duration-text">已录音 {{formatTime(recordDuration)}}</text>
+    <text class="recording-hint">手机放在枕边，去睡吧～</text>
+    
+    <button class="stop-btn" bindtap="stopRecording">
+      <text>⏹停止录音</text>
+    </button>
+  </view>
+  
+  <!-- ===== 录音完成 ===== -->
+  <view class="done-state" wx:if="{{phase == 'done'}}">
+    <view class="done-icon">✅</view>
+    <text class="title-tip">录音已保存</text>
+    <text class="duration-text">共 {{formatTime(recordDuration)}}</text>
+    
+    <view class="action-row">
+      <button class="secondary-btn" bindtap="reRecord">重新录制</button>
+      <button class="primary-btn" bindtap="analyzeRecording" data-file="{{tempFilePath}}">开始分析</button>
+    </view>
+  </view>
+  
+  <!-- ===== 分析中 ===== -->
+  <view class="analyzing-state" wx:if="{{phase == 'analyzing'}}">
+    <view class="loading-spinner"></view>
+    <text class="title-tip">正在分析你的睡眠...</text>
+    <text class="analyzing-hint">这需要几秒钟，请稍等</text>
+    
+    <view class="progress-bar-bg">
+      <view class="progress-bar-fill" style="width: 80%"></view>
+    </view>
+  </view>
+  
+  <!-- ===== 结果页 ===== -->
+  <view class="result-state" wx:if="{{phase == 'result' && result}}">
+    <!-- 评分大卡片 -->
+    <view class="score-card">
+      <view class="score-ring">
+        <text class="score-number">{{quality.total_score}}</text>
+        <text class="score-label">分</text>
+      </view>
+      <text class="score-grade">{{quality.grade == 'excellent' ? '优秀' : quality.grade == 'good' ? '良好' : quality.grade == 'fair' ? '一般' : '需要关注'}}</text>
+    </view>
+    
+    <!-- 睡眠摘要 -->
+    <view class="summary-section">
+      <text class="section-title">📊 睡眠摘要</text>
+      <view class="summary-grid">
+        <view class="summary-item">
+          <text class="summary-value">{{summary.sleep_min}}<text class="summary-unit">min</text></text>
+          <text class="summary-label">睡着</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value">{{summary.wake_min}}<text class="summary-unit">min</text></text>
+          <text class="summary-label">觉醒</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value">{{summary.efficiency}}<text class="summary-unit">%</text></text>
+          <text class="summary-label">效率</text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-value">{{summary.micro_arousals}}<text class="summary-unit">次</text></text>
+          <text class="summary-label">微觉醒</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 时间线 -->
+    <view class="timeline-section">
+      <text class="section-title">⏰ 整晚时间线</text>
+      <view class="timeline-list">
+        <view class="timeline-row" wx:for="{{timeline}}" wx:key="time">
+          <text class="timeline-time">{{item.time}}</text>
+          <view class="timeline-bar-bg">
+            <view class="timeline-bar-fill" style="width: {{item.sleep_pct}}%"></view>
+          </view>
+          <text class="timeline-pct">{{item.sleep_pct}}%</text>
+          <text class="timeline-energy {{item.energy_level == 'high' ? 'energy-high' : item.energy_level == 'mid' ? 'energy-mid' : 'energy-low'}}">{{item.energy_level == 'high' ? '活跃' : item.energy_level == 'mid' ? '平静' : '安静'}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 5维评分 -->
+    <view class="dimensions-section">
+      <text class="section-title">📈 5维评分</text>
+      <view class="dimension-row" wx:for="{{dimensionList}}" wx:key="key">
+        <text class="dim-label">{{item.icon}} {{item.label}}</text>
+        <view class="dim-bar-bg">
+          <view class="dim-bar-fill" style="width: {{quality.dimensions[item.key] / 30 * 100}}%"></view>
+        </view>
+        <text class="dim-value">{{quality.dimensions[item.key]}}</text>
+      </view>
+    </view>
+    
+    <!-- 操作按钮 -->
+    <view class="action-row">
+      <button class="secondary-btn" bindtap="reRecord">重新录音</button>
+      <button class="primary-btn" bindtap="viewReport">查看完整报告</button>
+    </view>
+  </view>
+
+</view>

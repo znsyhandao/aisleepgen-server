@@ -1,0 +1,267 @@
+{
+  "version": "v2-evolution-system",
+  "created_at": "2026-05-23T20:37:39.677309",
+  "last_updated": "2026-07-15T09:35:28.360515",
+  "employees": {
+    "data_pipeline": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 15,
+      "role": "核心员工",
+      "description": "数据科学专家",
+      "consecutive_fails": 0
+    },
+    "model_trainer": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 10,
+      "role": "核心员工",
+      "description": "模型训练专家",
+      "consecutive_fails": 0
+    },
+    "sre_watchdog": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 5,
+      "evolve_to_v3": 30,
+      "role": "核心员工",
+      "description": "SRE运维专家",
+      "consecutive_fails": 0
+    },
+    "ai_defender": {
+      "level": "v2",
+      "success_count": 15,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 20,
+      "role": "核心员工",
+      "description": "安全防御专家",
+      "consecutive_fails": 0
+    },
+    "security_regression": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 5,
+      "evolve_to_v3": 25,
+      "role": "核心员工",
+      "description": "安全回归测试",
+      "consecutive_fails": 0
+    },
+    "compliance_officer": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 15,
+      "role": "核心员工",
+      "description": "医疗合规官",
+      "consecutive_fails": 0
+    },
+    "privacy_officer": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 15,
+      "role": "核心员工",
+      "description": "数据隐私官",
+      "consecutive_fails": 0
+    },
+    "ab_engineer": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 12,
+      "role": "核心员工",
+      "description": "A/B测试工程师",
+      "consecutive_fails": 0
+    },
+    "data_encryptor": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 10,
+      "role": "核心员工",
+      "description": "数据加密脱敏",
+      "consecutive_fails": 0
+    },
+    "prompt_engineer": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 12,
+      "role": "核心员工",
+      "description": "提示词工程师",
+      "consecutive_fails": 0
+    },
+    "product_manager": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 15,
+      "role": "核心员工",
+      "description": "产品经理",
+      "consecutive_fails": 0
+    },
+    "label_team": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 5,
+      "evolve_to_v3": 20,
+      "role": "核心员工",
+      "description": "标注团队",
+      "consecutive_fails": 0
+    },
+    "mood_analyst": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 12,
+      "role": "外包员工",
+      "description": "数据分析师(mood)",
+      "consecutive_fails": 0
+    },
+    "shadow_bridge": {
+      "level": "v2",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 15,
+      "role": "外包员工",
+      "description": "Shadow桥接",
+      "consecutive_fails": 0
+    },
+    "ridge_pipeline": {
+      "level": "v3",
+      "success_count": 9,
+      "fail_count": 0,
+      "evolve_to_v2": 3,
+      "evolve_to_v3": 5,
+      "role": "外包员工",
+      "description": "Ridge旧管线",
+      "consecutive_fails": 0
+    }
+  },
+  "evolution_history": [
+    {
+      "ts": "2026-05-25T08:21:23.330994",
+      "employee": "shadow_bridge",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.357616",
+      "employee": "mood_analyst",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.376216",
+      "employee": "product_manager",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.382334",
+      "employee": "compliance_officer",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.388596",
+      "employee": "privacy_officer",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.394717",
+      "employee": "ab_engineer",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.400836",
+      "employee": "data_encryptor",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-25T08:21:23.407154",
+      "employee": "prompt_engineer",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到3次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-27T08:21:44.162398",
+      "employee": "ridge_pipeline",
+      "event": "EVOLVE",
+      "from": "v2",
+      "to": "v3",
+      "reason": "达到5次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-27T08:21:44.175163",
+      "employee": "security_regression",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到5次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-27T08:21:44.188740",
+      "employee": "sre_watchdog",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到5次成功执行",
+      "detail": "调度官: ok"
+    },
+    {
+      "ts": "2026-05-27T08:21:44.195117",
+      "employee": "label_team",
+      "event": "EVOLVE",
+      "from": "v1",
+      "to": "v2",
+      "reason": "达到5次成功执行",
+      "detail": "调度官: ok"
+    }
+  ]
+}

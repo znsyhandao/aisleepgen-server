@@ -1,0 +1,91 @@
+<!-- pages/meditation-player/meditation-player.wxml — 冥想播放器 -->
+<view class="container">
+
+  <!-- 就绪态 -->
+  <block wx:if="{{status === 'ready'}}">
+    <view class="player-header">
+      <text class="series-badge">{{series_name || '眠小兔冥想'}}</text>
+      <text class="player-title">{{title}}</text>
+      <text class="player-subtitle">约 {{duration}} 秒 · 建议佩戴耳机</text>
+    </view>
+    <view class="visual-area">
+      <view class="breath-circle">
+        <text class="circle-icon">🧘</text>
+      </view>
+    </view>
+    <view class="controls">
+      <view class="ctrl-btn primary" bindtap="startPlay">
+        <text>▶️</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 播放态 -->
+  <block wx:if="{{status === 'playing' || status === 'paused'}}">
+    <!-- 手环数据按钮 -->
+    <view wx:if="{{bandData}}" class="band-toggle" bindtap="toggleBandData">⌚</view>
+    <view wx:if="{{bandData && showBandData}}" class="band-float">
+      <text class="band-float-item">总睡眠 <text class="band-float-val">{{bandData.total_min}}分</text></text>
+      <text class="band-float-item">深睡 <text class="band-float-val">{{bandData.deep_min}}分</text></text>
+      <text class="band-float-item">心率 <text class="band-float-val">{{bandData.hr_avg}}bpm</text></text>
+      <text class="band-float-item">HRV <text class="band-float-val">{{bandData.hrv_avg}}ms</text></text>
+    </view>
+
+    <view class="player-header">
+      <text class="series-badge">{{series_name}}</text>
+      <text class="player-title">{{title}}</text>
+    </view>
+    <view class="visual-area">
+      <view class="breath-circle {{status === 'paused' ? 'paused' : 'playing'}}">
+        <text class="circle-icon">{{status === 'playing' ? '🌙' : '⏸'}}</text>
+      </view>
+      <view class="progress-bar-wrap">
+        <view class="progress-bar-fill" style="width: {{progressPercent}}%;"></view>
+      </view>
+      <text class="time-display">{{timeDisplay}}</text>
+    </view>
+    <view class="controls">
+      <view class="ctrl-btn secondary" bindtap="stopPlay"><text>⏹</text></view>
+      <view class="ctrl-btn primary" bindtap="{{status === 'playing' ? 'pausePlay' : 'resumePlay'}}">
+        <text>{{status === 'playing' ? '⏸' : '▶️'}}</text>
+      </view>
+      <view class="ctrl-btn secondary" bindtap="stopPlay"><text>⏹</text></view>
+    </view>
+    <!-- 环境音 -->
+    <view class="ambient-bar">
+      <view class="ambient-header">
+        <text class="ambient-label">🎵 背景音</text>
+        <view class="ambient-toggle" bindtap="toggleAmbient">
+          <text>{{ambientOn ? '🔊' : '🔇'}}</text>
+        </view>
+      </view>
+      <scroll-view class="ambient-scroll" scroll-x>
+        <view wx:for="{{ambientOptions}}" wx:key="key"
+          class="ambient-chip {{selectedAmbient === item.key ? 'active' : ''}}"
+          data-key="{{item.key}}" bindtap="selectAmbient">{{item.name}}</view>
+      </scroll-view>
+    </view>
+  </block>
+
+  <!-- 完成态 -->
+  <block wx:if="{{status === 'completed'}}">
+    <view class="complete-area">
+      <text class="complete-icon">✨</text>
+      <text class="complete-title">冥想完成</text>
+      <text class="complete-sub">感觉怎么样？</text>
+      <view class="rating-row">
+        <view class="star {{rating >= 1 ? 'filled' : ''}}" data-rating="1" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 2 ? 'filled' : ''}}" data-rating="2" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 3 ? 'filled' : ''}}" data-rating="3" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 4 ? 'filled' : ''}}" data-rating="4" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 5 ? 'filled' : ''}}" data-rating="5" bindtap="rate">⭐</view>
+      </view>
+      <view class="skip-btn" bindtap="skipRating">跳过评分</view>
+    </view>
+  </block>
+
+  <!-- 日志 -->
+  <view class="log-area" wx:if="{{logs.length}}">
+    <text wx:for="{{logs}}" wx:for-item="log" class="log-line">{{log}}</text>
+  </view>
+</view>

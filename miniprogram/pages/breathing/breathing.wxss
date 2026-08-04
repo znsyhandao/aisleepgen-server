@@ -1,0 +1,354 @@
+.page {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at center, #0a0a2e 0%, #020210 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 粒子 Canvas - 最底层 */
+.particle-layer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 能量环外层 - 第二层 */
+.ring-container {
+  position: absolute;
+  width: 600rpx; height: 600rpx;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 外环1 */
+.ring-outer {
+  position: absolute;
+  width: 600rpx; height: 600rpx;
+  border: 1rpx solid rgba(72, 219, 251, 0.08);
+  border-radius: 50%;
+  top: 0; left: 0;
+}
+.ring-outer.rotate1 {
+  transform: rotate({{ringRotation}}deg);
+}
+
+/* 外环2 - 反向旋转 */
+.ring-outer2 {
+  position: absolute;
+  width: 560rpx; height: 560rpx;
+  top: 20rpx; left: 20rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(102, 126, 234, 0.06);
+}
+.ring-outer2.rotate2 {
+  transform: rotate({{ringRotation2}}deg);
+}
+
+/* 核心光晕层 */
+.glow-layer {
+  position: absolute;
+  width: 500rpx; height: 500rpx;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    hsla({{glowHue}}, {{glowSat}}%, {{glowLight}}%, 0.06) 0%, 
+    hsla({{glowHue}}, {{glowSat}}%, {{glowLight}}%, 0.02) 50%, 
+    transparent 70%);
+  transition: background 1.2s ease;
+  pointer-events: none;
+}
+
+/* 关闭按钮 */
+.close {
+  position: absolute;
+  top: 80rpx; right: 40rpx;
+  width: 60rpx; height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+.close-icon {
+  font-size: 36rpx;
+  color: rgba(255,255,255,0.6);
+}
+
+/* 呼吸提示文字 */
+.hint-text {
+  position: absolute;
+  top: 120rpx;
+  left: 0; right: 0;
+  text-align: center;
+  z-index: 5;
+  transition: opacity 0.4s;
+}
+.hint-label {
+  font-size: 28rpx;
+  color: hsla({{glowHue}}, {{glowSat}}%, 70%, 0.5);
+  letter-spacing: 4rpx;
+  font-weight: 300;
+  transition: color 1.2s ease;
+}
+
+/* 主呼吸圆容器 */
+.circle-wrap {
+  position: relative;
+  width: 500rpx; height: 500rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+/* 呼吸圆 */
+.circle {
+  position: absolute;
+  width: 500rpx; height: 500rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 1.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.circle.inhale {
+  background: radial-gradient(circle at 40% 40%, hsla(190, 80%, 60%, 0.12), hsla(190, 80%, 30%, 0.04) 60%, transparent 80%);
+  border: 1rpx solid hsla(190, 80%, 60%, 0.2);
+  box-shadow: 
+    0 0 60rpx hsla(190, 80%, 60%, 0.15),
+    0 0 120rpx hsla(190, 80%, 60%, 0.05),
+    inset 0 0 60rpx hsla(190, 80%, 60%, 0.05);
+  transform: scale(1.0);
+}
+
+.circle.hold {
+  background: radial-gradient(circle at 40% 40%, hsla(240, 70%, 55%, 0.12), hsla(240, 70%, 30%, 0.04) 60%, transparent 80%);
+  border: 1rpx solid hsla(240, 70%, 55%, 0.25);
+  box-shadow: 
+    0 0 80rpx hsla(240, 70%, 55%, 0.2),
+    0 0 160rpx hsla(240, 70%, 55%, 0.06),
+    inset 0 0 80rpx hsla(240, 70%, 55%, 0.05);
+  transform: scale(1.0);
+}
+
+.circle.exhale {
+  background: radial-gradient(circle at 40% 40%, hsla(280, 60%, 45%, 0.08), hsla(280, 60%, 20%, 0.02) 60%, transparent 80%);
+  border: 1rpx solid hsla(280, 60%, 45%, 0.12);
+  box-shadow: 
+    0 0 30rpx hsla(280, 60%, 45%, 0.06),
+    0 0 60rpx hsla(280, 60%, 45%, 0.02);
+  transform: scale(0.5);
+}
+
+/* 内圈发光 */
+.circle-glow {
+  position: absolute;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.circle-glow.inhale {
+  background: radial-gradient(circle, rgba(72, 219, 251, 0.03) 0%, transparent 70%);
+}
+.circle-glow.hold {
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.04) 0%, transparent 70%);
+}
+
+/* 中心文字 */
+.circle-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 4;
+}
+.phase-text {
+  font-size: 36rpx;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+  letter-spacing: 6rpx;
+  margin-bottom: 10rpx;
+  text-shadow: 0 0 20rpx hsla({{glowHue}}, {{glowSat}}%, 60%, 0.3);
+  transition: color 1.2s ease, text-shadow 1.2s ease;
+}
+.count-text {
+  font-size: 80rpx;
+  color: rgba(255,255,255,0.9);
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 30rpx hsla({{glowHue}}, {{glowSat}}%, 60%, 0.2);
+  transition: text-shadow 1.2s ease;
+}
+
+/* 进度条 */
+.progress-row {
+  position: absolute;
+  bottom: 280rpx;
+  left: 80rpx; right: 80rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  z-index: 5;
+}
+.progress-bar {
+  flex: 1;
+  height: 2rpx;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2rpx;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    hsla(190, 80%, 60%, 0.5), 
+    hsla(240, 70%, 55%, 0.6), 
+    hsla(280, 60%, 45%, 0.4));
+  border-radius: 2rpx;
+  transition: width 0.5s ease;
+}
+.progress-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.3);
+  width: 80rpx;
+  text-align: right;
+}
+
+/* 呼吸名称 */
+.breath-name {
+  position: absolute;
+  bottom: 220rpx;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.15);
+  letter-spacing: 2rpx;
+  z-index: 5;
+}
+
+/* 声音控制 */
+.sound-ctrl {
+  position: absolute;
+  top: 80rpx;
+  left: 40rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.sound-icon {
+  font-size: 32rpx;
+}
+
+/* 随时退出提示 */
+.done-hint {
+  position: absolute;
+  bottom: 260rpx;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+.done-hint-text {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.25);
+  padding: 10rpx 30rpx;
+}
+
+/* 控制按钮 */
+.controls {
+  position: absolute;
+  bottom: 120rpx;
+  z-index: 5;
+}
+.ctrl-btn {
+  width: 80rpx; height: 80rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.02);
+}
+.ctrl-btn:active {
+  background: rgba(255,255,255,0.06);
+}
+.ctrl-icon {
+  font-size: 32rpx;
+  color: rgba(255,255,255,0.3);
+}
+
+/* 完成状态 - 爆散效果 */
+.complete-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 5, 16, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+.complete-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.complete-circle {
+  width: 160rpx; height: 160rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, hsla(320, 90%, 70%, 0.2), transparent 70%);
+  border: 1rpx solid hsla(320, 90%, 70%, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30rpx;
+  animation: complete-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 80rpx hsla(320, 90%, 70%, 0.1);
+}
+@keyframes complete-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 80rpx hsla(320, 90%, 70%, 0.1); }
+  50% { transform: scale(1.08); box-shadow: 0 0 120rpx hsla(320, 90%, 70%, 0.2); }
+}
+.complete-icon {
+  font-size: 64rpx;
+}
+
+.complete-title {
+  font-size: 40rpx;
+  color: rgba(255,255,255,0.8);
+  font-weight: 300;
+  margin-bottom: 16rpx;
+  letter-spacing: 4rpx;
+}
+.complete-sub {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 60rpx;
+}
+.complete-btn {
+  padding: 24rpx 80rpx;
+  border: 1rpx solid hsla(190, 80%, 60%, 0.2);
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  color: hsla(190, 80%, 60%, 0.6);
+  background: hsla(190, 80%, 60%, 0.04);
+  transition: all 0.3s ease;
+}
+.complete-btn:active {
+  background: hsla(190, 80%, 60%, 0.1);
+  border-color: hsla(190, 80%, 60%, 0.3);
+}

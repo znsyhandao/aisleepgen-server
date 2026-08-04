@@ -1,0 +1,20 @@
+[2026-03-15 16:43:44] Loading historical evaluation data...
+[2026-03-15 16:43:44] Historical best: LSTM 72.59%
+[2026-03-15 16:43:44] Best params: {'model_type': 'lstm', 'hidden_dim': 832, 'dropout': 0.435, 'lstm_num_layers': 1, 'lstm_bidirectional': True}
+[2026-03-15 16:43:44] Creating optimization plan...
+[2026-03-15 16:43:44] Optimization plan saved: D:\openclaw\AISleepGen\optimization_results\optimization_plan.json
+[2026-03-15 16:43:44] Preparing training data...
+[2026-03-15 16:43:44] Found data directory: D:\openclaw\AISleepGen\sleep-edf-database
+[2026-03-15 16:43:44] Found data directory: D:\openclaw\AISleepGen\data
+[2026-03-15 16:43:44] Found data directory: D:\openclaw\AISleepGen\real_sleep_data
+[2026-03-15 16:43:44] Using data from: D:\openclaw\AISleepGen\sleep-edf-database
+[2026-03-15 16:43:44] Creating synthetic data: 1000 samples
+[2026-03-15 16:43:44] Synthetic data created: X=(1000, 34), y=(1000,)
+[2026-03-15 16:43:44] Class distribution: [100 200 400 200 100]
+[2026-03-15 16:43:44] Training baseline model...
+[2026-03-15 16:43:45] Training set: 800 samples
+[2026-03-15 16:43:45] Test set: 200 samples
+[2026-03-15 16:43:45] Performing cross-validation...
+[2026-03-15 16:43:46] Cross-validation: 0.984 (±0.006)
+[2026-03-15 16:43:47] Test accuracy: 0.995
+[2026-03-15 16:43:47] New best accuracy: 99.50%

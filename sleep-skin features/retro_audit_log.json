@@ -1,0 +1,840 @@
+[
+  {
+    "ts": "2026-07-07T17:38:33.548876",
+    "openid": "test",
+    "user_message": "你好",
+    "reply_length": 131,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-07T17:38:42.122187",
+    "openid": "test",
+    "user_message": "hello",
+    "reply_length": 126,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-07T17:38:50.153730",
+    "openid": "test",
+    "user_message": "hello",
+    "reply_length": 126,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:30.624478",
+    "openid": "test123",
+    "user_message": "",
+    "reply_length": 61,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:30.731380",
+    "openid": "test123",
+    "user_message": "",
+    "reply_length": 61,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:34.283047",
+    "openid": "unknown",
+    "user_message": "",
+    "reply_length": 231,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:46.305595",
+    "openid": "est_idem",
+    "user_message": "",
+    "reply_length": 271,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "浅睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:48.786838",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 152,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:51.729017",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:52.178220",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:52.612159",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:53.052958",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:56.187197",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 158,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:34:58.022795",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 339,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T12:35:02.211326",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 778,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [
+      "剂量异常: 呼吸练习 30分钟 (建议时间超安全范围（3-20分钟为宜）)",
+      "剂量异常: 呼吸练习 80分钟 (建议时间超安全范围（3-20分钟为宜）)"
+    ],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:13:45.653830",
+    "openid": "test123",
+    "user_message": "",
+    "reply_length": 255,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:13:48.602967",
+    "openid": "test123",
+    "user_message": "",
+    "reply_length": 187,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:13:52.545854",
+    "openid": "unknown",
+    "user_message": "",
+    "reply_length": 160,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:13:59.105892",
+    "openid": "est_idem",
+    "user_message": "",
+    "reply_length": 117,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:13:59.236415",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:13:59.676280",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:14:00.115818",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:14:00.552934",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:14:00.992106",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 150,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:14:03.258540",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 58,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:14:04.987714",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 285,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "失眠",
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:14:09.548393",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 862,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡",
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:07.415575",
+    "openid": "test123",
+    "user_message": "",
+    "reply_length": 35,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:07.535486",
+    "openid": "test123",
+    "user_message": "",
+    "reply_length": 35,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:07.666040",
+    "openid": "unknown",
+    "user_message": "",
+    "reply_length": 160,
+    "risk_level": "safe",
+    "risk_reason": "无风险",
+    "warnings": [],
+    "matched_kw": [],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:10.147921",
+    "openid": "est_idem",
+    "user_message": "",
+    "reply_length": 117,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:10.775406",
+    "openid": "est_idem",
+    "user_message": "",
+    "reply_length": 117,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:12.727549",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 118,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:13.164639",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 118,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:13.599701",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 118,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:14.039701",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 118,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:14.463706",
+    "openid": "test_lat",
+    "user_message": "",
+    "reply_length": 118,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:16.498247",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 78,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "深睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:17.385980",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 165,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  },
+  {
+    "ts": "2026-07-08T13:54:17.692000",
+    "openid": "est_conc",
+    "user_message": "",
+    "reply_length": 118,
+    "risk_level": "caution",
+    "risk_reason": "涉及睡眠建议",
+    "warnings": [],
+    "matched_kw": [
+      "入睡"
+    ],
+    "context": {
+      "sleep_data_keys": [
+        "total_duration",
+        "sleep_latency",
+        "awake_times",
+        "quality_score"
+      ],
+      "user_conditions": []
+    }
+  }
+]

@@ -1,0 +1,91 @@
+﻿/* survey.wxss - 鐐瑰嚮寮忓弸濂介棶鍗?*/
+.container { min-height: 100vh; background: linear-gradient(135deg, #1B2838 0%, #16213e 50%, #0f0f23 100%); display: flex; flex-direction: column; }
+
+.header { padding: 60rpx 30rpx 30rpx; display: flex; align-items: center; }
+.header-left { width: 100rpx; }
+.back-btn { background: rgba(255,255,255,0.1); color: white; border: none; font-size: 26rpx; padding: 8rpx 16rpx; border-radius: 20rpx; }
+.title { flex: 1; text-align: center; color: white; font-size: 32rpx; font-weight: bold; }
+.header-right { width: 100rpx; }
+
+/* 娆㈣繋椤?*/
+.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60rpx 40rpx; flex: 1; }
+.welcome-icon { font-size: 120rpx; margin-bottom: 30rpx; }
+.welcome-title { font-size: 44rpx; color: white; font-weight: bold; text-align: center; margin-bottom: 20rpx; }
+.welcome-desc { font-size: 28rpx; color: rgba(255,255,255,0.7); text-align: center; line-height: 1.8; margin-bottom: 60rpx; }
+.big-start-btn { width: 80%; height: 100rpx; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 34rpx; font-weight: bold; border-radius: 50rpx; border: none; line-height: 100rpx; text-align: center; box-shadow: 0 8rpx 30rpx rgba(102,126,234,0.4); }
+.skip-link { color: rgba(255,255,255,0.4); font-size: 26rpx; margin-top: 40rpx; text-decoration: underline; }
+
+/* 闂瓟椤?*/
+.quiz-container { padding: 20rpx 30rpx; flex: 1; }
+
+/* 杩涘害鏉?*/
+.progress-row { display: flex; align-items: center; margin-bottom: 40rpx; }
+.progress-bar { flex: 1; height: 8rpx; background: rgba(255,255,255,0.15); border-radius: 4rpx; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 4rpx; transition: width 0.3s; }
+.progress-text { margin-left: 16rpx; color: rgba(255,255,255,0.5); font-size: 24rpx; }
+
+/* 闂鍗＄墖 */
+.question-card { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20rpx); } to { opacity: 1; transform: translateY(0); } }
+.q-icon { font-size: 60rpx; margin-bottom: 16rpx; display: block; }
+.q-text { font-size: 36rpx; color: white; font-weight: bold; margin-bottom: 40rpx; line-height: 1.5; }
+
+/* 閫夐」鎸夐挳 */
+.q-options { display: flex; flex-direction: column; gap: 16rpx; }
+.option-btn { background: rgba(255,255,255,0.08); border: 2rpx solid rgba(255,255,255,0.15); border-radius: 24rpx; padding: 28rpx 30rpx; color: white; font-size: 30rpx; text-align: center; transition: all 0.2s; }
+.option-btn:active { background: rgba(102,126,234,0.3); border-color: #667eea; transform: scale(0.97); }
+.option-btn.big { padding: 32rpx; font-size: 32rpx; }
+.option-btn.yes { border-color: #667eea; }
+.option-btn.no { border-color: #e74c3c; }
+.two-options { flex-direction: row; gap: 20rpx; }
+.two-options .option-btn { flex: 1; }
+
+/* 鍘嬪姏绛夌骇 */
+.stress-options { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 14rpx; }
+.stress-btn { width: 60rpx; height: 60rpx; border-radius: 30rpx; background: rgba(255,255,255,0.08); border: 2rpx solid rgba(255,255,255,0.15); color: white; font-size: 28rpx; display: flex; align-items: center; justify-content: center; }
+.stress-btn.active { background: #667eea; border-color: #667eea; transform: scale(1.1); }
+.stress-btn:active { background: #667eea; transform: scale(1.1); }
+.stress-labels { display: flex; justify-content: space-between; margin-top: 12rpx; color: rgba(255,255,255,0.4); font-size: 22rpx; }
+
+/* 鐢熸垚鎸夐挳 */
+.submit-area { margin-top: 60rpx; animation: fadeIn 0.3s ease; }
+.generate-btn { width: 100%; height: 90rpx; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 32rpx; font-weight: bold; border-radius: 45rpx; border: none; line-height: 90rpx; box-shadow: 0 8rpx 30rpx rgba(102,126,234,0.4); }
+
+/* 鍔犺浇 */
+.loading-box { display: flex; flex-direction: column; align-items: center; margin-top: 80rpx; }
+.loading-animation { display: flex; gap: 12rpx; margin-bottom: 20rpx; }
+.ldot { width: 16rpx; height: 16rpx; background: #667eea; border-radius: 8rpx; animation: lBounce 0.8s infinite; }
+.ldot:nth-child(2) { animation-delay: 0.15s; }
+.ldot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes lBounce { 0%,80%,100% { transform: scale(0.5); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+.loading-text { color: rgba(255,255,255,0.6); font-size: 26rpx; }
+
+/* 鎶ュ憡椤?*/
+.report-view { flex: 1; }
+.report-scroll { padding: 20rpx 30rpx; }
+.report-header { text-align: center; margin-bottom: 30rpx; }
+.report-type { color: rgba(255,255,255,0.5); font-size: 24rpx; }
+.report-date { color: rgba(255,255,255,0.3); font-size: 22rpx; margin-top: 6rpx; display: block; }
+
+.summary-chips { display: flex; flex-wrap: wrap; gap: 12rpx; margin-bottom: 30rpx; }
+.chip { background: rgba(255,255,255,0.08); border-radius: 20rpx; padding: 12rpx 24rpx; }
+.chip text { color: rgba(255,255,255,0.8); font-size: 24rpx; }
+
+.score-card { text-align: center; margin: 30rpx 0; padding: 40rpx; background: rgba(255,255,255,0.05); border-radius: 24rpx; }
+.score-value { font-size: 100rpx; font-weight: bold; color: #667eea; }
+.score-tag { display: block; color: rgba(255,255,255,0.5); font-size: 24rpx; margin-top: 8rpx; }
+.quality-tag { display: inline-block; margin-top: 12rpx; padding: 8rpx 24rpx; background: rgba(102,126,234,0.2); color: #667eea; border-radius: 20rpx; font-size: 24rpx; }
+
+.section { background: rgba(255,255,255,0.05); border-radius: 20rpx; padding: 24rpx; margin-bottom: 20rpx; }
+.section-title { font-size: 28rpx; color: #667eea; font-weight: bold; margin-bottom: 16rpx; display: block; }
+.ai-text { font-size: 26rpx; color: rgba(255,255,255,0.8); line-height: 1.8; white-space: pre-wrap; }
+
+.suggestion-row { display: flex; margin-bottom: 12rpx; }
+.sug-num { color: #667eea; font-weight: bold; font-size: 26rpx; width: 40rpx; flex-shrink: 0; }
+.sug-text { font-size: 26rpx; color: rgba(255,255,255,0.7); line-height: 1.5; }
+
+.action-buttons { display: flex; gap: 16rpx; margin: 40rpx 0 60rpx; }
+.action-btn { flex: 1; height: 72rpx; border-radius: 36rpx; font-size: 26rpx; border: none; line-height: 72rpx; text-align: center; }
+.action-btn.primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+.action-btn.secondary { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); border: 1rpx solid rgba(255,255,255,0.15); }
+

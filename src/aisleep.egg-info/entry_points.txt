@@ -1,0 +1,3 @@
+[console_scripts]
+aisleep = aisleep.cli:main
+aisleep-analysis = aisleep.analysis:run

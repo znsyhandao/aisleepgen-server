@@ -1,0 +1,110 @@
+<!-- pages/meditation/meditation.wxml - 沉浸式引导 v2（去canvas，CSS圆环） -->
+<view class="container" style="background: linear-gradient(180deg, {{ambient.bg_top || '#0a0a1a'}} 0%, {{ambient.bg_mid || '#1a1040'}} 50%, {{ambient.bg_bot || '#0d0d2b'}} 100%);">
+
+  <!-- 加载态 -->
+  <block wx:if="{{status === 'loading'}}">
+    <view class="loading-box">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">正在准备引导...</text>
+    </view>
+  </block>
+
+  <!-- 就绪态 -->
+  <block wx:elif="{{status === 'ready'}}">
+    <view class="ready-box">
+      <text class="ready-icon">{{protocolIcons[protocol] || '🧘'}}</text>
+      <text class="ready-title">{{protocolName}}</text>
+      <text class="ready-desc">{{protocolDescs[protocol] || ''}}</text>
+      <text class="ready-time">约 {{formatTime(totalDuration)}}</text>
+      <view class="start-btn" bindtap="start">
+        <text>开始引导</text>
+      </view>
+      <view class="back-btn" bindtap="stop">
+        <text>返回</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 进行中 -->
+  <block wx:elif="{{status === 'playing' || status === 'paused'}}">
+    <view class="guide-box">
+
+      <!-- 水平进度条（不触发重排） -->
+      <view class="bar-wrap">
+        <view class="bar-bg">
+          <view class="bar-fill" style="width: {{ringPercent}}%;"></view>
+        </view>
+        <view class="bar-info">
+          <text class="bar-pct">{{ringPercent}}%</text>
+          <text class="bar-time">{{formatTime(remaining)}}</text>
+        </view>
+      </view>
+
+      <!-- 当前指令 -->
+      <view class="instruction-box">
+        <text class="instruction-text">
+          {{steps[currentStepIndex] ? steps[currentStepIndex].instruction : ''}}
+        </text>
+        <block wx:if="{{steps[currentStepIndex] && steps[currentStepIndex].area}}">
+          <text class="instruction-area">部位：{{steps[currentStepIndex].area}}</text>
+        </block>
+      </view>
+
+      <!-- 步进点（最多9个） -->
+      <view class="step-row">
+        <view wx:for="{{visibleDots}}" wx:key="index" class="step-dot {{item.active ? 'active' : (item.done ? 'done' : '')}}"></view>
+      </view>
+
+      <!-- 轮次信息 -->
+      <text wx:if="{{currentCycle > 0}}" class="cycle-info">第 {{currentCycle}} 轮</text>
+
+      <!-- 控制按钮 -->
+      <!-- 氛围粒子层 -->
+      <view class="particle-layer {{ambient.vibe || 'calm'}}">
+        <view class="particle p1"></view>
+        <view class="particle p2"></view>
+        <view class="particle p3"></view>
+        <view class="particle p4"></view>
+        <view class="particle p5"></view>
+        <view class="particle p6"></view>
+      </view>
+
+      <view class="controls">
+        <view wx:if="{{status === 'playing'}}" class="ctrl-btn pause" bindtap="pause">
+          <text>暂停</text>
+        </view>
+        <view wx:if="{{status === 'paused'}}" class="ctrl-btn resume" bindtap="resume">
+          <text>继续</text>
+        </view>
+        <view class="ctrl-btn stop" bindtap="stop">
+          <text>退出</text>
+        </view>
+      </view>
+
+      <!-- 声音开关 -->
+      <view class="sound-wrap">
+        <view bindtap="_toggleSound">
+          <text class="sound-icon">{{bgSoundOn ? '🔊' : '🔇'}}</text>
+        </view>
+      </view>
+
+    </view>
+  </block>
+
+  <!-- 完成态 -->
+  <block wx:elif="{{status === 'completed'}}">
+    <view class="complete-box">
+      <text class="complete-icon">✨</text>
+      <text class="complete-title">引导完成</text>
+      <text class="complete-sub">感觉怎么样？</text>
+      <view class="rating-row">
+        <view class="star {{rating >= 1 ? 'filled' : ''}}" data-rating="1" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 2 ? 'filled' : ''}}" data-rating="2" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 3 ? 'filled' : ''}}" data-rating="3" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 4 ? 'filled' : ''}}" data-rating="4" bindtap="rate">⭐</view>
+        <view class="star {{rating >= 5 ? 'filled' : ''}}" data-rating="5" bindtap="rate">⭐</view>
+      </view>
+    </view>
+  </block>
+
+</view>

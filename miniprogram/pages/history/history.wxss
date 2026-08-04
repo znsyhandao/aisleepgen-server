@@ -1,0 +1,454 @@
+/* pages/history/history.wxss - 濞ｈ精澹婃稉濠氼暯閻?*/
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1B2838 0%, #16213e 100%);
+}
+
+/* 婢舵挳鍎?*/
+.header {
+  background: rgba(255,255,255,0.04);
+  padding: 30rpx 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid rgba(255,255,255,0.08);
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  flex: 1;
+}
+
+.back-btn {
+  font-size: 28rpx;
+  color: #4A90E2;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.back-btn::after {
+  border: none;
+}
+
+.icon-btn {
+  font-size: 32rpx;
+  background: none;
+  border: none;
+  padding: 10rpx;
+}
+
+.icon-btn::after {
+  border: none;
+}
+
+/* 缂佺喕顓搁弫鐗堝祦 */
+.stats-section {
+  background: rgba(255,255,255,0.06);
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255,255,255,0.08);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: rgba(255,255,255,0.9);
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15rpx;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12rpx;
+}
+
+.stat-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #4A90E2;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+/* 缁涙盯鈧娼?*/
+.filters-section {
+  background: rgba(255,255,255,0.06);
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255,255,255,0.08);
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 15rpx;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.06);
+  border: 1rpx solid rgba(255,255,255,0.1);
+  padding: 10rpx 25rpx;
+  border-radius: 20rpx;
+  height: auto;
+  line-height: normal;
+}
+
+.filter-btn::after {
+  border: none;
+}
+
+.filter-btn.active {
+  background: #4A90E2;
+  color: white;
+  border-color: #4A90E2;
+}
+
+/* 閸樺棗褰剁拋鏉跨秿閸掓銆?*/
+.history-section {
+  background: rgba(255,255,255,0.06);
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255,255,255,0.08);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.record-count {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+/* 閸旂姾娴囬崪宀€鈹栭悩鑸碘偓?*/
+.loading, .empty-state {
+  text-align: center;
+  padding: 60rpx 0;
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 10rpx;
+}
+
+.empty-hint {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+/* 閸樺棗褰剁拋鏉跨秿妞?*/
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25rpx;
+  background: rgba(255,255,255,0.04);
+  border-radius: 16rpx;
+  transition: all 0.2s;
+  border: 1rpx solid rgba(255,255,255,0.06);
+}
+
+.history-item:active {
+  background: rgba(255,255,255,0.08);
+}
+
+.item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5rpx;
+}
+
+.item-date {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: rgba(255,255,255,0.9);
+}
+
+.item-time {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+.item-type {
+  font-size: 22rpx;
+  color: #4A90E2;
+  background: rgba(74,144,226,0.15);
+  padding: 3rpx 12rpx;
+  border-radius: 8rpx;
+  display: inline-block;
+  width: fit-content;
+}
+
+.item-right {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.score-badge {
+  text-align: center;
+  padding: 10rpx 20rpx;
+  border-radius: 12rpx;
+}
+
+.score-badge.excellent {
+  background: rgba(76,175,80,0.15);
+  border: 1rpx solid rgba(76,175,80,0.2);
+}
+
+.score-badge.good {
+  background: rgba(255,152,0,0.15);
+  border: 1rpx solid rgba(255,152,0,0.2);
+}
+
+.score-badge.average {
+  background: rgba(255,255,255,0.06);
+  border: 1rpx solid rgba(255,255,255,0.1);
+}
+
+.score-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: rgba(255,255,255,0.9);
+}
+
+.score-label {
+  display: block;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+.item-duration {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+.delete-btn {
+  font-size: 28rpx;
+  color: #F44336;
+  background: none;
+  border: none;
+  padding: 5rpx;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+}
+
+.delete-btn::after {
+  border: none;
+}
+
+/* 閸旂姾娴囬弴鏉戭樋 */
+.load-more {
+  text-align: center;
+  padding: 30rpx;
+}
+
+.load-more-btn {
+  font-size: 26rpx;
+  color: #4A90E2;
+  background: rgba(74,144,226,0.1);
+  border: 1rpx solid #4A90E2;
+  padding: 10rpx 40rpx;
+  border-radius: 30rpx;
+  height: auto;
+  line-height: normal;
+}
+
+.load-more-btn::after {
+  border: none;
+}
+
+/* 閹垮秳缍旈幐澶愭尦 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin: 20rpx;
+  margin-top: 0;
+}
+
+.action-btn {
+  flex: 1;
+  height: 90rpx;
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  font-size: 28rpx;
+  border: none;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #4A90E2, #357ABD);
+  color: white;
+}
+
+.action-btn.primary::after {
+  border: none;
+}
+
+.action-btn.secondary {
+  background: rgba(255,255,255,0.06);
+  color: #4A90E2;
+  border: 1rpx solid rgba(74,144,226,0.3);
+}
+
+.action-btn.secondary::after {
+  border: none;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  font-weight: bold;
+}
+
+/* 本周睡眠日历 */
+.week-calendar {
+  background: rgba(255,255,255,0.06);
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255,255,255,0.08);
+}
+
+.cal-grid {
+  display: flex;
+  gap: 10rpx;
+  justify-content: space-between;
+}
+
+.cal-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.cal-box {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 80rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.04);
+}
+
+.cal-score {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.85);
+  font-weight: 700;
+}
+
+.cal-label {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.3);
+}
+
+/* 娣団剝浼呭?*/
+.info-box {
+  background: rgba(74,144,226,0.1);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin: 20rpx;
+  border: 1rpx solid rgba(74,144,226,0.2);
+}
+
+.info-title {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #4A90E2;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.info-text {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 8rpx;
+  padding-left: 20rpx;
+  position: relative;
+}
+
+.info-text::before {
+  content: ".";
+  position: absolute;
+  left: 0;
+  color: #4A90E2;
+}
+

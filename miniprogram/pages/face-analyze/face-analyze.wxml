@@ -1,0 +1,106 @@
+<!-- face-analyze.wxml — 面容疲劳分析 -->
+<view class="page">
+  <view class="top-glow"></view>
+
+  <!-- 标题 -->
+  <view class="title-section">
+    <text class="title">📸 面容疲劳分析</text>
+    <text class="subtitle">拍一张自拍，AI 分析您的疲劳指数</text>
+  </view>
+
+  <!-- 模式切换 -->
+  <view class="mode-selector">
+    <view class="mode-btn {{mode == 'bedtime' ? 'active' : ''}}" bindtap="switchMode" data-mode="bedtime">🌙 睡前</view>
+    <view class="mode-btn {{mode == 'wakeup' ? 'active' : ''}}" bindtap="switchMode" data-mode="wakeup">☀️ 醒后</view>
+  </view>
+
+  <!-- 拍照区域 -->
+  <view class="camera-area {{photoPath ? 'preview' : ''}}">
+    <image wx:if="{{photoPath}}" class="camera-image" src="{{photoPath}}" mode="aspectFill"></image>
+    <block wx:else>
+      <text class="camera-icon">🤳</text>
+      <text class="camera-hint">点击下方拍照</text>
+    </block>
+  </view>
+
+  <!-- 按钮 -->
+  <view class="btn-area">
+    <view class="btn-photo" bindtap="takePhoto">
+      <text>📷</text>
+      <text wx:if="{{!photoPath}}">拍照</text>
+      <text wx:else>重拍</text>
+    </view>
+    <view class="btn-analyze" wx:if="{{photoPath}}" bindtap="analyzeFace">
+      <text>🔍</text>
+      <text>开始分析</text>
+    </view>
+  </view>
+
+  <!-- Loading -->
+  <view class="loading-area" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">AI 正在分析面容...</text>
+  </view>
+
+  <!-- 错误 -->
+  <text class="error-text" wx:if="{{error}}">{{error}}</text>
+
+  <!-- 结果 -->
+  <view class="result-card" wx:if="{{result}}">
+    <view class="result-header">
+      <text class="result-emoji">{{result.emoji}}</text>
+      <text class="result-level" style="color: {{result.color}}">{{result.level}}</text>
+      <text class="result-score" style="color: {{result.color}}">{{result.vitality || 0}}<text class="result-score-unit">/100</text></text>
+    </view>
+
+    <!-- 子指标 -->
+    <view class="sub-metrics">
+      <view class="sub-metric">
+        <text class="sub-metric-label">疲劳指数</text>
+        <text class="sub-metric-value">{{result.fatigue_index}}/10</text>
+      </view>
+    </view>
+
+    <!-- 含义条 -->
+    <view class="meaning-bar" style="background: linear-gradient(to right, #e85353, #f0c040, #3acf6b);">
+      <text class="meaning-bar-label" style="left:0">疲劳</text>
+      <text class="meaning-bar-label" style="right:0">精神</text>
+    </view>
+
+    <!-- 趋势 -->
+    <view class="result-trend" wx:if="{{result.trend && result.trend.total_checks > 0}}">
+      <view class="trend-item" wx:if="{{result.trend.bedtime_avg}}">
+        <text class="trend-label">睡前平均</text>
+        <text class="trend-value">{{result.trend.bedtime_avg}}/10</text>
+      </view>
+      <view class="trend-item" wx:if="{{result.trend.wakeup_avg}}">
+        <text class="trend-label">醒后平均</text>
+        <text class="trend-value">{{result.trend.wakeup_avg}}/10</text>
+      </view>
+      <view class="trend-item" wx:if="{{result.trend.direction}}">
+        <text class="trend-label">趋势</text>
+        <text class="trend-value {{result.trend.direction == '上升(变差)' ? 'trend-bad' : 'trend-good'}}">{{result.trend.direction}}</text>
+      </view>
+      <view class="trend-item">
+        <text class="trend-label">已测</text>
+        <text class="trend-value">{{result.trend.total_checks}}次</text>
+      </view>
+    </view>
+
+    <!-- 建议 -->
+    <view class="suggestions">
+      <text class="suggestions-title">💡 建议</text>
+      <view class="suggestion-item" wx:for="{{result.suggestions}}" wx:for-item="sg" wx:key="index">
+        <text class="suggestion-icon">{{sg.type == 'audio' ? '🎵' : sg.type == 'meditation' ? '🧘' : sg.type == 'breathing' ? '🌬️' : sg.type == 'journal' ? '📔' : sg.type == 'alert' ? '⚠️' : sg.type == 'insight' ? '💡' : '📋'}}</text>
+        <view class="suggestion-content">
+          <text class="suggestion-title">{{sg.title}}</text>
+          <text class="suggestion-desc">{{sg.content}}</text>
+        </view>
+        <text class="suggestion-badge">{{sg.type}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 回首页 -->
+  <view class="back-btn" bindtap="goBack">← 返回首页</view>
+</view>

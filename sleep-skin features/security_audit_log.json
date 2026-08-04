@@ -1,0 +1,502 @@
+[
+  {
+    "ts": "2026-07-08T12:34:41.227858",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/emotion-timeline",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.239901",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/conversation-summaries",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.270080",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/goodnight",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.279192",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/clinical-report",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.288336",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pricing",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.297515",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/recommend-tier",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.306972",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/feedback",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.315981",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pubmed-recent",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.326219",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/mark-brief-read",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.335865",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/chat",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:41.848143",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/stop-breathing",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:42.175461",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/stop-breathing",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T12:34:42.206722",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/chat",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.788029",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/emotion-timeline",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.800874",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/conversation-summaries",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.812529",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/goodnight",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.833030",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/clinical-report",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.864406",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pricing",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.874114",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/recommend-tier",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.895545",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/feedback",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.906517",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pubmed-recent",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.919600",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/mark-brief-read",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:53.930512",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/chat",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:54.443086",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/stop-breathing",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:54.769833",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/stop-breathing",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:13:54.801496",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/chat",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:08.976318",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/emotion-timeline",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:08.990259",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/conversation-summaries",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.000077",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/goodnight",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.020671",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/clinical-report",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.051902",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pricing",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.062019",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/recommend-tier",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.073097",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/feedback",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.098784",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pubmed-recent",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.130314",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/mark-brief-read",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.160733",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/chat",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-08T13:54:09.693340",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/stop-breathing",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.589696",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/memory/recall",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.604478",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/self-heal",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.621129",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/emotion-timeline",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.638011",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/conversation-summaries",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.653618",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/goodnight",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.671098",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/clinical-report",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.687806",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pricing",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.721082",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/recommend-tier",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.738603",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/feedback",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.754868",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/pubmed-recent",
+    "method": "GET",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.770883",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/mark-brief-read",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:30.788002",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/chat",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  },
+  {
+    "ts": "2026-07-24T08:12:31.322960",
+    "ip": "127.0.0.1",
+    "endpoint": "/api/stop-breathing",
+    "method": "POST",
+    "source": "ai_defender",
+    "detail": "超过1秒速率限制(10次)",
+    "status": 429,
+    "openid": ""
+  }
+]

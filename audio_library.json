@@ -1,0 +1,233 @@
+{
+  "version": "1.0",
+  "scanned_at": "2026-05-17 18:00",
+  "total_files": 10,
+  "by_category": {
+    "混合音景": 8,
+    "器乐音景": 2
+  },
+  "audio_library": [
+    {
+      "id": "创造意象",
+      "title": "创造意象",
+      "file": "创造意象.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\创造意象.WAV",
+      "duration_min": 10.4,
+      "size_mb": 105.4,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.64,
+        "voice%": 38.3,
+        "instrument%": 12.8,
+        "brain%": 0.23,
+        "centroid_hz": 3188.0,
+        "freq_80pct_hz": 7893.0
+      }
+    },
+    {
+      "id": "助眠冥想",
+      "title": "助眠冥想",
+      "file": "助眠冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\助眠冥想.WAV",
+      "duration_min": 15.9,
+      "size_mb": 160.7,
+      "category": "器乐音景",
+      "subcategory": "放松音乐",
+      "sleep_score": 6,
+      "tags": [
+        "纯音乐",
+        "背景音乐"
+      ],
+      "acoustic": {
+        "vol_cv": 0.68,
+        "voice%": 30.9,
+        "instrument%": 13.3,
+        "brain%": 0.24,
+        "centroid_hz": 3584.0,
+        "freq_80pct_hz": 10723.0
+      }
+    },
+    {
+      "id": "放松身心冥想",
+      "title": "放松身心冥想",
+      "file": "放松身心冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\放松身心冥想.WAV",
+      "duration_min": 16.4,
+      "size_mb": 166.0,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.66,
+        "voice%": 42.6,
+        "instrument%": 15.5,
+        "brain%": 0.26,
+        "centroid_hz": 2827.0,
+        "freq_80pct_hz": 11330.0
+      }
+    },
+    {
+      "id": "海绵冥想",
+      "title": "海绵冥想",
+      "file": "海绵冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\海绵冥想.WAV",
+      "duration_min": 16.1,
+      "size_mb": 162.7,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.73,
+        "voice%": 45.6,
+        "instrument%": 14.3,
+        "brain%": 0.49,
+        "centroid_hz": 2779.0,
+        "freq_80pct_hz": 11306.0
+      }
+    },
+    {
+      "id": "消解孤独冥想",
+      "title": "消解孤独冥想",
+      "file": "消解孤独冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\消解孤独冥想.WAV",
+      "duration_min": 10.4,
+      "size_mb": 105.2,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.68,
+        "voice%": 41.1,
+        "instrument%": 17.8,
+        "brain%": 0.32,
+        "centroid_hz": 2617.0,
+        "freq_80pct_hz": 9567.0
+      }
+    },
+    {
+      "id": "消除感觉无望冥想",
+      "title": "消除感觉无望冥想",
+      "file": "消除感觉无望冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\消除感觉无望冥想.WAV",
+      "duration_min": 8.9,
+      "size_mb": 89.7,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.72,
+        "voice%": 36.1,
+        "instrument%": 16.8,
+        "brain%": 0.39,
+        "centroid_hz": 2980.0,
+        "freq_80pct_hz": 13920.0
+      }
+    },
+    {
+      "id": "漂浮冥想",
+      "title": "漂浮冥想",
+      "file": "漂浮冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\漂浮冥想.WAV",
+      "duration_min": 13.4,
+      "size_mb": 135.5,
+      "category": "器乐音景",
+      "subcategory": "低频器乐",
+      "sleep_score": 6,
+      "tags": [
+        "纯音乐",
+        "背景音乐"
+      ],
+      "acoustic": {
+        "vol_cv": 0.68,
+        "voice%": 30.1,
+        "instrument%": 16.2,
+        "brain%": 0.34,
+        "centroid_hz": 3535.0,
+        "freq_80pct_hz": 9507.0
+      }
+    },
+    {
+      "id": "睡眠焦虑消解冥想",
+      "title": "睡眠焦虑消解冥想",
+      "file": "睡眠焦虑消解冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\睡眠焦虑消解冥想.WAV",
+      "duration_min": 13.5,
+      "size_mb": 136.1,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.78,
+        "voice%": 37.1,
+        "instrument%": 14.5,
+        "brain%": 0.38,
+        "centroid_hz": 3043.0,
+        "freq_80pct_hz": 11795.0
+      }
+    },
+    {
+      "id": "自生训练冥想",
+      "title": "自生训练冥想",
+      "file": "自生训练冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\自生训练冥想.WAV",
+      "duration_min": 20.3,
+      "size_mb": 204.7,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.9,
+        "voice%": 36.4,
+        "instrument%": 11.2,
+        "brain%": 0.22,
+        "centroid_hz": 3934.0,
+        "freq_80pct_hz": 16940.0
+      }
+    },
+    {
+      "id": "释放愤怒冥想",
+      "title": "释放愤怒冥想",
+      "file": "释放愤怒冥想.WAV",
+      "path": "E:\\笔记本D盘备份\\发烧友快乐音乐湖\\输出给柔灵\\释放愤怒冥想.WAV",
+      "duration_min": 10.4,
+      "size_mb": 105.2,
+      "category": "混合音景",
+      "subcategory": "混合",
+      "sleep_score": 5,
+      "tags": [
+        "混合"
+      ],
+      "acoustic": {
+        "vol_cv": 0.65,
+        "voice%": 37.9,
+        "instrument%": 15.1,
+        "brain%": 0.3,
+        "centroid_hz": 3243.0,
+        "freq_80pct_hz": 10140.0
+      }
+    }
+  ]
+}

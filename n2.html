@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neural Nexus v2</title>
+<style>
+*{box-sizing:border-box}body{background:#060a12;color:#d0d4dc;font-family:sans-serif;margin:0}
+.header{background:linear-gradient(135deg,#0a1628,#0d1f3c);padding:20px 30px;border-bottom:1px solid #1a2a3a}
+.header h1{margin:0;font-size:22px;color:#fff}.header p{margin:4px 0 0;font-size:13px;color:#666}
+.layout{display:flex;min-height:calc(100vh - 80px)}
+.sidebar{width:220px;background:#0a1628;border-right:1px solid #1a2a3a;padding:16px;overflow-y:auto;flex-shrink:0}
+.main{flex:1;padding:20px;overflow-y:auto}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px}
+.sidebar-item:hover,.sidebar-item.active{background:#12203a}
+.sidebar-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sidebar-item .val{font-size:10px;color:#555;margin-left:auto}
+.sidebar-divider{border-top:1px solid #1a2a3a;margin:10px 0}
+.section{background:#0d1524;border-radius:10px;padding:16px;margin-bottom:14px;border:1px solid #1a2a3a}
+.section h2{margin:0 0 10px;font-size:15px;color:#e0e4ec;padding-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.card{background:#080e1a;border:1px solid #1a2a3a;border-radius:8px;padding:12px;cursor:pointer}
+.card:hover{background:#0d1524}
+.card .name{font-size:14px;font-weight:bold}
+.card .niche{font-size:11px;color:#666;margin:4px 0}
+.card .bar{height:4px;border-radius:2px;margin-top:6px}
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dbox{background:#0a1628;border-radius:6px;padding:10px;text-align:center}
+.dbox .num{font-size:20px;font-weight:bold}.dbox .lbl{font-size:10px;color:#666;margin-top:2px}
+.entry{margin:2px 0;padding:5px 8px;background:#080e1a;border-radius:6px;font-size:12px;cursor:pointer}
+.entry:hover{background:#0d1524}
+.entry .algo{color:#50c878}.entry .pending{color:#ff8c00}
+.entry-detail{display:none;padding:6px 12px 10px 20px;background:#060a12;border-radius:6px;margin:1px 0;font-size:12px;color:#aab;border-left:2px solid #1a2a3a}
+.tag{background:#12203a;padding:2px 8px;border-radius:4px;margin:2px 4px 2px 0;display:inline-block;font-size:11px}
+.btn{background:#1a3a5c;color:#d0d4dc;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px}
+.btn:hover{background:#2a4a6c}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:#1a5c3a}.btn-green:hover{background:#2a6c4a}
+.btn-orange{background:#5c3a1a}.btn-orange:hover{background:#6c4a2a}
+.log-area{background:#060a12;border-radius:6px;padding:10px;font-size:11px;font-family:monospace;max-height:300px;overflow-y:auto;margin-top:8px;white-space:pre-wrap;color:#8a8}
+</style>
+</head>
+<body>
+<div class="header"><h1>Neural Nexus v2 - 生态圈</h1><p id="hdr">加载中...</p></div>
+<div class="layout"><div class="sidebar" id="sb"></div><div class="main" id="main"></div></div>
+<script>
+var NODES = null, PARADIGMS = null, LANDINGS = null, SANDBOX = null, sel = null;
+
+function init() {
+  Promise.all([
+    fetch('/api/ecosystem').then(function(r){return r.json();}),
+    fetch('/api/paradigms').then(function(r){return r.json();}),
+    fetch('/api/landings').then(function(r){return r.json();}),
+    fetch('/api/sandbox').then(function(r){return r.json();})
+  ]).then(function(res){
+    NODES = res[0].nodes || [];
+    PARADIGMS = res[1] || [];
+    LANDINGS = res[2] || {};
+    SANDBOX = res[3] || [];
+    var lc = LANDINGS._total_landed||0;
+    document.getElementById('hdr').textContent = NODES.length + ' species | ' + lc + ' landed | ' + PARADIGMS.length + ' paradigms | ' + SANDBOX.length + ' candidates';
+    renderSidebar();
+    renderOverview();
+  }).catch(function(e){console.log(e);});
+}
+
+function renderSidebar(){
+  var sb = document.getElementById('sb');
+  if (!sb) return;
+  var h = '<div style="font-size:11px;color:#666;margin-bottom:10px">Species</div>';
+  for (var i=0;i<NODES.length;i++) {
+    var n = NODES[i];
+    var ec = n.energy*100;
+    var c = ec>60?'#50c878':ec>30?'#ff8c00':'#ff4444';
+    h += '<div class="sidebar-item" onclick="showDetail(\''+n.id+'\')">';
+    h += '<span class="dot" style="background:'+c+'"></span>';
+    h += '<span>'+n.emoji+' '+n.name+'</span>';
+    h += '<span class="val">'+ec.toFixed(0)+'%</span></div>';
+  }
+  h += '<div class="sidebar-divider"></div>';
+  h += '<div class="sidebar-item" onclick="showParadigms()" id="sbPara">';
+  h += '<span style="color:#ff8c00">&#128218;</span><span>Paradigms</span>';
+  h += '<span class="val">'+PARADIGMS.length+'</span></div>';
+  h += '<div class="sidebar-item" onclick="showSandbox()" id="sbSand">';
+  h += '<span style="color:#f0a">&#9881;</span><span>Sandbox</span>';
+  h += '<span class="val">'+SANDBOX.length+'</span></div>';
+  h += '<div class="sidebar-item" onclick="showLandings()" id="sbLanding">';
+  h += '<span style="color:#50c878">&#9889;</span><span>Landings</span>';
+  h += '<span class="val">'+(LANDINGS._total_landed||0)+'</span></div>';
+  sb.innerHTML = h;
+}
+
+function renderOverview(){
+  var main = document.getElementById('main');
+  if (!main) return;
+  var h = '<div class="section"><h2>Ecosystem</h2><div class="grid">';
+  for (var i=0;i<NODES.length;i++) {
+    var n = NODES[i];
+    var ec = n.energy*100;
+    var c = ec>60?'#50c878':ec>30?'#ff8c00':'#ff4444';
+    var q = n.quality!==null?n.quality:'-';
+    h += '<div class="card" onclick="showDetail(\''+n.id+'\')">';
+    h += '<div class="name">'+n.emoji+' '+n.name+'</div>';
+    h += '<div class="niche">'+(n.niche||'')+'</div>';
+    h += '<div>Quality: '+q+'</div>';
+    h += '<div class="bar" style="width:'+ec+'%;background:'+c+'"></div></div>';
+  }
+  h += '</div></div>';
+  main.innerHTML = h;
+  var items = document.querySelectorAll('.sidebar-item');
+  for (var i=0;i<items.length;i++) items[i].classList.remove('active');
+}
+
+function showDetail(id){
+  sel = id;
+  var n = null;
+  for (var i=0;i<NODES.length;i++){if(NODES[i].id===id){n=NODES[i];break;}}
+  if (!n) return;
+  var main = document.getElementById('main');
+  var ec = n.energy*100;
+  var ac = n.algo_effects?Object.keys(n.algo_effects).length:0;
+  var ah = '';
+  if (n.algo_effects && Object.keys(n.algo_effects).length>0) {
+    var keys = Object.keys(n.algo_effects);
+    ah = '<div>';
+    for (var i=0;i<keys.length;i++) {
+      var bw = n.algo_effects[keys[i]]*100;
+      ah += '<div style="display:flex;gap:6px;padding:4px 0;font-size:12px">';
+      ah += '<span style="width:100px">'+keys[i]+'</span>';
+      ah += '<span>'+bw.toFixed(0)+'%</span></div>';
+    }
+    ah += '</div>';
+  }
+  main.innerHTML = '<h2>'+n.emoji+' '+n.name+'</h2>' +
+    '<p>Energy: '+ec.toFixed(0)+'% | Quality: '+(n.quality!==null?n.quality:'-')+' | Algorithms: '+ac+'</p>' +
+    '<p>Niche: '+(n.niche||'-')+'</p>' +
+    (ah||'<p>No algorithm data</p>');
+  var items = document.querySelectorAll('.sidebar-item');
+  for (var i=0;i<items.length;i++) items[i].classList.remove('active');
+  for (var i=0;i<NODES.length;i++){if(NODES[i].id===id){items[i].classList.add('active');break;}}
+}
+
+function showParadigms(){
+  var main = document.getElementById('main');
+  if (!main) return;
+  var landed = 0;
+  for (var i=0;i<PARADIGMS.length;i++){if(PARADIGMS[i].landed) landed++;}
+  var h = '<div class="section"><h2>Cross-Discipline Paradigm Discovery (' + PARADIGMS.length + ')</h2>';
+  h += '<div class="dgrid">';
+  h += '<div class="dbox"><div class="num">'+PARADIGMS.length+'</div><div class="lbl">全部范式</div></div>';
+  h += '<div class="dbox"><div class="num">'+landed+'</div><div class="lbl">已落地</div></div>';
+  h += '<div class="dbox"><div class="num">'+(PARADIGMS.length-landed)+'</div><div class="lbl">待落地</div></div>';
+  h += '<div class="dbox"><div class="num">'+(landed>0?(landed/PARADIGMS.length*100).toFixed(0):0)+'%</div><div class="lbl">落地率</div></div>';
+  h += '</div></div>';
+  h += '<div class="section"><h2>按来源分布</h2><div class="grid">';
+  var sources = {};
+  for (var i=0;i<PARADIGMS.length;i++) {
+    var s = PARADIGMS[i].source || 'unknown';
+    if (!sources[s]) sources[s] = 0;
+    sources[s]++;
+  }
+  var sk = Object.keys(sources).sort(function(a,b){return sources[b]-sources[a];});
+  for (var i=0;i<sk.length;i++) {
+    var pct = (sources[sk[i]]/PARADIGMS.length*100).toFixed(0);
+    h += '<div class="card"><div class="name">'+sk[i]+'</div><div>'+sources[sk[i]]+' ('+pct+'%)</div></div>';
+  }
+  h += '</div></div>';
+  h += '<div class="section"><h2>全部范式列表（点击展开详情）</h2>';
+  var proj_names = {'sleep':'😴睡眠分析','stock':'📈华尔街脑','frontier':'📡战略内参','digital_life':'💻数字生命','skin':'🧴护肤AI','legal':'⚖️法律AI','meditation':'🧘冥想AI','eco':'🌿生态圈'};
+  for (var i=0;i<PARADIGMS.length;i++) {
+    var p = PARADIGMS[i];
+    var ic = p.landed ? 'algo' : 'pending';
+    h += '<div class="entry" onclick="var d=this.nextElementSibling;if(d&&d.style){d.style.display=d.style.display==\'block\'?\'none\':\'block\';}">';
+    h += '<span class="'+ic+'">'+(p.landed?'[L] ':'[ ] ')+p.name+'</span>';
+    h += ' <span style="color:#555">'+p.source+'</span>';
+    h += ' <span style="color:#444">~'+p.lines+'行 P'+p.priority+'</span></div>';
+    h += '<div class="entry-detail">';
+    if (p.math_core) h += '<div style="margin:4px 0"><span style="color:#888">📖 核心:</span> '+p.math_core+'</div>';
+    if (p.asg_value) h += '<div style="margin:4px 0"><span style="color:#888">⚙️ 价值:</span> '+p.asg_value+'</div>';
+    if (p.applicable_projects && p.applicable_projects.length > 0) {
+      h += '<div style="margin:4px 0"><span style="color:#888">🌱 适用:</span> ';
+      for (var pi=0;pi<p.applicable_projects.length;pi++) {
+        h += '<span class="tag">'+(proj_names[p.applicable_projects[pi]]||p.applicable_projects[pi])+'</span>';
+      }
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+  h += '</div>';
+  main.innerHTML = h;
+  var items = document.querySelectorAll('.sidebar-item');
+  for (var i=0;i<items.length;i++) items[i].classList.remove('active');
+  var sb = document.getElementById('sbPara');
+  if (sb) sb.classList.add('active');
+}
+
+/** 沙盒面板 - 实验引擎 */
+var running = {};
+
+function showSandbox(){
+  var main = document.getElementById('main');
+  if (!main) return;
+  var h = '<div class="section"><h2>算法实验沙盒</h2>';
+  h += '<p style="font-size:12px;color:#888">实验在 F:\\pbt_experiments 运行。优先级策略：P1→P2→P3→...（行数少的先跑）。有代码生成器的自动落地，无的标记需手动编码。</p>';
+  h += '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">';
+  h += '<button class="btn btn-green" id="sandRunAll" onclick="sandRunAll()">▶ 一键运行全部（30个）</button>';
+  h += '<button class="btn" id="sandRefresh" onclick="refreshSandbox()">🔄 刷新</button>';
+  h += '<button class="btn" onclick="showExpResults()">📊 查看实验结果</button>';
+  h += '<span style="font-size:11px;color:#666;line-height:30px" id="sandStatus">'+SANDBOX.length+' 个候选</span></div>';
+
+  // 实验统计仪表盘
+  h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px">';
+  h += '<div class="dbox"><div class="num">'+SANDBOX.length+'</div><div class="lbl">候选项</div></div>';
+  h += '<div class="dbox"><div class="num">'+(function(){var s=0;for(var i=0;i<SANDBOX.length;i++){s+=SANDBOX[i].lines||0;} return s;})()+'</div><div class="lbl">总代码行</div></div>';
+  h += '<div class="dbox"><div class="num">'+(function(){var c=0;for(var i=0;i<SANDBOX.length;i++){if(SANDBOX[i].already_tested)c++;} return c;})()+'</div><div class="lbl">已实验</div></div>';
+  h += '<div class="dbox"><div class="num">'+(Object.keys(running).length)+'</div><div class="lbl">进行中</div></div>';
+  h += '</div>';
+
+  // 资源状态条
+  h += '<div style="font-size:11px;color:#666;margin-bottom:10px" id="sandRes">加载资源信息...</div>';
+
+  // 优先级分组
+  var groups = {};
+  for (var i=0;i<SANDBOX.length;i++) {
+    var p = SANDBOX[i].priority || 5;
+    if (!groups[p]) groups[p] = [];
+    groups[p].push(SANDBOX[i]);
+  }
+  var sortedP = Object.keys(groups).sort(function(a,b){return parseInt(a)-parseInt(b);});
+  for (var g=0;g<sortedP.length;g++) {
+    var pri = parseInt(sortedP[g]);
+    var items = groups[pri];
+    h += '<div class="section"><h2>P'+pri+' 优先级（'+items.length+'个）</h2>';
+    h += '<div style="font-size:11px;color:#666;margin-bottom:6px">优先顺序：行数少→多</div>';
+    for (var i=0;i<items.length;i++) {
+      var a = items[i];
+      var runId = a.name.replace(/[^a-zA-Z0-9\u00e0-\u024f\u4e00-\u9fff_a-zA-Z\u4e00-\u9fff0-9]/g,'_');
+      var isRunning = !!running[runId];
+      var tested = a.already_tested ? ' 🧪已实验' : '';
+      h += '<div class="entry" style="display:flex;align-items:center;gap:6px;cursor:default">';
+      h += '<span class="pending">[ ]</span>';
+      h += '<span style="flex:1;font-size:12px">'+a.name+' <span style="color:#555">'+a.source+'</span> <span style="color:#444">~'+a.lines+'行</span>'+tested+'</span>';
+      h += '<button class="'+(isRunning?'btn btn-orange':'btn')+'" style="font-size:11px;padding:4px 10px" id="sb_'+runId+'" onclick="previewAndRun(\''+a.name+'\')" '+(isRunning?'disabled':'')+'>'+(isRunning?'⏳ 运行中':'▶ 运行')+'</button>';
+      h += '<span style="font-size:10px;color:#666;width:70px" id="sb_status_'+runId+'"></span>';
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  h += '<div class="section"><h2>实验日志（F:\\pbt_experiments\\experiment_log.txt）</h2>';
+  h += '<div class="log-area" id="sandLog">正在加载实验记录...</div></div>';
+  main.innerHTML = h;
+
+  // 异步加载资源和实验历史
+  fetch('/api/resources').then(function(r){return r.json();}).then(function(res){
+    var el = document.getElementById('sandRes');
+    if (!el) return;
+    var diskInfo = '';
+    for (var k in res.disks) { diskInfo += k + '盘:' + res.disks[k].free_gb + 'GB '; }
+    var color = res.can_run ? '#50c878' : '#ff8c00';
+    el.innerHTML = '🧠 '+res.memory_gb+'GB | 💻 '+res.cpus+'核 | 🎮 '+(res.gpu.slice(0,30)||'-')+' | 💾 '+diskInfo+'<span style="color:'+color+'">'+(res.can_run?'✓ 可运行':'⚠ '+res.warning.slice(0,60))+'</span>';
+  });
+  // 自动加载实验历史
+  fetch('/api/experiments').then(function(r){return r.json();}).then(function(results){
+    sandLog('📊 实验历史 ('+results.length+' 条)');
+    for (var i=0;i<results.length;i++) {
+      var r = results[i];
+      var icon = r.status==='landed'?'🎉':r.status==='failed'?'✗':r.status==='needs_codegen'?'✏️':'⏳';
+      sandLog('  '+icon+' ['+r.status+'] '+r.algorithm+' - '+(r.message||'').slice(0,100));
+    }
+  }).catch(function(e){
+    sandLog('  ✗ 加载历史失败');
+  });
+  var items = document.querySelectorAll('.sidebar-item');
+  for (var i=0;i<items.length;i++) items[i].classList.remove('active');
+  var sb = document.getElementById('sbSand');
+  if (sb) sb.classList.add('active');
+}
+
+function showExpResults(){
+  sandLog('📊 加载实验结果...');
+  fetch('/api/experiments').then(function(r){return r.json();}).then(function(results){
+    if (!results || results.length === 0) {
+      sandLog('  暂无实验记录');
+      return;
+    }
+    sandLog('  ✓ 找到 '+results.length+' 条实验记录');
+    var landed = 0, failed = 0, pending = 0, needCode = 0;
+    for (var i=0;i<results.length;i++) {
+      var st = results[i].status;
+      if (st === 'landed') landed++;
+      else if (st === 'failed') failed++;
+      else if (st === 'pending') pending++;
+      else if (st === 'needs_codegen') needCode++;
+    }
+    sandLog('  落地: '+landed+' | 失败: '+failed+' | 需手动编码: '+needCode+' | 等待中: '+pending);
+    for (var i=0;i<results.length;i++) {
+      var r = results[i];
+      sandLog('  ['+r.status+'] '+r.algorithm+' - '+(r.message||'').slice(0,80));
+    }
+  }).catch(function(e){
+    sandLog('  ✗ 加载失败: '+e.message);
+  });
+}
+
+function sandLog(msg){
+  var log = document.getElementById('sandLog');
+  if (!log) return;
+  var t = new Date().toISOString().slice(11,19);
+  log.textContent += '\n['+t+'] '+msg;
+  log.scrollTop = log.scrollHeight;
+}
+
+function refreshSandbox(){
+  sandLog('🔄 刷新候选列表...');
+  fetch('/api/sandbox').then(function(r){return r.json();}).then(function(d){
+    SANDBOX = d || [];
+    sandLog('  ✓ 已刷新：'+SANDBOX.length+' 个候选');
+    showSandbox();
+  }).catch(function(e){
+    sandLog('  ✗ 刷新失败: '+e.message);
+  });
+}
+
+function previewAndRun(name){
+  sandLog('🔍 正在预检: '+name);
+  fetch('/api/sandbox/preview/'+encodeURIComponent(name)).then(function(r){return r.json();}).then(function(pre){
+    if (pre.error) {
+      sandLog('  ✗ 预检失败: '+pre.error);
+      return;
+    }
+    var autoTxt = pre.has_auto_generator ? '✅ 有自动代码生成器' : '❌ 无自动代码生成器（需手动编码）';
+    sandLog('  📋 '+pre.name+' | 来源: '+pre.source+' | ~'+pre.lines+'行 P'+pre.priority);
+    sandLog('  📋 '+autoTxt+' | 目标: '+pre.target_file);
+    sandLog('  📋 数学核心: '+pre.math_core);
+    if (pre.already_landed) {
+      sandLog('  ⚠️ 此算法已在 archive 中标记为 landed，跳过');
+      return;
+    }
+    if (pre.already_tested) {
+      sandLog('  ⚠️ 已在 F:\\pbt_experiments\\ 中实验过，跳过');
+      return;
+    }
+    var confirmMsg = '算法: '+pre.name+'\n来源: '+pre.source+'\n行数: ~'+pre.lines+'行 优先级: P'+pre.priority+'\n'+autoTxt+'\n\n';
+    if (pre.has_auto_generator) {
+      confirmMsg += '⚠️ 确认后 night_watch 会直接修改 '+pre.target_file+' 并标记落地。';
+    } else {
+      confirmMsg += '📝 确认后会记录实验状态（需手动编码）。';
+    }
+    confirmMsg += '\n\n是否继续？';
+    if (!confirm(confirmMsg)) {
+      sandLog('  ⏹ 已取消');
+      return;
+    }
+    sandLog('  ✓ 已确认，开始执行...');
+    sandRunSingle(name, true);
+  }).catch(function(e){
+    sandLog('  ✗ 预检失败: '+e.message);
+  });
+}
+
+function sandRunSingle(name, silent){
+  var runId = name.replace(/[^a-zA-Z0-9\u00e0-\u024f\u4e00-\u9fff_a-zA-Z\u4e00-\u9fff0-9]/g,'_');
+  if (running[runId]) return;
+  running[runId] = true;
+  if (!silent) sandLog('▶ 运行: '+name);
+  var btn = document.getElementById('sb_'+runId);
+  var st = document.getElementById('sb_status_'+runId);
+  if (btn) {btn.disabled=true; btn.textContent='⏳ 运行中'; btn.className='btn btn-orange';}
+  if (st) st.textContent='⏳';
+  sandLog('  ⏳ '+name+' 提交到沙盒引擎（F:\\pbt_experiments）');
+
+  fetch('/api/sandbox/run', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name:name})
+  }).then(function(r){return r.json();}).then(function(d){
+    sandLog('  ✓ '+name+' 已启动');
+    if(st) st.textContent='已启动';
+    // 12秒后自动刷新看结果
+    setTimeout(function(){
+      fetch('/api/experiments/'+encodeURIComponent(name)).then(function(x){return x.json();}).then(function(exp){
+        if (exp && exp.status) {
+          sandLog('  🔄 '+name+' -> '+exp.status+(exp.message?': '+exp.message.slice(0,80):''));
+          if (exp.status === 'landed') {
+            sandLog('  🎉 '+name+' 落地成功！已自动标记到 algorithm_archive.json');
+          } else if (exp.status === 'needs_codegen') {
+            sandLog('  ✏️ '+name+' 需要手动编写代码生成器');
+          }
+        }
+        refreshSandbox();
+        delete running[runId];
+      }).catch(function(){
+        refreshSandbox();
+        delete running[runId];
+      });
+    }, 12000);
+  }).catch(function(e){
+    sandLog('  ✗ '+name+' 提交失败: '+e.message);
+    if (btn) {btn.disabled=false; btn.textContent='▶ 运行'; btn.className='btn';}
+    if (st) st.textContent='失败';
+    delete running[runId];
+  });
+}
+
+function sandRunAll(){
+  sandLog('▶ 正在检查系统资源...');
+  fetch('/api/resources').then(function(r){return r.json();}).then(function(res){
+    var warn = res.warning;
+    sandLog('  🧠 内存: '+res.memory_gb+'GB | 💻 CPU: '+res.cpus+'核 | 🎮 GPU: '+res.gpu.slice(0,30));
+    for (var k in res.disks){
+      sandLog('  💾 '+k+'盘: 总量 '+res.disks[k].total_gb+'GB 剩余 '+res.disks[k].free_gb+'GB');
+    }
+    if (!res.can_run) {
+      sandLog('  ⚠️ 资源警告: '+warn);
+      if (confirm('系统资源不足：'+warn+'\n\n是否仍要继续运行？')) {}
+      else { sandLog('  ⏹ 已取消'); return; }
+    }
+    sandLog('  ✓ 资源检查通过');
+    sandLog('  ▶ 逐个预检候选算法...');
+    var pendingCount = 0;
+    for (var i=0;i<SANDBOX.length;i++) {
+      var a = SANDBOX[i];
+      if (a.already_tested) continue;
+      pendingCount++;
+    }
+    sandLog('  📋 共 '+SANDBOX.length+' 个候选，'+pendingCount+' 个未实验');
+    var msg = '即将一键运行 '+pendingCount+' 个未实验算法。\n';
+    msg += '有自动代码生成器的会直接修改代码。\n';
+    msg += '无生成器的会标记为"需手动编码"。\n';
+    msg += '要查看每个算法的预检详情，建议逐个运行。\n\n';
+    msg += '是否继续一键提交全部？';
+    if (!confirm(msg)) { sandLog('  ⏹ 已取消'); return; }
+    sandLog('  ✓ 已确认，批量提交...');
+    var count = 0;
+    for (var i=0;i<SANDBOX.length;i++) {
+      var a = SANDBOX[i];
+      var runId = a.name.replace(/[^a-zA-Z0-9\u00e0-\u024f\u4e00-\u9fff_a-zA-Z\u4e00-\u9fff0-9]/g,'_');
+      if (!running[runId]) {
+        sandRunSingle(a.name, true);
+        count++;
+      }
+    }
+    sandLog('  ✓ 已提交 '+count+' 个实验（P1→P2→P3→...优先级）');
+  });
+}
+
+function showLandings(){
+  var main = document.getElementById('main');
+  if (!main) return;
+  var h = '<div class="section"><h2>Algorithm Landings</h2>';
+  h += '<div class="dgrid">';
+  h += '<div class="dbox"><div class="num">'+(LANDINGS._total_landed||0)+'</div><div class="lbl">算法落地</div></div>';
+  h += '<div class="dbox"><div class="num">'+(LANDINGS._staff_v3||0)+'</div><div class="lbl">专家员工(v3)</div></div>';
+  h += '<div class="dbox"><div class="num">'+(LANDINGS._staff_v2||0)+'</div><div class="lbl">熟练员工(v2)</div></div>';
+  h += '<div class="dbox"><div class="num">'+(LANDINGS._staff_evolutions?LANDINGS._staff_evolutions.length:0)+'</div><div class="lbl">近期进化</div></div>';
+  h += '</div></div>';
+  var keys = Object.keys(LANDINGS).filter(function(k){return !k.startsWith('_');});
+  if (keys.length > 0) {
+    h += '<div class="section"><h2>最新落地</h2>';
+    for (var i=0;i<keys.length;i++) {
+      var v = LANDINGS[keys[i]];
+      h += '<div class="entry" style="cursor:default"><span class="algo">'+keys[i]+'</span> <span style="color:#666">|</span> '+v.landed_at.slice(0,19)+'</div>';
+    }
+    h += '</div>';
+  }
+  var evos = LANDINGS._staff_evolutions;
+  if (evos && evos.length > 0) {
+    h += '<div class="section"><h2>员工进化记录</h2>';
+    for (var i=evos.length-1;i>=0;i--) {
+      var e = evos[i];
+      h += '<div class="entry" style="cursor:default">'+e.ts.slice(0,19)+' <span style="color:#50c878">'+e.employee+'</span> '+e.from+'->'+e.to+' : '+e.reason.slice(0,60)+'</div>';
+    }
+    h += '</div>';
+  }
+  main.innerHTML = h;
+  var items = document.querySelectorAll('.sidebar-item');
+  for (var i=0;i<items.length;i++) items[i].classList.remove('active');
+  var sb = document.getElementById('sbLanding');
+  if (sb) sb.classList.add('active');
+}
+init();
+</script>
+</body>
+</html>

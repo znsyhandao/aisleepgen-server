@@ -1,0 +1,341 @@
+<!-- pages/chat/chat.wxml - 沉浸式深色聊天界面 -->
+<view class="container">
+
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-left">
+      <view class="header-btn" bindtap="goBack">
+        <text class="header-back-icon">‹</text>
+      </view>
+    </view>
+    <view class="header-center">
+      <text class="header-title">AI睡眠助手</text>
+      <text class="header-status {{thinking ? 'thinking' : ''}}">{{thinking ? '思考中...' : '在线'}}</text>
+    </view>
+    <view class="header-right">
+      <view class="header-btn" bindtap="toggleVoiceInput">
+        <text class="header-icon">🎤</text>
+      </view>
+      <view class="header-btn report-badge" wx:if="{{showReportBtn}}" bindtap="showConsentModal">
+        <text class="header-icon">📋</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 管家提醒（聊天页也显示） -->
+  <view class="butler-bar" wx:if="{{butlerAlert || activeConversation}}" bindtap="doButlerAction">
+    <text class="butler-icon">{{activeConversation ? '💬' : butlerAlert.icon}}</text>
+    <view class="butler-text">
+      <text class="butler-msg">{{activeConversation ? activeConversation.message : butlerAlert.message}}</text>
+      <text class="butler-hint" wx:if="{{butlerAlert.actionHint}}">{{butlerAlert.actionHint}} →</text>
+    </view>
+  </view>
+
+  <!-- 商业智能简报（聊天页也显示） -->
+  <view class="brief-bar" wx:if="{{showBrief}}" bindtap="toggleBrief">
+    <text class="brief-icon">📡</text>
+    <text class="brief-text">{{briefTitle}}</text>
+    <text class="brief-arrow">{{briefArrowText}}</text>
+  </view>
+  <view class="brief-detail" wx:if="{{showBriefDetail}}">
+    <view class="brief-item" wx:for="{{briefItems}}" wx:key="index">
+      <text class="brief-item-title">{{item.title}}</text>
+      <text class="brief-item-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 记忆上下文卡片 ===== -->
+  <view class="memory-bar" wx:if="{{memoryContext && memoryContext.length > 30}}" bindtap="toggleMemory">
+    <text class="memory-icon">🧠</text>
+    <text class="memory-text">AI记得你最近的情况</text>
+    <text class="memory-arrow">{{memoryExpanded ? '收起' : '查看'}}</text>
+  </view>
+  <view class="memory-detail" wx:if="{{memoryExpanded && memoryContext}}">
+    <text class="memory-detail-text">{{memoryContext}}</text>
+  </view>
+
+  <!-- 对话列表 -->
+  <scroll-view class="msg-list" scroll-y scroll-into-view="{{scrollToId}}" scroll-with-animation enhanced show-scrollbar="{{false}}">
+    
+    <!-- 欢迎消息 -->
+    <view class="msg-group">
+      <view class="msg ai" id="msg-0">
+        <view class="avatar">🤖</view>
+        <view class="bubble ai-bubble">
+          <view class="bubble-text">你好！我是你的AI睡眠助手 🌙</view>
+          <view class="copy-btn" bindtap="copyText" data-text="你好！我是你的AI睡眠助手 🌙">
+            <text class="copy-icon">📋</text>
+            <text class="copy-label">复制</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="msg ai">
+        <view class="avatar-placeholder"></view>
+        <view class="bubble ai-bubble quick-bubble">
+          <text class="bubble-label">{{activeConversation ? '我有话想对你说：' : '试试这些话题：'}}</text>
+          <view class="quick-grid">
+            <text class="quick-tag" wx:for="{{quickReplies}}" wx:key="*this" bindtap="onQuickQuestion" data-q="{{item}}">{{item}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 对话历史 -->
+    <view wx:for="{{messages}}" wx:key="id" class="msg-group">
+      <view class="msg {{item.role}}" id="msg-{{item.id}}">
+        <view class="avatar" wx:if="{{item.role === 'ai'}}">🤖</view>
+        <view class="bubble {{item.role === 'ai' ? 'ai-bubble' : 'user-bubble'}}">
+          <view class="bubble-text">{{item.content}}</view>
+          <!-- 专家会诊卡片（AI回复下可折叠） -->
+          <view class="expert-section" wx:if="{{item.role === 'ai' && item.experts}}">
+            <view class="expert-toggle" bindtap="toggleExperts" data-idx="{{index}}">
+              <text class="expert-toggle-icon">{{item._showExperts ? '▾' : '▸'}}</text>
+              <text class="expert-toggle-text">查看10位睡眠专家会诊</text>
+            </view>
+            <view class="expert-panel" wx:if="{{item._showExperts}}">
+              <view class="expert-row" wx:for="{{item.experts}}" wx:key="name" wx:for-item="exp">
+                <view class="expert-avatar" style="background: {{exp.color}}">{{exp.icon}}</view>
+                <view class="expert-info">
+                  <view class="expert-header">
+                    <text class="expert-name">{{exp.name}}</text>
+                    <text class="expert-specialty">{{exp.specialty}}</text>
+                  </view>
+                  <text class="expert-score" style="color: {{exp.scoreColor}}">评分 {{exp.scoreText}} ({{exp.score}})</text>
+                  <text class="expert-finding" wx:if="{{exp.finding}}" selectable="true">{{exp.finding}}</text>
+                  <text class="expert-finding" wx:if="{{exp.finding2}}" selectable="true">{{exp.finding2}}</text>
+                  <text class="expert-confidence" wx:if="{{exp.confidence > 0}}">置信度 {{exp.confidencePct}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <!-- 呼吸引导入口（干预模式） -->
+
+          <!-- 决策解释气泡 -->
+          <view class="decision-card" wx:if="{{item.role === 'ai' && item.decision}}">
+            <view class="decision-header">
+              <text class="decision-icon">🧠</text>
+              <text class="decision-title">决策解释</text>
+            </view>
+            <view class="decision-reason">{{item.decision.reason}}</view>
+            <view class="decision-metrics" wx:if="{{item.decision.metrics}}">
+              <view class="decision-metric" wx:for="{{item.decision.metrics}}" wx:key="name">
+                <text class="dm-label">{{item.name}}</text>
+                <text class="dm-value">{{item.value}}</text>
+              </view>
+            </view>
+            <view class="decision-confidence" wx:if="{{item.decision.confidence}}">
+              <view class="dc-bar-bg">
+                <view class="dc-bar-fill" style="width: {{item.decision.confidence * 100}}%"></view>
+              </view>
+              <text class="dc-label">置信度 {{Math.round(item.decision.confidence * 100)}}%</text>
+            </view>
+          </view>
+
+          <view class="breath-invite" wx:if="{{item.breathAction && !item._breathActive}}" catchtap="invokeBreathing" data-params="{{item.breathParams}}" data-idx="{{index}}">
+            <view class="breath-invite-icon">🌬️</view>
+            <view class="breath-invite-info">
+              <text class="breath-invite-name">{{item.breathName}}</text>
+              <text class="breath-invite-tip">{{item.breathTip}}</text>
+            </view>
+            <view class="breath-invite-arrow">▶</view>
+          </view>
+          <!-- 内嵌呼吸引导动画 -->
+          <view class="inline-breath" wx:if="{{item.breathAction && item._breathActive}}">
+            <view class="inline-breath-icon">🌬️</view>
+            <text class="inline-breath-name">{{item.breathName}}</text>
+            <view class="inline-breath-ring">
+              <view class="inline-breath-circle" style="transform: scale({{item._breathScale || 0.6}}); opacity: {{item._breathOpacity || 0.5}};"></view>
+            </view>
+            <text class="inline-breath-phase">{{item._breathPhaseText || '准备'}}</text>
+            <text class="inline-breath-count">{{item._breathCount || 0}}</text>
+            <view class="inline-breath-progress">
+              <view class="inline-breath-progress-fill" style="width: {{item._breathProgress || 0}}%"></view>
+            </view>
+            <text class="inline-breath-tip" bindtap="stopInlineBreathing" data-idx="{{index}}">点击停止</text>
+          </view>
+          <!-- AI Insight alert -->
+          <view class="insight-banner" wx:if="{{item.role === 'ai' && item.aiInsight}}">
+            <view class="insight-banner-icon">{{item.aiInsight.icon || '🧠'}}</view>
+            <view class="insight-banner-text">{{item.aiInsight.text || item.aiInsight}}</view>
+          </view>
+          <!-- RAG context hint -->
+          <view class="rag-hint" wx:if="{{item.role === 'ai' && item.ragContext}}">
+            <text class="rag-hint-icon">📖</text>
+            <text class="rag-hint-text">参考了你的历史记录</text>
+          </view>
+          <view class="copy-btn" bindtap="copyText" data-text="{{item.content}}">
+            <text class="copy-icon">📋</text>
+            <text class="copy-label">复制</text>
+          </view>
+        </view>
+        <view class="avatar" wx:if="{{item.role === 'user'}}">👤</view>
+      </view>
+    </view>
+
+    <!-- 打字中动画 -->
+    <view class="msg ai" wx:if="{{thinking}}">
+      <view class="avatar">🤖</view>
+      <view class="bubble ai-bubble typing-bubble">
+        <view class="typing-dots">
+          <view class="dot"></view>
+          <view class="dot"></view>
+          <view class="dot"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评分卡片（内嵌显示） -->
+    <view class="msg ai score-card-embedded" wx:if="{{showScoreCard}}">
+      <view class="avatar">🤖</view>
+      <view class="score-mini-card">
+        <view class="score-mini-header">
+          <text class="score-mini-icon">📊</text>
+          <text class="score-mini-title">睡眠分析</text>
+        </view>
+        <view class="score-mini-body">
+          <view class="score-mini-ring">
+            <text class="score-mini-num">{{scoreCardData.score}}</text>
+            <text class="score-mini-label">评分</text>
+          </view>
+          <view class="score-mini-meta">
+            <text class="score-mini-quality">{{scoreCardData.quality}}</text>
+            <!-- 趋势 -->
+            <text class="score-trend" wx:if="{{scoreCardData.showTrend}}">
+              {{scoreCardData.trendDirection === 'improving' ? '📈 上升' : scoreCardData.trendDirection === 'declining' ? '📉 下降' : '➡️ 稳定'}}
+              <text wx:if="{{scoreCardData.trendDelta !== 0}}"> {{scoreCardData.trendDelta > 0 ? '+' : ''}}{{scoreCardData.trendDelta}}分</text>
+            </text>
+          </view>
+        </view>
+
+        <!-- 用户分型标签 -->
+        <view class="score-tags" wx:if="{{scoreCardData.showTags}}">
+          <text class="score-tag" wx:for="{{scoreCardData.user_tags}}" wx:key="*this">{{item}}</text>
+        </view>
+
+        <!-- 行动建议（最优先展示） -->
+        <view class="score-takeaway" wx:if="{{scoreCardData.showTakeaway}}">
+          <view class="takeaway-title">💡 行动建议</view>
+          <text class="takeaway-text">{{scoreCardData.action_takeaway}}</text>
+        </view>
+
+        <!-- 置信区间（科学透明） -->
+        <view class="score-confidence" wx:if="{{scoreCardData.confidence_bounds}}">
+          <view class="confidence-title">📏 可信度</view>
+          <view class="confidence-row">
+            <text class="confidence-text">评分误差 {{scoreCardData.confidence_bounds.margin_of_error}} · 相当于PSQI {{scoreCardData.confidence_bounds.estimated_psqi_range}}分</text>
+          </view>
+          <view class="confidence-row">
+            <text class="confidence-text">与PSQI金标准相关度 ρ={{scoreCardData.confidence_bounds.psqi_spearman_r}}</text>
+          </view>
+        </view>
+
+        <!-- 推理简述 -->
+        <view class="score-reasoning" wx:if="{{scoreCardData.showReasoning}}">
+          <view class="reasoning-title">🔍 分析依据</view>
+          <text class="reasoning-text">{{scoreCardData.reasoning}}</text>
+        </view>
+
+        <!-- 时间线趋势图 -->
+        <view class="score-timeline">
+          <view class="timeline-title">📈 评分趋势</view>
+          <canvas id="timelineCanvas" type="2d" class="timeline-canvas"></canvas>
+        </view>
+
+        <!-- 维度评分条 -->
+        <view class="score-dims" wx:if="{{scoreCardData.showDim}}">
+          <view class="dims-title">专业维度评估</view>
+          <view class="dim-item" wx:for="{{scoreCardData.dimensions}}" wx:key="name">
+            <text class="dim-icon">{{item.icon}}</text>
+            <text class="dim-name">{{item.name}}</text>
+            <view class="dim-bar-bg">
+              <view class="dim-bar-fill" style="width:{{item.barWidth}};"></view>
+            </view>
+            <text class="dim-score">{{item.score}}</text>
+            <text class="dim-label" wx:if="{{item.label}}">{{item.label}}</text>
+            <text class="dim-conf-low" wx:if="{{item.lowConfidence}}">⚠️</text>
+          </view>
+        </view>
+
+        <!-- 减压方案 -->
+        <view class="score-relax" wx:if="{{scoreCardData.showRelax}}">
+          <view class="relax-title">🧘 减压方案</view>
+          <text class="relax-arousal">唤醒类型：{{scoreCardData.relaxation.arousal_type}}</text>
+          <view wx:if="{{scoreCardData.relaxation.primary_therapy}}">
+            <text class="relax-name">推荐：{{scoreCardData.relaxation.primary_therapy}}</text>
+            <view class="relax-evidence-row" wx:if="{{scoreCardData.relaxation.evidence}}" bindtap="toggleEvidence">
+              <text class="relax-evidence-badge">🔬 有科学依据</text>
+              <text class="relax-evidence-arrow">{{scoreCardData.showEvDetail ? '▾' : '▸'}}</text>
+            </view>
+            <text class="relax-evidence-detail" wx:if="{{scoreCardData.showEvDetail}}">{{scoreCardData.relaxation.evidence}}</text>
+            <text class="relax-effect" wx:if="{{scoreCardData.relaxation.effect_size}}">📊 效应量：{{scoreCardData.relaxation.effect_size}}</text>
+          </view>
+        </view>
+
+        <!-- 回顾发现 -->
+        <view class="score-retro" wx:if="{{scoreCardData.showRetro}}">
+          <view class="retro-title">📈 与上次对比</view>
+          <text class="retro-item" wx:for="{{scoreCardData.retrospective}}" wx:key="*this">{{item}}</text>
+        </view>
+
+        <!-- 循证计数 -->
+        <view class="score-evidence" wx:if="{{scoreCardData.showEvidence}}">
+          <view class="evidence-header" bindtap="toggleEvList">
+            <text class="evidence-badge">🔬 有科学依据</text>
+            <text class="evidence-arrow">{{scoreCardData.showEvDetail ? '▾' : '▸'}}</text>
+          </view>
+          <text class="evidence-count">基于 {{scoreCardData.evidence_count}} 条循证医学文献</text>
+        </view>
+
+        <view class="score-mini-footer" bindtap="showConsentModal">
+          <text class="score-mini-action">生成完整报告 ›</text>
+        </view>
+      </view>
+    </view>
+    
+  </scroll-view>
+
+  <!-- 授权确认弹窗 -->
+  <view class="modal-overlay" wx:if="{{showModal}}">
+    <view class="modal-box">
+      <text class="modal-title">生成睡眠报告</text>
+      <text class="modal-desc">AI将分析本次对话中与睡眠相关的信息，生成专业睡眠报告。</text>
+      <text class="modal-desc small">包含入睡时间、醒后感觉、压力水平等。</text>
+      <view class="modal-buttons">
+        <button class="modal-btn cancel" bindtap="closeModal">取消</button>
+        <button class="modal-btn confirm" bindtap="generateReport">开始生成</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入栏 -->
+  <view class="input-bar">
+    <!-- 语音 + 键盘切换 -->
+    <view class="input-voice-btn" bindtap="toggleVoiceInput">
+      <text class="voice-btn-icon">{{showVoiceInput ? '⌨️' : '🎤'}}</text>
+    </view>
+
+    <view wx:if="{{!showVoiceInput}}" class="input-wrap">
+      <input class="input-field" placeholder="描述你的睡眠问题..." 
+             bindinput="onInput" value="{{inputText}}" 
+             confirm-type="send" bindconfirm="sendMessage" 
+             cursor-spacing="24" adjust-position="true" />
+      <view class="send-btn {{inputText.trim() ? 'active' : ''}}" bindtap="sendMessage">
+        <text class="send-icon">➤</text>
+      </view>
+    </view>
+
+    <!-- 语音输入面板 -->
+    <view wx:if="{{showVoiceInput}}" class="voice-panel">
+      <view class="voice-record-btn {{isRecording ? 'recording' : ''}}" 
+            bindtouchstart="startRecording" bindtouchend="stopRecording">
+        <text class="record-icon">{{isRecording ? '🔴' : '🎤'}}</text>
+        <text class="record-text">{{isRecording ? '松开结束' : '按住说话'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 跳转遮罩 -->
+  <view class="nav-mask" wx:if="{{navMask}}"></view>
+
+</view>

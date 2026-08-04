@@ -1,0 +1,212 @@
+{
+  "generated_at": "2026-05-23T21:20:50.309776",
+  "guides": {
+    "478_breathing": {
+      "name": "4-7-8 呼吸法",
+      "segments": [
+        {
+          "segment": "intro",
+          "audio_url": "/static/guide_audio/478_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "inhale",
+          "audio_url": "/static/guide_audio/478_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "hold",
+          "audio_url": "/static/guide_audio/478_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "exhale",
+          "audio_url": "/static/guide_audio/478_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "outro",
+          "audio_url": "/static/guide_audio/478_breathing_exhale.wav",
+          "has_audio": true
+        }
+      ],
+      "total_segments": 5,
+      "audio_ready": 5,
+      "complete": true
+    },
+    "body_scan": {
+      "name": "身体扫描冥想",
+      "segments": [
+        {
+          "segment": "intro",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "feet",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "legs",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "torso",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "hands",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "shoulders",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "face",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "outro",
+          "audio_url": "/static/guide_audio/body_scan_head.wav",
+          "has_audio": true
+        }
+      ],
+      "total_segments": 8,
+      "audio_ready": 8,
+      "complete": true
+    },
+    "box_breathing": {
+      "name": "盒子呼吸法",
+      "segments": [
+        {
+          "segment": "intro",
+          "audio_url": "/static/guide_audio/box_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "inhale",
+          "audio_url": "/static/guide_audio/box_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "hold",
+          "audio_url": "/static/guide_audio/box_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "exhale",
+          "audio_url": "/static/guide_audio/box_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "hold2",
+          "audio_url": "/static/guide_audio/box_breathing_exhale.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "outro",
+          "audio_url": "/static/guide_audio/box_breathing_exhale.wav",
+          "has_audio": true
+        }
+      ],
+      "total_segments": 6,
+      "audio_ready": 6,
+      "complete": true
+    },
+    "progressive_relaxation": {
+      "name": "渐进式肌肉放松",
+      "segments": [
+        {
+          "segment": "intro",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "feet",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "legs",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "torso",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "hands",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "shoulders",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "face",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "outro",
+          "audio_url": "/static/guide_audio/progressive_relaxation_face.wav",
+          "has_audio": true
+        }
+      ],
+      "total_segments": 8,
+      "audio_ready": 8,
+      "complete": true
+    },
+    "sleep_preparation": {
+      "name": "睡前准备引导",
+      "segments": [
+        {
+          "segment": "intro",
+          "audio_url": "/static/guide_audio/sleep_preparation_body_check.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "release_day",
+          "audio_url": "/static/guide_audio/sleep_preparation_body_check.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "release_worry",
+          "audio_url": "/static/guide_audio/sleep_preparation_body_check.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "body_check",
+          "audio_url": "/static/guide_audio/sleep_preparation_body_check.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "breath_focus",
+          "audio_url": "/static/guide_audio/sleep_preparation_body_check.wav",
+          "has_audio": true
+        },
+        {
+          "segment": "outro",
+          "audio_url": "/static/guide_audio/sleep_preparation_body_check.wav",
+          "has_audio": true
+        }
+      ],
+      "total_segments": 6,
+      "audio_ready": 6,
+      "complete": true
+    }
+  },
+  "total_guides": 5,
+  "total_with_audio": 5
+}

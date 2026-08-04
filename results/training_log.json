@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2026-05-28 13:21:28",
+    "n_samples": 38,
+    "feature_dim": 564,
+    "avg_err_pct": 53.45,
+    "n_skipped_dim_mismatch": 6,
+    "n_skipped_short": 43,
+    "model_saved": "flatten_mlp_v1.pth",
+    "improved_copy": false
+  }
+]

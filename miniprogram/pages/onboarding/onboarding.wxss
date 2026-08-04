@@ -1,0 +1,26 @@
+/* 磨砂玻璃卡片 hover 效果 */
+.question-card {
+  transition: all 0.3s ease;
+}
+.question-card:active {
+  transform: scale(0.98);
+}
+
+/* 选项标签 */
+.option-tag {
+  transition: all 0.3s ease;
+}
+
+/* 提交按钮 */
+.submit-btn button {
+  transition: all 0.3s ease;
+  box-shadow: 0 8rpx 24rpx rgba(100, 100, 255, 0.2);
+}
+.submit-btn button:active {
+  transform: scale(0.96);
+}
+
+/* 页面滚动 */
+page {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+}

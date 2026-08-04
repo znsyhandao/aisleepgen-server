@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-06-15 07:41",
+  "n_nights": 35,
+  "avg_resilience": 54.1,
+  "avg_entropy": 0.781,
+  "dominant_vulnerable_window": "00:30",
+  "recent_discoveries": [
+    {
+      "ts": "2026-06-13 14:27",
+      "type": "new_vulnerable_window",
+      "detail": "新脆弱时段: 06:30 (体动16min)",
+      "severity": "low"
+    },
+    {
+      "ts": "2026-06-13 14:27",
+      "type": "window_shift",
+      "detail": "主要脆弱时段从02:30漂移到00:30",
+      "severity": "medium"
+    },
+    {
+      "ts": "2026-06-13 14:36",
+      "type": "window_shift",
+      "detail": "主要脆弱时段从00:30漂移到02:30",
+      "severity": "medium"
+    },
+    {
+      "ts": "2026-06-15 07:41",
+      "type": "new_vulnerable_window",
+      "detail": "新脆弱时段: 06:30 (体动16min)",
+      "severity": "low"
+    },
+    {
+      "ts": "2026-06-15 07:41",
+      "type": "window_shift",
+      "detail": "主要脆弱时段从02:30漂移到00:30",
+      "severity": "medium"
+    }
+  ],
+  "fresh_discoveries": [
+    "新脆弱时段: 06:30 (体动16min)",
+    "主要脆弱时段从02:30漂移到00:30"
+  ]
+}

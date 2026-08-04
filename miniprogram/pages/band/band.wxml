@@ -1,0 +1,178 @@
+<!-- pages/band/band.wxml — 设备数据导入 -->
+<view class="band-container">
+
+  <!-- 加载遮罩 -->
+  <view wx:if="{{loading}}" class="loading-overlay">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
+
+  <!-- 头部 -->
+  <view class="band-header">
+    <text class="band-icon">⌚</text>
+    <text class="band-title">导入手环数据</text>
+    <text class="band-subtitle">让AI更懂你的睡眠</text>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab == 'ocr' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="ocr">
+      <text class="tab-icon">📸</text>
+      <text>截图识别</text>
+    </view>
+    <view class="tab-item {{activeTab == 'manual' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="manual">
+      <text class="tab-icon">✏️</text>
+      <text>手动输入</text>
+    </view>
+  </view>
+
+  <!-- ===== Tab 1：截图识别 ===== -->
+  <block wx:if="{{activeTab == 'ocr'}}">
+    <view class="card">
+      <text class="card-title">从华为运动健康截图识别</text>
+      <text class="card-desc">截取华为运动健康App的睡眠报告页面，上传后AI自动识别数据</text>
+
+      <!-- 预览区 -->
+      <view class="preview-area" wx:if="{{ocrPreview}}">
+        <image class="preview-img" src="{{ocrPreview}}" mode="widthFix" />
+        <button class="reupload-btn" bindtap="chooseImage">重新选择</button>
+      </view>
+
+      <!-- 选择按钮 -->
+      <view class="upload-area" wx:else>
+        <view class="upload-box" bindtap="chooseImage">
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">点击选择截图</text>
+          <text class="upload-hint">支持华为运动健康、小米健康等App截图</text>
+        </view>
+      </view>
+
+      <button class="primary-btn {{!ocrPreview ? 'disabled' : ''}}" bindtap="ocrUpload" disabled="{{!ocrPreview || ocring}}">
+        <text wx:if="{{ocring}}">⏳ 识别中...</text>
+        <text wx:else>🚀 开始识别</text>
+      </button>
+    </view>
+
+    <!-- OCR 结果 -->
+    <view class="card" wx:if="{{ocrResult}}">
+      <text class="card-title">识别结果</text>
+      <view class="ocr-result-grid">
+        <view class="ocr-item" wx:if="{{ocrResult.sleep_score}}">
+          <text class="ocr-label">睡眠评分</text>
+          <text class="ocr-value">{{ocrResult.sleep_score}}</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.deep_sleep_min}}">
+          <text class="ocr-label">深睡</text>
+          <text class="ocr-value">{{formatMin(ocrResult.deep_sleep_min)}}</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.light_sleep_min}}">
+          <text class="ocr-label">浅睡</text>
+          <text class="ocr-value">{{formatMin(ocrResult.light_sleep_min)}}</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.rem_min}}">
+          <text class="ocr-label">REM</text>
+          <text class="ocr-value">{{formatMin(ocrResult.rem_min)}}</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.total_sleep_min}}">
+          <text class="ocr-label">总时长</text>
+          <text class="ocr-value">{{formatMin(ocrResult.total_sleep_min)}}</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.awake_count}}">
+          <text class="ocr-label">清醒次数</text>
+          <text class="ocr-value">{{ocrResult.awake_count}}次</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.heart_rate_avg}}">
+          <text class="ocr-label">心率</text>
+          <text class="ocr-value">{{ocrResult.heart_rate_avg}} bpm</text>
+        </view>
+        <view class="ocr-item" wx:if="{{ocrResult.hrv}}">
+          <text class="ocr-label">HRV</text>
+          <text class="ocr-value">{{ocrResult.hrv}} ms</text>
+        </view>
+      </view>
+      <button class="confirm-btn" bindtap="confirmOcrResult" wx:if="{{ocrResult && !ocrConfirmed}}">
+        <text>✅ 确认导入</text>
+      </button>
+      <view class="success-tip" wx:if="{{ocrConfirmed}}">
+        <text>✅ 数据已导入AI分析</text>
+      </view>
+    </view>
+
+    <!-- 温馨提示 -->
+    <view class="tip-area">
+      <text class="tip-text">💡 截图需包含完整的睡眠报告页面（评分、各阶段时长、心率等）。识别结果如有偏差可切换到"手动输入"修正。</text>
+    </view>
+  </block>
+
+  <!-- ===== Tab 2：手动输入 ===== -->
+  <block wx:if="{{activeTab == 'manual'}}">
+    <view class="card">
+      <text class="card-title">手动输入睡眠数据</text>
+      <text class="card-desc">从华为运动健康App中查看数据，手动填入以下字段</text>
+
+      <view class="form-group">
+        <text class="form-label">睡眠评分（可选）</text>
+        <input class="form-input" type="number" placeholder="如 89" value="{{form.sleep_score}}" bindinput="onFormInput" data-field="sleep_score" maxlength="3" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">入睡时间</text>
+          <input class="form-input" type="text" placeholder="如 22:25" value="{{form.bedtime}}" bindinput="onFormInput" data-field="bedtime" />
+        </view>
+        <view class="form-group half">
+          <text class="form-label">醒来时间</text>
+          <input class="form-input" type="text" placeholder="如 07:01" value="{{form.waketime}}" bindinput="onFormInput" data-field="waketime" />
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">总睡眠时长</text>
+          <input class="form-input" type="number" placeholder="分钟，如 513" value="{{form.total_sleep_min}}" bindinput="onFormInput" data-field="total_sleep_min" />
+        </view>
+        <view class="form-group half">
+          <text class="form-label">清醒次数</text>
+          <input class="form-input" type="number" placeholder="如 1" value="{{form.awake_count}}" bindinput="onFormInput" data-field="awake_count" />
+        </view>
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">深睡时长（分钟）</text>
+          <input class="form-input" type="number" placeholder="如 164" value="{{form.deep_sleep_min}}" bindinput="onFormInput" data-field="deep_sleep_min" />
+        </view>
+        <view class="form-group half">
+          <text class="form-label">浅睡时长（分钟）</text>
+          <input class="form-input" type="number" placeholder="如 205" value="{{form.light_sleep_min}}" bindinput="onFormInput" data-field="light_sleep_min" />
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">REM 时长（分钟）</text>
+        <input class="form-input" type="number" placeholder="如 144" value="{{form.rem_min}}" bindinput="onFormInput" data-field="rem_min" />
+      </view>
+
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">平均心率（bpm）</text>
+          <input class="form-input" type="number" placeholder="如 57" value="{{form.heart_rate_avg}}" bindinput="onFormInput" data-field="heart_rate_avg" />
+        </view>
+        <view class="form-group half">
+          <text class="form-label">HRV（ms）</text>
+          <input class="form-input" type="number" placeholder="如 78" value="{{form.hrv}}" bindinput="onFormInput" data-field="hrv" />
+        </view>
+      </view>
+
+      <button class="primary-btn {{!hasFormData ? 'disabled' : ''}}" bindtap="submitManual" disabled="{{!hasFormData || submitting}}">
+        <text wx:if="{{submitting}}">⏳ 提交中...</text>
+        <text wx:else>📤 提交数据</text>
+      </button>
+
+      <view class="success-tip" wx:if="{{manualSubmitted}}">
+        <text>✅ 数据已导入AI分析</text>
+      </view>
+    </view>
+  </block>
+
+</view>

@@ -1,0 +1,83 @@
+<!-- pages/sleep-audio/sleep-audio.wxml — AI助眠音频 -->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="header-icon">🎧</text>
+    <text class="header-title">AI 助眠</text>
+    <text class="header-subtitle">根据你的状态定制助眠音频</text>
+  </view>
+
+  <!-- 蓝牙状态 -->
+  <view class="bt-status">
+    <view class="bt-dot {{btConnected ? 'connected' : 'disconnected'}}"></view>
+    <text>{{btConnected ? '蓝牙耳机已连接' : '请连接蓝牙耳机（韶音等）'}}</text>
+  </view>
+
+  <!-- 模式选择 -->
+  <view class="mode-grid">
+    <view class="mode-card {{selectedMode == 'sleep' ? 'selected' : ''}}" data-mode="sleep" bindtap="selectMode">
+      <text class="mode-icon">🌙</text>
+      <text class="mode-name">入睡引导</text>
+      <text class="mode-desc">渐进式放松，自然入眠</text>
+    </view>
+    <view class="mode-card {{selectedMode == 'deep' ? 'selected' : ''}}" data-mode="deep" bindtap="selectMode">
+      <text class="mode-icon">🌊</text>
+      <text class="mode-name">深睡强化</text>
+      <text class="mode-desc">δ波音频，加深睡眠</text>
+    </view>
+    <view class="mode-card {{selectedMode == 'relax' ? 'selected' : ''}}" data-mode="relax" bindtap="selectMode">
+      <text class="mode-icon">🧘</text>
+      <text class="mode-name">快速放松</text>
+      <text class="mode-desc">3分钟缓解焦虑紧张</text>
+    </view>
+    <view class="mode-card {{selectedMode == 'rem' ? 'selected' : ''}}" data-mode="rem" bindtap="selectMode">
+      <text class="mode-icon">💭</text>
+      <text class="mode-name">梦境引导</text>
+      <text class="mode-desc">积极梦境暗示引导</text>
+    </view>
+  </view>
+
+  <!-- AI场景描述 -->
+  <view class="scene-card" wx:if="{{sceneText}}">
+    <text class="scene-title">📋 {{sceneTitle}}</text>
+    <text class="scene-desc">{{sceneText}}</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="scene-card" wx:if="{{generating}}">
+    <text class="scene-title">⏳ AI 正在生成...</text>
+    <text class="scene-desc">根据你的睡眠数据定制助眠场景，请稍候...</text>
+  </view>
+
+  <!-- 播放控制 -->
+  <view class="play-btn-wrapper" wx:if="{{sceneText && !generating}}">
+    <view class="play-btn {{isPlaying ? 'playing' : ''}}" bindtap="togglePlay">
+      <text>{{isPlaying ? '⏸' : '▶️'}}</text>
+    </view>
+  </view>
+
+  <!-- 进度 -->
+  <view class="progress-area" wx:if="{{isPlaying || playbackFinished}}">
+    <view class="progress-bar-container">
+      <view class="progress-bar-fill" style="width: {{progressPercent}}%;"></view>
+    </view>
+    <text class="progress-time">{{playbackFinished ? '播放完成' : currentTimeText + ' / ' + durationText}}</text>
+  </view>
+
+  <!-- 已播放完显示 -->
+  <view class="play-btn-wrapper" wx:if="{{playbackFinished}}">
+    <view class="play-btn" bindtap="resetSession">
+      <text>🔄</text>
+    </view>
+  </view>
+
+  <!-- 说明 -->
+  <view class="tip-box">
+    <text class="tip-text">💡 确保手机蓝牙已连接韶音耳机。音频会通过系统蓝牙自动传输。建议睡前15分钟佩戴，音量调至舒适水平。</text>
+  </view>
+
+  <!-- 日志 -->
+  <view class="log-area" wx:if="{{logs.length}}">
+    <text wx:for="{{logs}}" wx:for-item="log" class="log-line">{{log}}</text>
+  </view>
+</view>

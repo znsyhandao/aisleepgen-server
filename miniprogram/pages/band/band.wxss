@@ -1,0 +1,319 @@
+/** pages/band/band.wxss — 设备数据导入页面 */
+page {
+  background: #0f0f23;
+  min-height: 100vh;
+}
+
+.band-container {
+  padding: 20rpx 30rpx 60rpx;
+  min-height: 100vh;
+}
+
+/* ===== 头部 ===== */
+.band-header {
+  text-align: center;
+  padding: 30rpx 0;
+}
+
+.band-icon {
+  font-size: 100rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.band-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #e0d8f0;
+  display: block;
+}
+
+.band-subtitle {
+  font-size: 26rpx;
+  color: #888;
+  display: block;
+  margin-top: 8rpx;
+}
+
+/* ===== Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  background: rgba(255,255,255,0.04);
+  border-radius: 16rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #888;
+  border-radius: 12rpx;
+  transition: all 0.2s;
+}
+
+.tab-active {
+  background: rgba(102, 126, 234, 0.2);
+  color: #e0d8f0;
+  font-weight: 600;
+}
+
+.tab-icon {
+  display: block;
+  font-size: 36rpx;
+  margin-bottom: 6rpx;
+}
+
+/* ===== 卡片 ===== */
+.card {
+  background: rgba(255,255,255,0.06);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #e0d8f0;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.card-desc {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+/* ===== 上传区 ===== */
+.upload-area {
+  margin: 20rpx 0;
+}
+
+.upload-box {
+  border: 2rpx dashed rgba(255,255,255,0.2);
+  border-radius: 24rpx;
+  padding: 60rpx 20rpx;
+  text-align: center;
+  background: rgba(255,255,255,0.02);
+}
+
+.upload-icon {
+  font-size: 64rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.upload-text {
+  font-size: 28rpx;
+  color: #ccc;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.upload-hint {
+  font-size: 22rpx;
+  color: #666;
+  display: block;
+}
+
+/* ===== 预览 ===== */
+.preview-area {
+  margin: 20rpx 0;
+  text-align: center;
+}
+
+.preview-img {
+  width: 100%;
+  max-height: 500rpx;
+  border-radius: 16rpx;
+  object-fit: contain;
+  background: rgba(0,0,0,0.3);
+}
+
+.reupload-btn {
+  margin-top: 16rpx;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #ccc;
+  border-radius: 12rpx;
+  height: 64rpx;
+  font-size: 26rpx;
+  width: 200rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== OCR 结果 ===== */
+.ocr-result-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 16rpx 0;
+}
+
+.ocr-item {
+  flex: 1;
+  min-width: calc(33% - 12rpx);
+  background: rgba(255,255,255,0.04);
+  border-radius: 14rpx;
+  padding: 16rpx;
+  text-align: center;
+}
+
+.ocr-label {
+  font-size: 22rpx;
+  color: #888;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.ocr-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #667eea;
+  display: block;
+}
+
+/* ===== 按钮 ===== */
+.primary-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 6rpx 24rpx rgba(102, 126, 234, 0.3);
+  margin-top: 20rpx;
+}
+
+.primary-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.primary-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.confirm-btn {
+  width: 100%;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: rgba(76, 175, 80, 0.15);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+  font-size: 28rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16rpx;
+}
+
+/* ===== 成功提示 ===== */
+.success-tip {
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.success-tip text {
+  font-size: 26rpx;
+  color: #4caf50;
+}
+
+/* ===== 表单 ===== */
+.form-group {
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: #aaa;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14rpx;
+  padding: 22rpx 24rpx;
+  font-size: 28rpx;
+  color: #e0d8f0;
+  box-sizing: border-box;
+}
+
+.form-input::placeholder {
+  color: #555;
+}
+
+.form-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.half {
+  flex: 1;
+}
+
+/* ===== 提示 ===== */
+.tip-area {
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.15);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #ccb26e;
+  display: block;
+  line-height: 1.6;
+}
+
+/* ===== Loading Overlay ===== */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 35, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.loading-spinner {
+  width: 64rpx;
+  height: 64rpx;
+  border: 4rpx solid rgba(255,255,255,0.1);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #ccc;
+  margin-top: 20rpx;
+}

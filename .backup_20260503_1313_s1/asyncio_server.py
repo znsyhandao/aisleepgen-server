@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+asyncio_server.py — 纯异步 HTTP 服务器
+路由委托给 dp_router.dispatch()。业务逻辑零冗余。
+
+启动: python asyncio_server.py [--benchmark]
+"""
+import os, sys, json, asyncio, time, logging
+from datetime import datetime
+from urllib.parse import urlparse
+import concurrent.futures
+
+_as_log = logging.getLogger('aisleepgen.server')
+
+sys.path = [p for p in sys.path if 'openclaw' not in p.lower()]
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.environ['AISLEEPGEN_SKIP_MAIN'] = '1'
+
+from dp_router import dispatch, ROUTES
+
+EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=100)
+
+class AIGate:
+    def __init__(self, n=200):
+        self._n = n
+        self._sem = None
+        self.active = 0; self.waiting = 0
+    async def _ensure_sem(self):
+        if self._sem is None:
+            self._sem = asyncio.Semaphore(self._n)
+    @property
+    def stats(self):
+        return {'active': self.active, 'waiting': self.waiting}
+    async def run(self, fn, *a, **kw):
+        await self._ensure_sem()
+        self.waiting += 1
+        async with self._sem:
+            self.waiting -= 1; self.active += 1
+            try: return await fn(*a, **kw)
+            finally: self.active -= 1
+
+gate = AIGate(200)
+
+async def route(method, path, data):
+    """路由分发——AI调用走并发槽，其余直走线程池"""
+    loop = asyncio.get_event_loop()
+    if method == 'POST' and urlparse(path).path == '/api/chat':
+        async def ai():
+            return await loop.run_in_executor(EXECUTOR, dispatch, method, path, data)
+        try:
+            return await gate.run(ai)
+        except Exception as e:
+            _as_log.warning('[Gate] AI gate error: %s, falling through', e)
+            return await loop.run_in_executor(EXECUTOR, dispatch, method, path, data)
+    return await loop.run_in_executor(EXECUTOR, dispatch, method, path, data)
+
+
+class Proto(asyncio.Protocol):
+    def connection_made(self, t):
+        self.t = t; self.b = b''
+
+    def data_received(self, d):
+        self.b += d
+        try:
+            if b'\r\n\r\n' not in self.b: return
+            i = self.b.index(b'\r\n\r\n') + 4
+            h = self.b[:i].decode('utf-8', errors='replace')
+            body = self.b[i:]; self.b = b''
+            lines = h.split('\r\n')
+            parts = lines[0].split(' ')
+            if len(parts) < 2: return
+            method, path = parts[0], parts[1]
+            cl = 0
+            for l in lines[1:]:
+                if ':' in l:
+                    k, v = l.split(':', 1)
+                    if k.strip().lower() == 'content-length':
+                        cl = int(v.strip())
+            body_str = body[:cl].decode('utf-8', errors='replace') if cl > 0 else ''
+            asyncio.create_task(self.go(method, path, body_str))
+        except:
+            self.w(400, b'Bad Request')
+
+    async def go(self, method, path, body_str):
+        try:
+            data = json.loads(body_str) if body_str else {}
+            result = await route(method, path, data)
+            self.w(200, json.dumps(result, ensure_ascii=False).encode())
+        except Exception as e:
+            self.w(500, json.dumps({'error': str(e)}, ensure_ascii=False).encode())
+
+    def w(self, status, body_bytes):
+        r = (f'HTTP/1.1 {status} {"OK" if status < 400 else "Error"}\r\n'
+             f'Content-Type: application/json; charset=utf-8\r\n'
+             f'Content-Length: {len(body_bytes)}\r\n'
+             f'Access-Control-Allow-Origin: *\r\n'
+             f'Connection: keep-alive\r\n\r\n').encode() + body_bytes
+        self.t.write(r)
+        self.t.close()
+
+
+async def benchmark():
+    print('[Benchmark] 启动压力测试...')
+    loop = asyncio.get_event_loop()
+    srv = await loop.create_server(lambda: Proto(), '127.0.0.1', 8091)
+
+    async def hit(i):
+        try:
+            r, w = await asyncio.wait_for(asyncio.open_connection('127.0.0.1', 8091), 5)
+            d = json.dumps({'message': f'测试{i}', 'openid': f'u{i%100}'}, ensure_ascii=False).encode()
+            req = (f'POST /api/chat HTTP/1.1\r\nContent-Type: application/json\r\n'
+                   f'Content-Length: {len(d)}\r\nConnection: close\r\n\r\n').encode() + d
+            w.write(req); await w.drain()
+            await asyncio.wait_for(r.read(-1), 30)
+            w.close()
+            return 1
+        except: return 0
+
+    for label, n in [('10并发',10), ('50并发',50), ('200并发',200), ('500并发',500)]:
+        t0 = time.monotonic()
+        rs = await asyncio.gather(*[hit(i) for i in range(n)])
+        t = time.monotonic() - t0
+        ok = sum(rs)
+        print(f'  [{label}] {n}req/{t:.1f}s -> 成功{ok} 失败{n-ok} ({n/t:.0f} req/s)')
+
+    srv.close()
+    print('[Benchmark] 完成')
+
+
+if __name__ == '__main__':
+    print(f'[asyncio] AISleepGen 纯异步服务器')
+    print(f'[asyncio] {len(ROUTES)} 条路由 | 线程池 100 | AI并发 200')
+    print(f'[asyncio] http://localhost:8090')
+
+    # PID 文件管理
+    _PID_PATH = 'data/asyncio_server.pid'
+    try:
+        os.makedirs('data', exist_ok=True)
+        with open(_PID_PATH, 'w') as f:
+            f.write(str(os.getpid()))
+        _as_log.info('PID written: %d', os.getpid())
+    except Exception as e:
+        _as_log.warning('PID file write failed: %s', e)
+
+    # 初始化运维模块（日志、版本、心跳保活）
+    import ops
+    _as_log.info('AISleepGen v%s (%s) started', ops.VERSION, ops.VERSION_TAG)
+    ops.register_watchdog('/health')
+    ops.start_heartbeat()
+
+    # 加载 DeepSeek API Key（支持 .env → 环境变量 → OpenClaw 配置）
+    from ai_client import load_deepseek_key
+    if load_deepseek_key():
+        _as_log.info('DeepSeek API key loaded successfully')
+
+    # 启动后台调度守护线程（主动干预推送）
+    try:
+        from scheduler_daemon import start_daemon
+        start_daemon()
+        _as_log.info('[Scheduler] Background daemon started')
+    except Exception as e:
+        _as_log.warning('[Scheduler] Failed to start daemon: %s', e)
+    else:
+        _as_log.warning('DeepSeek API key not found, fallback engine will be used')
+
+    if '--benchmark' in sys.argv:
+        asyncio.run(benchmark())
+    else:
+        async def main():
+            loop = asyncio.get_running_loop()
+            s = await loop.create_server(
+                lambda: Proto(), '0.0.0.0', 8090)
+            async with s:
+                await s.serve_forever()
+        asyncio.run(main())

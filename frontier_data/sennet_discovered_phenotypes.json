@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-06-13 14:25",
+  "total_profiles": 61,
+  "clusters_found": 2,
+  "new_phenotypes": 2,
+  "cluster_summary": {
+    "cluster_0": {
+      "size": 40,
+      "centroid_raw": [
+        0.475,
+        0.766,
+        0.293,
+        0.744,
+        0.633,
+        0.55,
+        0.73,
+        0.5,
+        0.73,
+        0.5
+      ],
+      "top_deviations": [
+        "病理筛查偏低(-0.20)",
+        "综合评估偏低(-0.09)",
+        "情绪评估偏低(-0.05)"
+      ],
+      "matched_phenotype": "未知",
+      "known_match": false,
+      "has_transition_members": false,
+      "is_new_discovery": true
+    },
+    "cluster_1": {
+      "size": 21,
+      "centroid_raw": [
+        0.633,
+        0.89,
+        0.88,
+        0.8,
+        0.908,
+        0.7,
+        0.772,
+        0.5,
+        0.772,
+        0.5
+      ],
+      "top_deviations": [
+        "病理筛查偏高(+0.39)",
+        "综合评估偏高(+0.18)",
+        "情绪评估偏高(+0.10)"
+      ],
+      "matched_phenotype": "未知",
+      "known_match": false,
+      "has_transition_members": false,
+      "is_new_discovery": true
+    }
+  },
+  "discovered_phenotypes": [
+    {
+      "cluster_id": "cluster_0",
+      "size": 40,
+      "signature": [
+        "病理筛查偏低(-0.20)",
+        "综合评估偏低(-0.09)",
+        "情绪评估偏低(-0.05)"
+      ],
+      "phenotype_name": "聚类发现#1",
+      "description": "病理筛查偏低(-0.20); 综合评估偏低(-0.09); 情绪评估偏低(-0.05)"
+    },
+    {
+      "cluster_id": "cluster_1",
+      "size": 21,
+      "signature": [
+        "病理筛查偏高(+0.39)",
+        "综合评估偏高(+0.18)",
+        "情绪评估偏高(+0.10)"
+      ],
+      "phenotype_name": "聚类发现#2",
+      "description": "病理筛查偏高(+0.39); 综合评估偏高(+0.18); 情绪评估偏高(+0.10)"
+    }
+  ]
+}

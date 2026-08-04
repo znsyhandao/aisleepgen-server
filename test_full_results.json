@@ -1,0 +1,148 @@
+{
+  "timestamp": "2026-05-19T10:21:39.567746",
+  "openid": "test_full_101633",
+  "pass": 50,
+  "fail": 14,
+  "total": 64,
+  "pass_rate": 78.1,
+  "by_phase": {
+    "1": {
+      "pass": 11,
+      "fail": 1,
+      "items": 12
+    },
+    "2": {
+      "pass": 6,
+      "fail": 2,
+      "items": 8
+    },
+    "3": {
+      "pass": 0,
+      "fail": 5,
+      "items": 5
+    },
+    "4": {
+      "pass": 4,
+      "fail": 0,
+      "items": 4
+    },
+    "5": {
+      "pass": 3,
+      "fail": 0,
+      "items": 3
+    },
+    "6": {
+      "pass": 4,
+      "fail": 2,
+      "items": 6
+    },
+    "7": {
+      "pass": 6,
+      "fail": 0,
+      "items": 6
+    },
+    "8": {
+      "pass": 2,
+      "fail": 0,
+      "items": 2
+    },
+    "9a": {
+      "pass": 3,
+      "fail": 0,
+      "items": 3
+    },
+    "9b": {
+      "pass": 0,
+      "fail": 1,
+      "items": 1
+    },
+    "9c": {
+      "pass": 1,
+      "fail": 0,
+      "items": 1
+    },
+    "9d": {
+      "pass": 1,
+      "fail": 0,
+      "items": 1
+    },
+    "9e": {
+      "pass": 0,
+      "fail": 1,
+      "items": 1
+    },
+    "10": {
+      "pass": 5,
+      "fail": 0,
+      "items": 5
+    },
+    "11": {
+      "pass": 2,
+      "fail": 0,
+      "items": 2
+    },
+    "12": {
+      "pass": 2,
+      "fail": 2,
+      "items": 4
+    }
+  },
+  "failures": [
+    {
+      "name": "1.12 旧用户兼容填充",
+      "detail": ""
+    },
+    {
+      "name": "2.4 '胸口闷喘不过气'触发干预",
+      "detail": "stress=None (11178ms)"
+    },
+    {
+      "name": "2.5 '帮我放松一下'触发干预",
+      "detail": "stress=None (16312ms)"
+    },
+    {
+      "name": "3.1 高置信度触发干预",
+      "detail": "5325ms"
+    },
+    {
+      "name": "3.2 包含呼吸模式名称",
+      "detail": ""
+    },
+    {
+      "name": "3.3 轮数在3-8之间",
+      "detail": "None"
+    },
+    {
+      "name": "3.4 包含提示文案",
+      "detail": ""
+    },
+    {
+      "name": "3.5 含压力类型",
+      "detail": ""
+    },
+    {
+      "name": "6.1 current_score 不为空",
+      "detail": "0"
+    },
+    {
+      "name": "6.4 current 与 scores_7d 最新一致",
+      "detail": "cur=0, last=None"
+    },
+    {
+      "name": "9b. _preferred 已定义",
+      "detail": "Phase 7 修复已应用"
+    },
+    {
+      "name": "9e. 自愈系统正常",
+      "detail": "{\"success\": true, \"status\": \"healthy\", \"timestamp\": \"2026-05-19 10:20:55\", \"issues\": [], \"fixes\": [], \"checks\": [\"api_key\", \"data_files\", \"port\", \"evidence_freshness\", \"profile_integrity\"], \"heal_log\": [{\"time\": \"2026-05-19 10:20:55\", \"action\": \"check_api_key\", \"status\": \"OK\", \"detail\": \"API connected\"}], \"repair_count\": 0, \"summary\": \"All systems healthy\", \"version\": \"20260519_1\"}"
+    },
+    {
+      "name": "12.2 偏好学习类存在",
+      "detail": ""
+    },
+    {
+      "name": "12.3 PreferenceEngine.process_message 异步",
+      "detail": ""
+    }
+  ]
+}

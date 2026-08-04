@@ -1,0 +1,827 @@
+{
+  "/api/wx-login": {
+    "route": "/api/wx-login",
+    "handler": "handle_wx_login",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/chat": {
+    "route": "/api/chat",
+    "handler": "handle_chat",
+    "file": "dp_router.py",
+    "keys": [
+      "reply",
+      "action",
+      "meditation_protocol",
+      "token_estimate",
+      "timestamp",
+      "ai_score",
+      "ai_quality",
+      "debate",
+      "async_pipeline",
+      "local_only",
+      "elapsed_ms",
+      "companion",
+      "expert_detail"
+    ]
+  },
+  "/api/user-profile": {
+    "route": "/api/user-profile",
+    "handler": "handle_user_profile",
+    "file": "dp_router.py",
+    "keys": [
+      "profile"
+    ]
+  },
+  "/api/dashboard": {
+    "route": "/api/dashboard",
+    "handler": "handle_dashboard",
+    "file": "dp_router.py",
+    "keys": [
+      "dashboard"
+    ]
+  },
+  "/api/update-profile": {
+    "route": "/api/update-profile",
+    "handler": "handle_update_profile",
+    "file": "dp_router.py",
+    "keys": [
+      "status"
+    ]
+  },
+  "/api/sleep-stats": {
+    "route": "/api/sleep-stats",
+    "handler": "handle_sleep_stats",
+    "file": "dp_router.py",
+    "keys": [
+      "total_sessions",
+      "avg_score",
+      "streak_days",
+      "member"
+    ]
+  },
+  "/api/history": {
+    "route": "/api/history",
+    "handler": "handle_history",
+    "file": "dp_router.py",
+    "keys": [
+      "history"
+    ]
+  },
+  "/api/feedback": {
+    "route": "/api/feedback",
+    "handler": "handle_feedback",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "stored"
+    ]
+  },
+  "/api/goodnight": {
+    "route": "/api/goodnight",
+    "handler": "handle_goodnight",
+    "file": "dp_router.py",
+    "keys": [
+      "reply",
+      "action"
+    ]
+  },
+  "/api/sleep-analyze": {
+    "route": "/api/sleep-analyze",
+    "handler": "handle_sleep_analyze",
+    "file": "dp_router.py",
+    "keys": [
+      "result"
+    ]
+  },
+  "/api/sleep-report": {
+    "route": "/api/sleep-report",
+    "handler": "handle_sleep_report",
+    "file": "dp_router.py",
+    "keys": [
+      "latest",
+      "avg_score",
+      "total",
+      "source"
+    ]
+  },
+  "/api/band-insight": {
+    "route": "/api/band-insight",
+    "handler": "handle_band_insight",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "insights",
+      "risks",
+      "suggestions",
+      "band_raw"
+    ]
+  },
+  "/api/meditation-plan": {
+    "route": "/api/meditation-plan",
+    "handler": "handle_meditation_plan",
+    "file": "dp_router.py",
+    "keys": [
+      "protocol",
+      "protocol_name",
+      "steps",
+      "total_duration",
+      "_safe_constraint",
+      "ambient_atmosphere"
+    ]
+  },
+  "/api/companion/stop": {
+    "route": "/api/companion/stop",
+    "handler": "handle_companion_stop",
+    "file": "dp_router.py",
+    "keys": [
+      "status"
+    ]
+  },
+  "/api/narrative/story": {
+    "route": "/api/narrative/story",
+    "handler": "handle_narrative_story",
+    "file": "dp_router.py",
+    "keys": [
+      "has_data",
+      "story",
+      "mode"
+    ]
+  },
+  "/api/narrative/weekly": {
+    "route": "/api/narrative/weekly",
+    "handler": "handle_narrative_weekly",
+    "file": "dp_router.py",
+    "keys": [
+      "summary",
+      "has_data"
+    ]
+  },
+  "/api/explain/last": {
+    "route": "/api/explain/last",
+    "handler": "handle_explain_last",
+    "file": "dp_router.py",
+    "keys": [
+      "summary",
+      "trigger",
+      "evidence",
+      "expected_impact",
+      "alternatives",
+      "confidence",
+      "chain_explanation"
+    ]
+  },
+  "/api/proactive/status": {
+    "route": "/api/proactive/status",
+    "handler": "handle_proactive_status",
+    "file": "dp_router.py",
+    "keys": [
+      "pending_count",
+      "pending_actions"
+    ]
+  },
+  "/api/proactive/dismiss": {
+    "route": "/api/proactive/dismiss",
+    "handler": "handle_proactive_dismiss",
+    "file": "dp_router.py",
+    "keys": [
+      "dismissed"
+    ]
+  },
+  "/api/data-export": {
+    "route": "/api/data-export",
+    "handler": "handle_data_export",
+    "file": "dp_router.py",
+    "keys": [
+      "openid",
+      "total_sessions",
+      "history_count",
+      "member"
+    ]
+  },
+  "/api/subscribe-msg": {
+    "route": "/api/subscribe-msg",
+    "handler": "handle_subscribe_msg",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "subscribed"
+    ]
+  },
+  "/api/push-settings": {
+    "route": "/api/push-settings",
+    "handler": "handle_push_settings",
+    "file": "dp_router.py",
+    "keys": [
+      "settings",
+      "subscriptions"
+    ]
+  },
+  "/api/coach-feedback": {
+    "route": "/api/coach-feedback",
+    "handler": "handle_coach_feedback",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "result",
+      "stats"
+    ]
+  },
+  "/api/pending-push": {
+    "route": "/api/pending-push",
+    "handler": "handle_pending_push",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/butler-check": {
+    "route": "/api/butler-check",
+    "handler": "handle_butler_check",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "time"
+    ]
+  },
+  "/api/biz-intel": {
+    "route": "/api/biz-intel",
+    "handler": "handle_biz_intel",
+    "file": "dp_router.py",
+    "keys": [
+      "intel"
+    ]
+  },
+  "/api/emotion-timeline": {
+    "route": "/api/emotion-timeline",
+    "handler": "handle_emotion_timeline",
+    "file": "dp_router.py",
+    "keys": [
+      "timeline"
+    ]
+  },
+  "/api/pubmed-update": {
+    "route": "/api/pubmed-update",
+    "handler": "handle_pubmed_update",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "message"
+    ]
+  },
+  "/api/pubmed-recent": {
+    "route": "/api/pubmed-recent",
+    "handler": "handle_pubmed_recent",
+    "file": "dp_router.py",
+    "keys": [
+      "articles"
+    ]
+  },
+  "/health": {
+    "route": "/health",
+    "handler": "handle_health",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "time",
+      "mode",
+      "version",
+      "tag",
+      "uptime",
+      "deepseek_configured",
+      "fallback_available",
+      "_effectiveness"
+    ]
+  },
+  "/api/metrics": {
+    "route": "/api/metrics",
+    "handler": "handle_metrics",
+    "file": "dp_router.py",
+    "keys": [
+      "uptime_seconds",
+      "uptime_human",
+      "total_calls",
+      "routes"
+    ]
+  },
+  "/api/metrics/detail": {
+    "route": "/api/metrics/detail",
+    "handler": "handle_metrics_detail",
+    "file": "dp_router.py",
+    "keys": [
+      "uptime_seconds",
+      "recent_total",
+      "recent"
+    ]
+  },
+  "/api/metrics/hourly": {
+    "route": "/api/metrics/hourly",
+    "handler": "handle_metrics_hourly",
+    "file": "dp_router.py",
+    "keys": [
+      "period",
+      "buckets"
+    ]
+  },
+  "/api/meta/daily-review": {
+    "route": "/api/meta/daily-review",
+    "handler": "handle_meta_daily_review",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/meta/rollback": {
+    "route": "/api/meta/rollback",
+    "handler": "handle_meta_rollback",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "steps"
+    ]
+  },
+  "/api/meta/summary": {
+    "route": "/api/meta/summary",
+    "handler": "handle_meta_summary",
+    "file": "dp_router.py",
+    "keys": [
+      "summary"
+    ]
+  },
+  "/api/meta/adjustments": {
+    "route": "/api/meta/adjustments",
+    "handler": "handle_meta_adjustments",
+    "file": "dp_router.py",
+    "keys": [
+      "adjustments",
+      "count"
+    ]
+  },
+  "/api/meta/param-history": {
+    "route": "/api/meta/param-history",
+    "handler": "handle_meta_param_history",
+    "file": "dp_router.py",
+    "keys": [
+      "history"
+    ]
+  },
+  "/api/population/clusters": {
+    "route": "/api/population/clusters",
+    "handler": "handle_population_clusters",
+    "file": "dp_router.py",
+    "keys": [
+      "clusters",
+      "count"
+    ]
+  },
+  "/api/population/maintenance": {
+    "route": "/api/population/maintenance",
+    "handler": "handle_population_maintenance",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "report"
+    ]
+  },
+  "/api/population/strategy-split": {
+    "route": "/api/population/strategy-split",
+    "handler": "handle_population_strategy_split",
+    "file": "dp_router.py",
+    "keys": [
+      "splits",
+      "count"
+    ]
+  },
+  "/api/population/summary": {
+    "route": "/api/population/summary",
+    "handler": "handle_population_summary",
+    "file": "dp_router.py",
+    "keys": [
+      "summary"
+    ]
+  },
+  "/api/intent/classify": {
+    "route": "/api/intent/classify",
+    "handler": "handle_intent_classify",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/intent/list": {
+    "route": "/api/intent/list",
+    "handler": "handle_intent_list",
+    "file": "dp_router.py",
+    "keys": [
+      "intents",
+      "count"
+    ]
+  },
+  "/api/voice-to-text": {
+    "route": "/api/voice-to-text",
+    "handler": "handle_voice_to_text",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "error"
+    ]
+  },
+  "/api/safeguards/rollback": {
+    "route": "/api/safeguards/rollback",
+    "handler": "handle_safeguard_rollback",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "result"
+    ]
+  },
+  "/api/safeguards/status": {
+    "route": "/api/safeguards/status",
+    "handler": "handle_safeguard_status",
+    "file": "dp_router.py",
+    "keys": [
+      "safety",
+      "canary",
+      "rollback_history",
+      "summary"
+    ]
+  },
+  "/api/safeguards/canary-start": {
+    "route": "/api/safeguards/canary-start",
+    "handler": "handle_safeguard_canary_start",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/safeguards/canary-evaluate": {
+    "route": "/api/safeguards/canary-evaluate",
+    "handler": "handle_safeguard_canary_evaluate",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/ab/create": {
+    "route": "/api/ab/create",
+    "handler": "handle_ab_create",
+    "file": "dp_router.py",
+    "keys": [
+      "experiment_id",
+      "status"
+    ]
+  },
+  "/api/ab/evaluate": {
+    "route": "/api/ab/evaluate",
+    "handler": "handle_ab_evaluate",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/ab/list": {
+    "route": "/api/ab/list",
+    "handler": "handle_ab_list",
+    "file": "dp_router.py",
+    "keys": [
+      "experiments",
+      "count"
+    ]
+  },
+  "/api/ab/stop": {
+    "route": "/api/ab/stop",
+    "handler": "handle_ab_stop",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/ab/canary-create": {
+    "route": "/api/ab/canary-create",
+    "handler": "handle_ab_canary_create",
+    "file": "dp_router.py",
+    "keys": [
+      "experiment_id",
+      "status",
+      "is_canary"
+    ]
+  },
+  "/api/ab/winner-config": {
+    "route": "/api/ab/winner-config",
+    "handler": "handle_ab_winner_config",
+    "file": "dp_router.py",
+    "keys": [
+      "winner_config",
+      "history"
+    ]
+  },
+  "/api/ab/rollback": {
+    "route": "/api/ab/rollback",
+    "handler": "handle_ab_rollback",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "config"
+    ]
+  },
+  "/api/weights/status": {
+    "route": "/api/weights/status",
+    "handler": "handle_weights_status",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "base_weights",
+      "cluster_weights",
+      "total_outcomes",
+      "total_clusters",
+      "outcome_summary"
+    ]
+  },
+  "/api/weights/optimize": {
+    "route": "/api/weights/optimize",
+    "handler": "handle_weights_optimize",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "report"
+    ]
+  },
+  "/api/weights/reset": {
+    "route": "/api/weights/reset",
+    "handler": "handle_weights_reset",
+    "file": "dp_router.py",
+    "keys": [
+      "status",
+      "message"
+    ]
+  },
+  "/api/agent": {
+    "route": "/api/agent",
+    "handler": "handle_agent_request",
+    "file": "dp_router.py",
+    "keys": [
+      "error"
+    ]
+  },
+  "/api/agent/capabilities": {
+    "route": "/api/agent/capabilities",
+    "handler": "handle_agent_capabilities",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "capabilities",
+      "version"
+    ]
+  },
+  "/api/agent/schema": {
+    "route": "/api/agent/schema",
+    "handler": "handle_agent_schema",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "schema"
+    ]
+  },
+  "/api/audio/upload": {
+    "route": "/api/audio/upload",
+    "handler": "handle_audio_upload",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "file",
+      "bytes",
+      "format",
+      "converted_to_wav",
+      "audio_result"
+    ]
+  },
+  "/api/audio/analyze": {
+    "route": "/api/audio/analyze",
+    "handler": "handle_audio_analysis",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "audio_result",
+      "pomdp_observation",
+      "sleep_context"
+    ]
+  },
+  "/api/audio/status": {
+    "route": "/api/audio/status",
+    "handler": "handle_audio_status",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "observation",
+      "wav_files"
+    ]
+  },
+  "/api/ring/extract": {
+    "route": "/api/ring/extract",
+    "handler": "handle_ring_extraction",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "ring_data",
+      "pomdp_observation"
+    ]
+  },
+  "/api/huawei/token": {
+    "route": "/api/huawei/token",
+    "handler": "handle_huawei_token",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "has_token"
+    ]
+  },
+  "/api/huawei/sleep-data": {
+    "route": "/api/huawei/sleep-data",
+    "handler": "handle_huawei_sleep_data",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "token_status",
+      "message"
+    ]
+  },
+  "/api/sleep/assimilate": {
+    "route": "/api/sleep/assimilate",
+    "handler": "handle_sleep_assimilation",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "openid",
+      "assimilated"
+    ]
+  },
+  "/api/siege/predict": {
+    "route": "/api/siege/predict",
+    "handler": "handle_siege_predict",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "prediction",
+      "report_text"
+    ]
+  },
+  "/api/siege/diagnosis": {
+    "route": "/api/siege/diagnosis",
+    "handler": "handle_siege_diagnosis",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "diagnosis",
+      "card_text"
+    ]
+  },
+  "/api/siege/snapshot": {
+    "route": "/api/siege/snapshot",
+    "handler": "handle_siege_snapshot",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "prediction",
+      "report_text",
+      "diagnosis",
+      "card_text"
+    ]
+  },
+  "/api/diary/auto": {
+    "route": "/api/diary/auto",
+    "handler": "handle_auto_diary",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "diary",
+      "short_text"
+    ]
+  },
+  "/api/push/enhanced/morning": {
+    "route": "/api/push/enhanced/morning",
+    "handler": "handle_push_morning",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "openid",
+      "content",
+      "push_type"
+    ]
+  },
+  "/api/push/enhanced/evening": {
+    "route": "/api/push/enhanced/evening",
+    "handler": "handle_push_evening",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "openid",
+      "content",
+      "push_type"
+    ]
+  },
+  "/api/push/alert": {
+    "route": "/api/push/alert",
+    "handler": "handle_push_alert",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "error"
+    ]
+  },
+  "/api/push/enhanced/test": {
+    "route": "/api/push/enhanced/test",
+    "handler": "handle_push_test_all",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "morning_original",
+      "morning_enhanced",
+      "evening_original",
+      "evening_enhanced",
+      "alerts"
+    ]
+  },
+  "/api/chart/data": {
+    "route": "/api/chart/data",
+    "handler": "handle_chart_data",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "chart"
+    ]
+  },
+  "/api/memory/consolidate": {
+    "route": "/api/memory/consolidate",
+    "handler": "handle_memory_consolidate",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "result"
+    ]
+  },
+  "/api/memory/recall": {
+    "route": "/api/memory/recall",
+    "handler": "handle_memory_recall",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "recall_text",
+      "length"
+    ]
+  },
+  "/api/memory/weekly": {
+    "route": "/api/memory/weekly",
+    "handler": "handle_memory_weekly",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "result"
+    ]
+  },
+  "/api/agent/perceive": {
+    "route": "/api/agent/perceive",
+    "handler": "handle_agent_perceive",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "signals",
+      "actions"
+    ]
+  },
+  "/api/agent/cycle": {
+    "route": "/api/agent/cycle",
+    "handler": "handle_agent_cycle",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "result"
+    ]
+  },
+  "/api/log-open": {
+    "route": "/api/log-open",
+    "handler": "handle_log_open",
+    "file": "dp_router.py",
+    "keys": [
+      "success"
+    ]
+  },
+  "/api/log-close": {
+    "route": "/api/log-close",
+    "handler": "handle_log_close",
+    "file": "dp_router.py",
+    "keys": [
+      "success"
+    ]
+  },
+  "/api/sleep-from-face": {
+    "route": "/api/sleep-from-face",
+    "handler": "handle_sleep_from_face",
+    "file": "dp_router.py",
+    "keys": [
+      "success",
+      "error"
+    ]
+  }
+}

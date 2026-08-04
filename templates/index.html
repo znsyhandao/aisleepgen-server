@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISleepGen - 智能睡眠监测平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .start-btn {
+            display: block;
+            width: 200px;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        .start-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌙 AISleepGen</h1>
+            <p>基于AI的智能睡眠监测与干预平台</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>🔬 专业监测</h3>
+                <p>多传感器实时监测睡眠质量，包括EEG、HRV、体动、汗液等生理指标</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧠 智能分析</h3>
+                <p>基于AI算法实时分析睡眠阶段，评估清道夫效率，提供精准干预建议</p>
+            </div>
+            <div class="feature-card">
+                <h3>💡 个性化干预</h3>
+                <p>根据用户画像和实时数据，生成完全个性化的睡眠改善方案</p>
+            </div>
+        </div>
+        
+        <a href="/dashboard" class="start-btn">开始监测</a>
+    </div>
+</body>
+</html>

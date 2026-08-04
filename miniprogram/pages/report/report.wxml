@@ -1,0 +1,413 @@
+<!-- pages/report/report.wxml - 专业睡眠报告 v5.0 -->
+<view class="container">
+  
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-left">
+      <view class="header-btn" bindtap="goBack" wx:if="{{showBackButton}}">
+        <text class="back-text">‹ 返回</text>
+      </view>
+    </view>
+    <text class="title">睡眠报告</text>
+    <view class="header-right">
+      <view class="header-btn" bindtap="favoriteReport">
+        <text class="icon-text">⭐</text>
+      </view>
+      <view class="header-btn" bindtap="shareReport" wx:if="{{canShare}}">
+        <text class="icon-text">↗️</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 加载 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-ring"></view>
+    <text class="loading-text">正在生成报告...</text>
+  </view>
+  
+  <!-- 内容 -->
+  <scroll-view class="report-scroll" scroll-y wx:if="{{showReport}}">
+    
+    <!-- ===== 评分大卡片 ===== -->
+    <view class="score-hero-card">
+      <view class="hero-glow"></view>
+      <view class="source-badge">{{reportData.sourceName || reportData.type || '睡眠分析'}}</view>
+      <view class="hero-score-area">
+        <view class="hero-ring">
+          <view class="hero-ring-bg"></view>
+          <view class="hero-ring-fill" style="--score:{{reportData.score}};--color:{{reportData.score >= 85 ? '#4CAF50' : reportData.score >= 75 ? '#667eea' : reportData.score >= 65 ? '#FF9800' : '#F44336'}}">
+            <text class="hero-score-num">{{scoreAnimateValue || reportData.score}}</text>
+            <text class="hero-score-unit">分</text>
+          </view>
+        </view>
+        <text class="hero-quality {{reportData.quality === '优秀' ? 'excellent' : reportData.quality === '良好' ? 'good' : 'average'}}">
+          {{reportData.quality}}
+        </text>
+      </view>
+      <view class="hero-meta-row">
+        <view class="hero-meta-item">
+          <text class="meta-icon">🛌</text>
+          <text class="meta-value">{{reportData.duration}}</text>
+          <text class="meta-label">睡眠时长</text>
+        </view>
+        <view class="hero-meta-divider"></view>
+        <view class="hero-meta-item">
+          <text class="meta-icon">📅</text>
+          <text class="meta-value">{{reportData.date || reportData.time}}</text>
+          <text class="meta-label">分析时间</text>
+        </view>
+      </view>
+      <!-- [v2026-07-02] 数据变化比较 -->
+      <view class="data-summary" wx:if="{{reportData.vs_previous}}">
+        <view class="data-summary-change {{reportData.vs_previous >= 0 ? 'up' : 'down'}}">
+          <text class="ds-icon">{{reportData.vs_previous >= 0 ? '↑' : '↓'}}</text>
+          <text class="ds-value">{{reportData.vs_previous > 0 ? '+' : ''}}{{reportData.vs_previous}}</text>
+          <text class="ds-label">较上次评分</text>
+        </view>
+        <view class="data-summary-detail" wx:if="{{reportData.data_changes && reportData.data_changes.length}}">
+          <text class="ds-detail-item" wx:for="{{reportData.data_changes}}" wx:for-item="chg" wx:key="chg">{{chg}}</text>
+        </view>
+        <text class="data-summary-basis" wx:if="{{reportData.n_records}}">基于 {{reportData.n_records}} 次记录</text>
+      </view>
+    </view>
+
+    <!-- ===== 决策内参 interactivo（v5.0） ===== -->
+    <view class="memo-card" wx:if="{{memoParsed}}">
+      <view class="memo-header">
+        <text class="memo-title">🎯 决策内参</text>
+        <text class="memo-subtitle">点击任意指标展开专家详情</text>
+      </view>
+      <view class="memo-items">
+        <view class="memo-item {{activeMemoIndex === index ? 'memo-item-active' : ''}}" 
+              wx:for="{{memoParsed}}" wx:key="label"
+              data-index="{{index}}" bindtap="toggleMemoDetail">
+          <view class="memo-item-line">
+            <text class="memo-label">{{item.label}}</text>
+            <text class="memo-content">{{item.content}}</text>
+            <text class="memo-expand-icon">{{activeMemoIndex === index ? '▲' : '▼'}}</text>
+          </view>
+          <!-- 展开详情 -->
+          <view class="memo-detail" wx:if="{{activeMemoIndex === index}}">
+            <view class="memo-detail-item" wx:for="{{item.detail}}" wx:key="label">
+              <text class="md-label">{{item.label}}</text>
+              <text class="md-content">{{item.content}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 6维雷达图 ===== -->
+    <view class="section">
+      <text class="section-title">六维睡眠画像</text>
+      <view class="radar-container">
+        <view class="radar-chart">
+          <view class="radar-grid">
+            <view class="grid-line l1"></view>
+            <view class="grid-line l2"></view>
+            <view class="grid-line l3"></view>
+            <view class="grid-line l4"></view>
+            <view class="grid-line l5"></view>
+          </view>
+          <!-- 标签 -->
+          <view class="radar-label tl">{{radarData[0].label}}</view>
+          <view class="radar-label tr">{{radarData[1].label}}</view>
+          <view class="radar-label bl">{{radarData[2].label}}</view>
+          <view class="radar-label bc">{{radarData[3].label}}</view>
+          <view class="radar-label br">{{radarData[4].label}}</view>
+          <view class="radar-label bl2">{{radarData[5].label}}</view>
+          <view class="radar-points">
+            <view class="rpoint" wx:for="{{radarData}}" wx:key="label" style="--angle:{{index * 60}}deg;--value:{{item.value}}">
+              <text class="rpoint-value">{{item.value}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="radar-details">
+        <view class="radar-detail-item" wx:for="{{radarData}}" wx:key="label">
+          <text class="rd-label">{{item.label}}</text>
+          <view class="rd-bar-bg">
+            <view class="rd-bar-fill" style="width:{{item.value}}%;background:{{item.value >= 85 ? '#4CAF50' : item.value >= 75 ? '#667eea' : item.value >= 65 ? '#FF9800' : '#F44336'}}">
+            </view>
+          </view>
+          <text class="rd-value">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 睡眠阶段 ===== -->
+    <view class="section">
+      <text class="section-title">睡眠阶段分布</text>
+      <view class="stages-row">
+        <view class="stage-item" wx:for="{{reportData.sleepStages}}" wx:key="name">
+          <view class="stage-color-dot" style="background: {{item.color}};"></view>
+          <text class="stage-name">{{item.name}}</text>
+          <text class="stage-value">{{item.value}}%</text>
+        </view>
+      </view>
+      <view class="stages-bar">
+        <view class="stage-segment" wx:for="{{reportData.sleepStages}}" wx:key="name" style="width:{{item.value}}%;background:{{item.color}};"></view>
+      </view>
+      <text class="stage-note">⚠️ 30秒精度限制，浅睡期(N1)与清醒信号特征接近，合并展示</text>
+    </view>
+
+    <!-- ===== 详细指标 ===== -->
+    <view class="section">
+      <text class="section-title">详细指标</text>
+      <view class="metrics-grid">
+        <view class="metric-card" bindtap="viewDetail" data-key="deepSleep">
+          <text class="metric-label">深睡时长</text>
+          <text class="metric-value">{{reportData.details.deepSleep}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="remSleep">
+          <text class="metric-label">REM时长</text>
+          <text class="metric-value">{{reportData.details.remSleep}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="lightSleep">
+          <text class="metric-label">浅睡时长</text>
+          <text class="metric-value">{{reportData.details.lightSleep}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="awakeTime">
+          <text class="metric-label">清醒时间</text>
+          <text class="metric-value">{{reportData.details.awakeTime}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="sleepEfficiency">
+          <text class="metric-label">睡眠效率</text>
+          <text class="metric-value">{{reportData.details.sleepEfficiency}}%</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+        <view class="metric-card" bindtap="viewDetail" data-key="sleepLatency">
+          <text class="metric-label">入睡时长</text>
+          <text class="metric-value">{{reportData.details.sleepLatency}}</text>
+          <text class="metric-hint">点击详情</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 健康影响 ===== -->
+    <view class="section">
+      <text class="section-title">健康影响评估</text>
+      <view class="health-grid">
+        <view class="health-item">
+          <text class="health-icon">🫀</text>
+          <text class="health-label">心血管</text>
+          <view class="health-bar"><view class="health-fill" style="width:{{reportData.healthScores.cardiovascular}}%;background:{{reportData.healthScores.cardiovascular >= 80 ? '#4CAF50' : '#FF9800'}}"></view></view>
+          <text class="health-value">{{reportData.healthScores.cardiovascular}}</text>
+        </view>
+        <view class="health-item">
+          <text class="health-icon">🧠</text>
+          <text class="health-label">认知</text>
+          <view class="health-bar"><view class="health-fill" style="width:{{reportData.healthScores.cognitive}}%"></view></view>
+          <text class="health-value">{{reportData.healthScores.cognitive}}</text>
+        </view>
+        <view class="health-item">
+          <text class="health-icon">😊</text>
+          <text class="health-label">情绪</text>
+          <view class="health-bar"><view class="health-fill" style="width:{{reportData.healthScores.emotional}}%"></view></view>
+          <text class="health-value">{{reportData.healthScores.emotional}}</text>
+        </view>
+        <view class="health-item">
+          <text class="health-icon">💪</text>
+          <text class="health-label">体能</text>
+          <view class="health-bar"><view class="health-fill" style="width:{{reportData.healthScores.physical}}%"></view></view>
+          <text class="health-value">{{reportData.healthScores.physical}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 详细分析（含替代解释） ===== -->
+    <view class="section">
+      <text class="section-title">详细分析</text>
+      <view class="analysis-card">
+        <text class="analysis-text">{{reportData.detailedAnalysis}}</text>
+      </view>
+      <!-- [v2026-07-02] 红队机制：替代解释 -->
+      <view class="alt-view-card" wx:if="{{reportData.alternative_view}}" bindtap="toggleAltView">
+        <view class="alt-view-header">
+          <text class="alt-view-icon">🔄</text>
+          <text class="alt-view-title">另一种可能的解释</text>
+          <text class="alt-view-expand">{{showAltView ? '▲' : '▼'}}</text>
+        </view>
+        <view class="alt-view-body" wx:if="{{showAltView}}">
+          <text class="alt-view-text">{{reportData.alternative_view}}</text>
+          <text class="alt-view-note">数据本身不说话——同一组数据可以支持多种合理解释。我们愿意呈现不确定性。</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 改善建议（含证据强度标签） ===== -->
+    <view class="section">
+      <text class="section-title">💡 改善建议</text>
+      <view class="suggestions">
+        <view class="suggestion-item new-suggestion-item" wx:for="{{reportData.suggestions}}" wx:key="index">
+          <text class="suggestion-num">{{index + 1}}.</text>
+          <text class="suggestion-text">{{item.text || item}}</text>
+          <view class="evidence-badge evidence-{{item.evidence === '通用科学' ? 'science' : item.evidence === '个人模式' ? 'personal' : 'guess'}}" wx:if="{{item.text}}">
+            <text class="evidence-text">{{item.evidence || '推测'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 睡眠韧性 ===== -->
+    <view class="section" wx:if="{{resilienceIndex}}">
+      <text class="section-title">🛡️ 睡眠韧性</text>
+      <view class="resilience-row">
+        <view class="resilience-item {{resilienceIndex.level === '优秀' ? 'res-excellent' : resilienceIndex.level === '良好' ? 'res-good' : 'res-average'}}">
+          <text class="ri-score">{{resilienceIndex.overall}}</text>
+          <text class="ri-label">综合韧性</text>
+          <text class="ri-detail">{{resilienceIndex.level}}</text>
+        </view>
+        <view class="resilience-sub">
+          <view class="resilience-sub-item" wx:for="{{resilienceIndex.dimensions}}" wx:for-item="dim" wx:key="key">
+            <text class="ri-sub-name">{{dim.name}}</text>
+            <view class="ri-sub-bar">
+              <view class="ri-sub-fill" style="width:{{dim.value}}%"></view>
+            </view>
+            <text class="ri-sub-value">{{dim.value}}</text>
+          </view>
+        </view>
+      </view>
+      <text class="resilience-tip">{{resilienceIndex.detail}}</text>
+    </view>
+
+    <!-- ===== 状态拓扑 ===== -->
+    <view class="section" wx:if="{{stateTopology}}">
+      <text class="section-title">📍 距最佳状态</text>
+      <view class="topo-row">
+        <view class="topo-score">
+          <text class="topo-score-num">{{stateTopology.current_dscore}}</text>
+          <text class="topo-score-label">分</text>
+        </view>
+        <view class="topo-info">
+          <text class="topo-info-text" wx:if="{{stateTopology.trend_direction === 'getting_closer'}}">📈 正在靠近你最好的睡眠状态</text>
+          <text class="topo-info-text" wx:elif="{{stateTopology.trend_direction === 'drifting_away'}}">📉 逐渐偏离你最好的睡眠状态</text>
+          <text class="topo-info-text" wx:else>➡️ 与最佳状态的距离稳定</text>
+          <text class="topo-info-sub">基于 {{stateTopology.sample_count}} 晚数据 | 越好2晚得分: ~{{stateTopology.attractor_scores}}</text>
+        </view>
+      </view>
+      <view class="topo-trend">
+        <text class="topo-trend-label">近7晚距离变化</text>
+        <view class="topo-minibar">
+          <view class="topo-minibar-dot {{d.trend === 'up' ? 'dot-up' : d.trend === 'down' ? 'dot-down' : 'dot-flat'}}" 
+                wx:for="{{stateTopology.recent_nights}}" wx:key="date"
+                style="height:{{d.distance_score * 1.5 + 4}}px"
+                title="{{d.date}}: {{d.distance_score}}分">
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 付费解锁遮罩 ===== -->
+    <view class="paywall-overlay" wx:if="{{paywall}}">
+      <view class="paywall-card">
+        <text class="paywall-icon">🔒</text>
+        <text class="paywall-title">解锁完整睡眠分析报告</text>
+        <text class="paywall-desc">{{paywallMessage || '完整报告含6维健康影响分析和5条个性化建议'}}</text>
+        <button class="paywall-btn" bindtap="goUpgrade">
+          <text>升级Pro会员 →</text>
+        </button>
+        <text class="paywall-footer">已有账户？登录后免费查看基础评分</text>
+      </view>
+    </view>
+
+    <!-- ===== 诊断书（如有） ===== -->
+    <view class="section" wx:if="{{hasDiagnosisData}}">
+      <text class="section-title">📋 诊断书</text>
+      <view class="diagnosis-card">
+        <view class="diagnosis-grade">
+          <text class="diagnosis-grade-tag diagnosis-badge-{{diagnosisGrade}}">{{diagnosisGradeLabel}}</text>
+          <text class="diagnosis-score">{{diagnosisScore}}分</text>
+        </view>
+        <text class="diagnosis-card-text">{{diagnosisCardText}}</text>
+        <view class="diagnosis-metrics" wx:if="{{diagnosisMetrics}}">
+          <view class="diagnosis-metric" wx:for="{{diagnosisMetrics}}" wx:key="key">
+            <text class="dm-label">{{item.label}}</text>
+            <text class="dm-value">{{item.value}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 操作按钮 ===== -->
+    <view class="action-buttons">
+      <view class="action-btn primary" bindtap="doBreathing" wx:if="{{reportData.score < 75}}">
+        <text class="action-icon">🧘</text>
+        <text class="action-text">立即放松</text>
+      </view>
+      <view class="action-btn" bindtap="goSurvey">
+        <text class="action-icon">📝</text>
+        <text class="action-text">重新评估</text>
+      </view>
+    </view>
+
+    <!-- ===== 预测验证看板（v5.0） ===== -->
+    <view class="verify-card" wx:if="{{predictionStats}}">
+      <view class="verify-header">
+        <text class="verify-title">📊 预测验证</text>
+        <text class="verify-subtitle">世界模型的预测准确率追踪</text>
+      </view>
+      <view class="verify-row">
+        <view class="verify-stat">
+          <text class="verify-num">{{predictionStats.verified_count || 0}}</text>
+          <text class="verify-label">已验证</text>
+        </view>
+        <view class="verify-stat">
+          <text class="verify-num" style="color:{{predictionStats.verification_rate >= 70 ? '#4CAF50' : '#FF9800'}}">
+            {{predictionStats.verification_rate || 0}}%
+          </text>
+          <text class="verify-label">验证率</text>
+        </view>
+        <view class="verify-stat">
+          <text class="verify-num">{{predictionStats.correct_count || 0}}</text>
+          <text class="verify-label">预测正确</text>
+        </view>
+        <view class="verify-stat">
+          <text class="verify-num">{{predictionStats.pending_count || 0}}</text>
+          <text class="verify-label">待验证</text>
+        </view>
+      </view>
+      <view class="verify-update" wx:if="{{predictionStats.last_verified_date}}">
+        <text class="verify-update-text">最近验证: {{predictionStats.last_verified_date}}</text>
+      </view>
+    </view>
+
+    <!-- ===== 底部 ===== -->
+    <view class="footer-text">
+      <text>AISleepGen v5.0 · 世界模型决策内参</text>
+      <text style="display:block;font-size:20rpx;color:rgba(255,255,255,0.2)">AI辅助分析，仅供参考</text>
+    </view>
+
+  </scroll-view>
+
+  <!-- 详情弹窗 -->
+  <view class="detail-overlay {{showDetailOverlay ? 'show' : ''}}" bindtap="closeDetail">
+    <view class="detail-popup" catchtap="">
+      <view class="detail-popup-header" style="border-bottom: 3rpx solid {{detailColor}};">
+        <text class="detail-popup-title">{{detailTitle}}</text>
+        <view class="detail-popup-close" bindtap="closeDetail">
+          <text class="close-x">✕</text>
+        </view>
+      </view>
+      <view class="detail-popup-body">
+        <view class="detail-popup-section">
+          <text class="detail-section-title">指标解读</text>
+          <text class="detail-section-text">{{detailDescription}}</text>
+        </view>
+        <view class="detail-popup-section">
+          <text class="detail-section-title">理想范围</text>
+          <text class="detail-section-text">{{detailRange}}</text>
+        </view>
+        <view class="detail-popup-section">
+          <text class="detail-section-title">改善建议</text>
+          <text class="detail-section-text">{{detailAdvice}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

@@ -1,0 +1,141 @@
+/* pages/abtest/abtest.wxss - A/B 实验管理 */
+page {
+  background: #0f0f23;
+  min-height: 100vh;
+}
+.page {
+  padding: 40rpx 30rpx 100rpx;
+  position: relative;
+}
+.top-glow {
+  position: fixed;
+  top: -200rpx;
+  left: -100rpx;
+  width: 500rpx;
+  height: 500rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,144,226,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ab-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+.ab-loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(255,255,255,0.06);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: abSpin 0.8s linear infinite;
+}
+@keyframes abSpin {
+  to { transform: rotate(360deg); }
+}
+.ab-loading-text {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.4);
+  margin-top: 16rpx;
+}
+
+.ab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+.ab-empty-icon {
+  font-size: 80rpx;
+}
+.ab-empty-text {
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.3);
+  margin-top: 16rpx;
+}
+
+.ab-section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: rgba(255,255,255,0.6);
+  margin: 30rpx 0 16rpx;
+}
+
+.ab-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+.ab-card.completed {
+  opacity: 0.6;
+}
+.ab-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+.ab-card-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+  flex: 1;
+}
+.ab-card-status {
+  font-size: 20rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+.ab-card-status.running {
+  background: rgba(39,174,96,0.15);
+  color: #27AE60;
+}
+.ab-card-status.completed {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.4);
+}
+.ab-card-desc {
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 16rpx;
+  line-height: 1.4;
+}
+.ab-card-metrics {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 12rpx;
+}
+.ab-metric {
+  display: flex;
+  flex-direction: column;
+}
+.ab-metric-label {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.35);
+}
+.ab-metric-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #667eea;
+}
+.ab-card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.25);
+}
+.ab-card-result {
+  padding: 12rpx;
+  background: rgba(39,174,96,0.06);
+  border-radius: 12rpx;
+}
+.ab-result-text {
+  font-size: 22rpx;
+  color: rgba(39,174,96,0.8);
+}

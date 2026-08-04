@@ -1,0 +1,487 @@
+<!-- pages/index/index.wxml — Sleep Intelligence Dashboard -->
+<view class="page">
+  <!-- ===== Skeleton Loading ===== -->
+  <view class="skeleton" wx:if="{{loading}}">
+    <view class="skeleton-greeting">
+      <view class="skeleton-block" style="width: 40%; height: 36rpx;"></view>
+      <view class="skeleton-block" style="width: 20%; height: 24rpx;"></view>
+    </view>
+    <view class="skeleton-card">
+      <view class="skeleton-block" style="width: 130rpx; height: 130rpx; border-radius: 50%; margin-bottom: 20rpx;"></view>
+      <view class="skeleton-block" style="width: 60%; height: 24rpx; margin-bottom: 12rpx;"></view>
+      <view class="skeleton-block" style="width: 80%; height: 20rpx;"></view>
+    </view>
+    <view class="skeleton-card">
+      <view class="skeleton-block" style="width: 50%; height: 28rpx; margin-bottom: 16rpx;"></view>
+      <view class="skeleton-block" style="width: 90%; height: 40rpx;"></view>
+    </view>
+    <view class="skeleton-card">
+      <view class="skeleton-block" style="width: 30%; height: 24rpx; margin-bottom: 12rpx;"></view>
+      <view class="skeleton-block" style="width: 70%; height: 20rpx;"></view>
+    </view>
+    <view class="skeleton-row">
+      <view class="skeleton-block" style="flex: 1; height: 160rpx;"></view>
+      <view class="skeleton-block" style="flex: 1; height: 160rpx; margin-left: 20rpx;"></view>
+    </view>
+  </view>
+
+
+
+  <!-- 顶部磨砂泡 -->
+  <view class="top-glow"></view>
+
+  <!-- ===== 招呼 + 时间 ===== -->
+  <view class="greeting-row">
+    <text class="greeting">{{greeting}}，至尊宝</text>
+    <text class="date">{{dateStr}}</text>
+  </view>
+
+  <!-- ===== 极简入口：今日情绪 ===== -->
+  <view class="mood-section" wx:if="{{showMoodPicker}}">
+    <text class="mood-title">今天感觉怎么样？</text>
+    <view class="mood-row">
+      <view class="mood-item {{moodSelected=='great'?'active':''}}" data-mood="great" bindtap="onMoodTap">
+        <text class="mood-emoji">😄</text>
+        <text class="mood-label">很好</text>
+      </view>
+      <view class="mood-item {{moodSelected=='good'?'active':''}}" data-mood="good" bindtap="onMoodTap">
+        <text class="mood-emoji">🙂</text>
+        <text class="mood-label">不错</text>
+      </view>
+      <view class="mood-item {{moodSelected=='ok'?'active':''}}" data-mood="ok" bindtap="onMoodTap">
+        <text class="mood-emoji">😐</text>
+        <text class="mood-label">一般</text>
+      </view>
+      <view class="mood-item {{moodSelected=='bad'?'active':''}}" data-mood="bad" bindtap="onMoodTap">
+        <text class="mood-emoji">😔</text>
+        <text class="mood-label">不好</text>
+      </view>
+      <view class="mood-item {{moodSelected=='anxious'?'active':''}}" data-mood="anxious" bindtap="onMoodTap">
+        <text class="mood-emoji">😰</text>
+        <text class="mood-label">焦虑</text>
+      </view>
+    </view>
+    <!-- 结果卡片 -->
+    <view class="mood-result" wx:if="{{moodResult}}">
+      <view class="mr-score">
+        <text class="mr-score-num">{{moodResult.score}}</text>
+        <text class="mr-score-label">今日评分</text>
+      </view>
+      <text class="mr-one-line">{{moodResult.one_line}}</text>
+      <view class="mr-meditation" bindtap="goMeditation" data-mid="{{moodResult.meditation.id}}">
+        <text class="mr-play-icon">▶</text>
+        <text class="mr-med-title">{{moodResult.meditation.title}}</text>
+        <text class="mr-med-dur">{{moodResult.meditation.duration/60}}min</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 昨晚总览卡片 ===== -->
+  <view class="overview-card" wx:if="{{hasData}}" bindtap="goToReport">
+    <view class="overview-left">
+      <view class="score-ring" style="background: conic-gradient(from 0deg, {{scoreGradColor}} {{scoreDeg}}deg, rgba(255,255,255,0.06) 0deg);">
+        <view class="score-ring-inner">
+          <text class="score-num">{{lastScore}}</text>
+          <text class="score-unit">分</text>
+        </view>
+      </view>
+      <text class="score-label" style="color: {{scoreColor}}">{{quality}}</text>
+    </view>
+    <view class="overview-right">
+      <view class="ov-item">
+        <text class="ov-icon">🕐</text>
+        <text class="ov-value">{{duration}}</text>
+        <text class="ov-label">睡眠时长</text>
+      </view>
+      <view class="ov-divider"></view>
+      <view class="ov-item">
+        <text class="ov-icon">🌙</text>
+        <text class="ov-value">{{bedtime}}</text>
+        <text class="ov-label">上床时间</text>
+      </view>
+      <view class="ov-divider"></view>
+      <view class="ov-item">
+        <text class="ov-icon">🔄</text>
+        <text class="ov-value">{{awakeTimes}}</text>
+        <text class="ov-label">醒来次数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 未记录状态 ===== -->
+  <view class="empty-card" wx:if="{{!hasData}}" bindtap="goToPage" data-page="survey">
+    <text class="empty-icon">🛌</text>
+    <text class="empty-title">昨晚睡得怎么样？</text>
+    <text class="empty-hint">点我记录昨晚的睡眠</text>
+  </view>
+
+  
+  <!-- ===== Sleep Story Card ===== -->
+  <view class="story-card" wx:if="{{hasData && sleepStory}}">
+    <view class="story-header">
+      <text class="story-icon">📖</text>
+      <text class="story-title">睡眠故事</text>
+    </view>
+    <text class="story-text">{{sleepStory}}</text>
+  </view>
+
+<!-- ===== 今晚预测 ===== -->
+  <view class="prediction-card" wx:if="{{hasData && prediction}}">
+    <view class="pred-header">
+      <text class="pred-title">🔮 今晚预测</text>
+      <text class="pred-badge {{predTrendClass}}">{{predTrendText}}</text>
+    </view>
+    <view class="pred-body">
+      <text class="pred-score">{{predictedScore}}<text class="pred-unit"> 分</text></text>
+      <text class="pred-note">置信度 {{predConfidence}}</text>
+    </view>
+    <view class="pred-concern" wx:if="{{predConcern}}">
+      <text class="pred-concern-text">⚠️ 关注：{{predConcern}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 昨晚一句话洞察 ===== -->
+  <view class="insight-card" wx:if="{{hasData && oneLiner}}">
+    <text class="insight-text">{{oneLiner}}</text>
+  </view>
+
+  
+  <!-- ===== Band Data Card ===== -->
+  <view class="band-card" wx:if="{{hasData && bandData}}">
+    <view class="band-header">
+      <text class="band-icon">⌚</text>
+      <text class="band-title">手环监测</text>
+      <text class="band-source" wx:if="{{bandData.source}}">{{bandData.source}}</text>
+    </view>
+    <view class="band-metrics">
+      <view class="band-item">
+        <text class="band-val">{{bandData.heartRate || "--"}}</text>
+        <text class="band-label">平均心率</text>
+      </view>
+      <view class="band-divider"></view>
+      <view class="band-item">
+        <text class="band-val">{{bandData.spo2 || "--"}}<text class="band-unit">%</text></text>
+        <text class="band-label">血氧</text>
+      </view>
+      <view class="band-divider"></view>
+      <view class="band-item">
+        <text class="band-val">{{bandData.movement || "--"}}</text>
+        <text class="band-label">体动次数</text>
+      </view>
+    </view>
+  </view>
+
+<!-- ===== 睡眠阶段条（当有数据时） ===== -->
+  <view class="stages-card" wx:if="{{hasData && deepPct > 0}}">
+    <view class="stages-bar">
+      <view class="stage rem" style="width: {{remPct}}%"></view>
+      <view class="stage light" style="width: {{lightPct}}%"></view>
+      <view class="stage deep" style="width: {{deepPct}}%"></view>
+    </view>
+    <view class="stages-legend">
+      <view class="legend-item"><view class="legend-dot rem"></view>REM {{remPct}}%</view>
+      <view class="legend-item"><view class="legend-dot light"></view>浅睡 {{lightPct}}%</view>
+      <view class="legend-item"><view class="legend-dot deep"></view>深睡 {{deepPct}}%</view>
+    </view>
+  </view>
+
+  
+  <!-- ===== Audio Analysis Card ===== -->
+  <view class="audio-card" wx:if="{{hasData && audioAnalysis}}">
+    <view class="audio-header">
+      <text class="audio-icon">🎤</text>
+      <text class="audio-title">睡眠录音分析</text>
+    </view>
+    <view class="audio-grid">
+      <view class="audio-item {{audioAnalysis.snoreLevel ? 'active' : ''}}">
+        <text class="audio-emoji">😤</text>
+        <text class="audio-label">鼾声</text>
+        <text class="audio-val">{{audioAnalysis.snoreLevel || "--"}}</text>
+      </view>
+      <view class="audio-item {{audioAnalysis.movementLevel ? 'active' : ''}}">
+        <text class="audio-emoji">🔄</text>
+        <text class="audio-label">体动</text>
+        <text class="audio-val">{{audioAnalysis.movementLevel || "--"}}</text>
+      </view>
+      <view class="audio-item {{audioAnalysis.stability ? 'active' : ''}}">
+        <text class="audio-emoji">📊</text>
+        <text class="audio-label">稳定性</text>
+        <text class="audio-val">{{audioAnalysis.stability || "--"}}</text>
+      </view>
+    </view>
+  </view>
+
+<!-- ===== 一周平均 ===== -->
+  <view class="week-card" wx:if="{{hasData && weekAvg > 0}}">
+    <text class="week-label">📊 近一周平均</text>
+    <text class="week-score">{{weekAvg}} 分</text>
+    <text class="week-compare">昨日 vs 周均: <text style="color: {{vsColor}}">{{vsText}}</text></text>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 趋势火花线卡片 ===== -->
+  <view class="v72-card sparkline-card" wx:if="{{hasChartData && chartTrendLabels.length > 0}}">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">📈</text>
+      <text class="v72-card-title">睡眠趋势</text>
+      <text class="v72-card-badge">{{chartTrendAvg}}均</text>
+    </view>
+    <view class="sparkline-container">
+      <view class="sparkline-bar" wx:for="{{chartTrendValues}}" wx:key="index" style="height:{{(item / 100) * 120}}rpx;background:{{item >= 80 ? '#4CAF50' : item >= 65 ? '#667eea' : item >= 50 ? '#FF9800' : '#F44336'}};opacity:{{0.4 + (index / chartTrendValues.length) * 0.6}};">
+      </view>
+    </view>
+    <view class="sparkline-labels">
+      <text class="sparkline-label" wx:for="{{chartTrendLabels}}" wx:for-item="lb" wx:key="index">{{lb.slice(-5)}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 睡眠韧性指数卡片 ===== -->
+  <view class="v72-card resilience-card" wx:if="{{hasResilience}}">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">🛡️</text>
+      <text class="v72-card-title">睡眠韧性指数</text>
+      <text class="v72-card-badge resilience-level-{{resilienceLevel}}">{{resilienceLevelText}}</text>
+    </view>
+    <view class="resilience-body">
+      <view class="resilience-main">
+        <view class="resilience-ring" style="background: conic-gradient(from 0deg, {{resilienceRingColor}} {{resilienceRingDeg}}deg, rgba(255,255,255,0.1) 0deg);">
+          <view class="resilience-ring-inner">
+            <text class="resilience-num">{{resilienceOverall}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="resilience-dims">
+        <view class="resilience-dim">
+          <view class="resilience-dim-bar-bg">
+            <view class="resilience-dim-bar" style="width: {{resilienceCircadian}}%; background: #667eea;"></view>
+          </view>
+          <view class="resilience-dim-label-row">
+            <text class="resilience-dim-icon">🕐</text>
+            <text class="resilience-dim-name">昼夜节律</text>
+            <text class="resilience-dim-val">{{resilienceCircadian}}</text>
+          </view>
+        </view>
+        <view class="resilience-dim">
+          <view class="resilience-dim-bar-bg">
+            <view class="resilience-dim-bar" style="width: {{resilienceEmotion}}%; background: #f093fb;"></view>
+          </view>
+          <view class="resilience-dim-label-row">
+            <text class="resilience-dim-icon">🧠</text>
+            <text class="resilience-dim-name">情绪弹性</text>
+            <text class="resilience-dim-val">{{resilienceEmotion}}</text>
+          </view>
+        </view>
+        <view class="resilience-dim">
+          <view class="resilience-dim-bar-bg">
+            <view class="resilience-dim-bar" style="width: {{resiliencePhysical}}%; background: #4facfe;"></view>
+          </view>
+          <view class="resilience-dim-label-row">
+            <text class="resilience-dim-icon">💪</text>
+            <text class="resilience-dim-name">身体恢复</text>
+            <text class="resilience-dim-val">{{resiliencePhysical}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="resilience-footer">
+      <text class="resilience-detail">{{resilienceDetail}}</text>
+    </view>
+  </view>
+
+<!-- ===== 角色选择弹窗 ===== -->
+  <view class="modal-overlay" wx:if="{{showRolePicker}}">
+    <view class="role-picker-card">
+      <text class="role-picker-title">🌅 欢迎使用</text>
+      <text class="role-picker-subtitle">请选择你的角色，帮助我们为你提供更好的服务</text>
+      <view class="role-options">
+        <view class="role-option" data-role="founder" bindtap="setRole">
+          <text class="role-emoji">🎯</text>
+          <text class="role-name">创始人 / 管理者</text>
+          <text class="role-desc">关注决策质量和压力管理</text>
+        </view>
+        <view class="role-option" data-role="explorer" bindtap="setRole">
+          <text class="role-emoji">🌙</text>
+          <text class="role-name">探索者</text>
+          <text class="role-desc">关注睡眠改善和健康</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+<!-- ===== 决策质量卡片（仅创始人） ===== -->
+  <view class="dq-card" wx:if="{{showDecisionCard}}">
+    <view class="dq-header">
+      <text class="dq-title">🎯 今日决策质量</text>
+      <text class="dq-badge" style="background: {{decisionColor}}">{{decisionQuality}}</text>
+    </view>
+    <view class="dq-body">
+      <view class="dq-metric">
+        <text class="dq-metric-label">可信度</text>
+        <text class="dq-metric-val">{{decisionConfidence}}</text>
+      </view>
+      <view class="dq-metric">
+        <text class="dq-metric-label">精神负荷</text>
+        <text class="dq-metric-val">{{mentalLoad}}%</text>
+      </view>
+    </view>
+    <view class="dq-footer">
+      <text class="dq-hint" wx:if="{{userRole == 'founder'}}">每日对话中会自然采集消耗数据，数据越多预测越准</text>
+    </view>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 诊断书卡片 ===== -->
+  <view class="v72-card diagnosis-card" wx:if="{{hasDiagnosisData}}" bindtap="goToReport">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">📋</text>
+      <text class="v72-card-title">诊断书</text>
+      <text class="v72-card-badge diagnosis-badge-{{diagnosisGrade}}">{{diagnosisGrade}}</text>
+    </view>
+    <view class="diagnosis-score-row">
+      <text class="diagnosis-score">{{diagnosisScore}}</text>
+      <text class="diagnosis-label">{{diagnosisGradeLabel}}</text>
+    </view>
+    <view class="diagnosis-advice" wx:if="{{diagnosisAdvice.length > 0}}">
+      <text class="diagnosis-advice-item" wx:for="{{diagnosisAdvice}}" wx:for-item="adv" wx:key="index">
+        {{adv.detail}}
+      </text>
+    </view>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 睡前预判卡片 ===== -->
+  <view class="v72-card siege-card" wx:if="{{hasSiegeData}}">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">🔮</text>
+      <text class="v72-card-title">今晚预判</text>
+      <text class="v72-card-badge siege-badge-{{siegeAlert}}">{{siegeAlert == 'red' ? '警告' : siegeAlert == 'yellow' ? '注意' : siegeAlert == 'green' ? '正常' : '良好'}}</text>
+    </view>
+    <view class="siege-score-row">
+      <text class="siege-score" style="color: {{siegeAlert == 'red' ? '#F44336' : siegeAlert == 'yellow' ? '#FF9800' : siegeAlert == 'green' ? '#4CAF50' : '#2196F3'}}">{{siegeScore}}</text>
+      <text class="siege-unit">/ 100</text>
+    </view>
+    <text class="siege-confidence">置信度 {{siegeConfidencePct}}%</text>
+    <view class="siege-interventions" wx:if="{{siegInterventions.length > 0}}">
+      <text class="siege-intv-title">建议</text>
+      <text class="siege-intv-item" wx:for="{{siegInterventions}}" wx:for-item="intv" wx:key="index">• {{intv.reason}}</text>
+    </view>
+    <view class="siege-risks" wx:if="{{siegeRiskFactors.length > 0}}">
+      <text class="siege-intv-title">影响因素</text>
+      <text class="siege-risk-item" wx:for="{{siegeRiskFactors}}" wx:for-item="rf" wx:key="index">
+        {{rf.label}} ({{rf.weight > 0 ? '+' : ''}}{{rf.weight}})
+      </text>
+    </view>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 自动日记卡片 ===== -->
+  <view class="v72-card diary-card" wx:if="{{hasDiaryData}}" bindtap="goToReport">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">📔</text>
+      <text class="v72-card-title">睡眠日记</text>
+      <text class="v72-card-badge">{{diaryCompleteness}}%完整</text>
+    </view>
+    <view class="diary-score-row" wx:if="{{diaryScore}}">
+      <text class="diary-score">{{diaryScore}}</text>
+      <text class="diary-unit">分</text>
+    </view>
+    <text class="diary-preview" wx:if="{{diaryShort}}">{{diaryShort}}</text>
+    <text class="diary-preview" wx:if="{{!diaryShort && diaryText}}">{{diaryText.slice(0, 60)}}...</text>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 记忆摘要卡片 ===== -->
+  <view class="v72-card memory-card" wx:if="{{hasMemoryData}}">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">🧠</text>
+      <text class="v72-card-title">AI记忆</text>
+      <text class="v72-card-badge">{{memoryRecallLength}}字符</text>
+    </view>
+    <text class="memory-preview">{{memoryRecallText.slice(0, 80)}}...</text>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 饼图卡片 ===== -->
+  <view class="v72-card pie-card" wx:if="{{hasChartData && chartPieData.length > 0}}">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">🍩</text>
+      <text class="v72-card-title">睡眠阶段</text>
+    </view>
+    <view class="pie-mini-container">
+      <view class="pie-mini-segment" wx:for="{{chartPieData}}" wx:key="index" style="width:{{item.value}}%;background:{{item.color}};">
+      </view>
+    </view>
+    <view class="pie-mini-legend">
+      <text class="pie-legend-item" wx:for="{{chartPieData}}" wx:key="index">
+        <text style="color: {{item.color}}">●</text> {{item.name}} {{item.value}}%
+      </text>
+    </view>
+  </view>
+
+  <!-- ===== v7.2 NUEVO: 雷达图卡片 ===== -->
+  <view class="v72-card radar-card" wx:if="{{hasChartData && chartRadarData.length > 0}}">
+    <view class="v72-card-header">
+      <text class="v72-card-icon">🕸</text>
+      <text class="v72-card-title">六维画像</text>
+    </view>
+    <view class="radar-mini-list">
+      <view class="radar-mini-item" wx:for="{{chartRadarData}}" wx:key="index">
+        <text class="radar-mini-label">{{item.label}}</text>
+        <view class="radar-mini-bar-bg">
+          <view class="radar-mini-bar-fill" style="width:{{item.value}}%;background:{{item.value >= 80 ? '#4CAF50' : item.value >= 65 ? '#667eea' : item.value >= 50 ? '#FF9800' : '#F44336'}};">
+          </view>
+        </view>
+        <text class="radar-mini-value">{{item.value}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 教练建议（当有数据时） ===== -->
+  <view class="coach-card" wx:if="{{hasData && coachSuggestion}}">
+    <view class="coach-icon">💡</view>
+    <view class="coach-body">
+      <text class="coach-title">今晚小建议</text>
+      <text class="coach-text">{{coachSuggestion}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 两个大 CTA 按钮 ===== -->
+  <view class="cta-row">
+    <view class="cta-btn primary" bindtap="goToPage" data-page="survey">
+      <text class="cta-emoji">📝</text>
+      <text class="cta-label">记录睡眠</text>
+    </view>
+    <view class="cta-btn secondary" bindtap="goToPage" data-page="chat">
+      <text class="cta-emoji">💬</text>
+      <text class="cta-label">和AI聊聊</text>
+    </view>
+  </view>
+
+  <!-- ===== 快捷入口微缩行 ===== -->
+  <view class="quick-row">
+    <view class="quick-item" bindtap="goToPage" data-page="meditation">
+      <text class="quick-icon">🧘</text>
+      <text class="quick-name">冥想</text>
+    </view>
+    <view class="quick-item" bindtap="goToPage" data-page="profile">
+      <text class="quick-icon">👤</text>
+      <text class="quick-name">我的</text>
+    </view>
+    <view class="quick-item" bindtap="goToPage" data-page="history">
+      <text class="quick-icon">📊</text>
+      <text class="quick-name">历史</text>
+    </view>
+    <view class="quick-item" bindtap="goToFace">
+      <text class="quick-icon">📸</text>
+      <text class="quick-name">测疲劳</text>
+    </view>
+    <view class="quick-item" bindtap="goToPage" data-page="report">
+      <text class="quick-icon">📋</text>
+      <text class="quick-name">报告</text>
+    </view>
+    <view class="quick-item" bindtap="goChatVoiceSleep">
+      <text class="quick-icon">🌙</text>
+      <text class="quick-name">半夜醒来</text>
+    </view>
+  </view>
+
+  <!-- ===== 脚注 ===== -->
+  <view class="footer">
+    <text class="footer-text">🌙 今晚，好好睡一觉</text>
+  </view>
+
+</view>

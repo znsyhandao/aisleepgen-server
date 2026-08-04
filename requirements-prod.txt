@@ -1,0 +1,72 @@
+# ===== 核心科学计算 =====
+numpy>=1.26.0
+scipy>=1.11.0
+pandas==2.0.3
+matplotlib>=3.8.0
+scikit-learn>=1.3.0
+joblib>=1.3.2
+torch>=2.3.0
+torchvision>=0.18.0
+torchaudio>=2.3.0
+
+# ===== API服务 =====
+flask>=3.0.2
+flask-cors>=4.0.0
+flask-limiter>=3.5.0
+flask-cache>=0.1.5
+redis>=4.5.5
+gunicorn>=21.2.0
+prometheus-client>=0.20.0
+fastapi>=0.109.2
+httpx>=0.27.0
+
+# ===== 华为云相关 =====
+huaweicloudsdkcore>=3.1.94,<=3.1.147
+esdk-obs-python==3.23.12
+modelarts @ file:///D:/AISleepGen/modelarts-1.0.0-py2.py3-none-any.whl
+
+# ===== 数据处理 =====
+requests==2.31.0
+urllib3==1.26.20
+certifi==2025.4.26
+idna==3.10
+charset-normalizer==3.4.2
+python-dateutil==2.9.0.post0
+pytz==2025.2
+tzdata==2025.2
+simplejson==3.20.1
+pyyaml==6.0.2
+lxml==5.1.0
+defusedxml==0.8.0rc2
+prettytable==3.7.0
+
+# ===== 系统工具 =====
+psutil==5.9.5
+tqdm==4.66.5
+tenacity==8.2.2
+colorama==0.4.6
+configparser==6.0.0
+packaging==25.0
+wcwidth==0.2.13
+importlib-metadata==6.7.0
+zipp==3.15.0
+attrs==23.2.0
+pyparsing==3.1.4
+
+# ===== 安全相关 =====
+pyasn1==0.5.1
+pycryptodome==3.22.0
+cryptography>=3.4
+
+# ===== 测试工具 =====
+pytest==7.4.0
+mock==5.1.0
+hypothesis>=6.0.0
+fakeredis==2.21.1
+
+# ===== 其他工具 =====
+gtts==2.5.1
+semantic-version==2.10.0
+pipdeptree==2.24.0
+networkx==3.1
+six==1.17.0

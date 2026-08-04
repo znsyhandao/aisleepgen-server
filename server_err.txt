@@ -1,0 +1,482 @@
+127.0.0.1 - - [26/Jun/2026 15:58:41] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:58:46] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:58:56] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:07] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:07] "POST /api/stop-breathing HTTP/1.1" 400 -
+127.0.0.1 - - [26/Jun/2026 15:59:07] "POST /api/relax-feedback HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 50552)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2193, in do_POST
+    self._handle_relax_feedback(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2682, in _handle_relax_feedback
+    _save_user_profile(openid, profile)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 410, in _save_user_profile
+    assert isinstance(profile, dict), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: save_user_profile: profile必须是dict，收到str。 提示: 调用顺序是 save(profile, openid) - 不是 (openid, profile)！
+----------------------------------------
+127.0.0.1 - - [26/Jun/2026 15:59:07] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:07] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:07] "POST /api/chat HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54668)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2134, in do_POST
+    self._handle_chat(data)
+    ~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 4533, in _handle_chat
+    history_context, expert_history = _build_history_context(openid)
+                                      ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1324, in _build_history_context
+    for s in reversed(summaries):
+                      ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'summaries' where it is not associated with a value
+----------------------------------------
+127.0.0.1 - - [26/Jun/2026 15:59:08] "POST /api/wx-login HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:08] "POST /api/update-profile HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:08] "POST /api/user-profile HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:08] "POST /api/onboarding-status HTTP/1.1" 400 -
+127.0.0.1 - - [26/Jun/2026 15:59:08] "GET /api/sleep-stats?openid=test123 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54674)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1717, in do_GET
+    self._set_headers(json=resp if resp else {'error': 'forbidden'})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54675)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1717, in do_GET
+    self._set_headers(json=resp if resp else {'error': 'forbidden'})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54676)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1717, in do_GET
+    self._set_headers(json=resp if resp else {'error': 'forbidden'})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54677)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54678)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1717, in do_GET
+    self._set_headers(json=resp if resp else {'error': 'forbidden'})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54679)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54680)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54681)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54682)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54683)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1717, in do_GET
+    self._set_headers(json=resp if resp else {'error': 'forbidden'})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54684)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54685)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54686)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 1717, in do_GET
+    self._set_headers(json=resp if resp else {'error': 'forbidden'})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54687)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 54688)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 43073)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+127.0.0.1 - - [26/Jun/2026 15:59:09] "POST /api/stop-breathing HTTP/1.1" 400 -
+127.0.0.1 - - [26/Jun/2026 15:59:09] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:10] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:10] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:10] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:11] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:11] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:11] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jun/2026 15:59:12] "POST /api/chat HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 16321)
+Traceback (most recent call last):
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 447, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cqs10\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 435, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "D:\AISleepGen_Optimized\deepseek_proxy.py", line 2110, in do_POST
+    self._set_headers(json=resp_override if resp_override else {'error': reason})
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ProxyHandler._set_headers() got an unexpected keyword argument 'json'
+----------------------------------------
+127.0.0.1 - - [26/Jun/2026 20:36:19] "GET /api/health HTTP/1.1" 404 -
+127.0.0.1 - - [26/Jun/2026 20:36:21] "GET /api/ai/status HTTP/1.1" 404 -

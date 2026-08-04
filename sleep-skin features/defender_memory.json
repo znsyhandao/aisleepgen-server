@@ -1,0 +1,423 @@
+{
+  "incidents": [
+    {
+      "ts": "2026-07-08T12:34:41.227347",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.239524",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.269650",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.278773",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.287835",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.297132",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.306548",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.315575",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.325581",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.335403",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:41.847704",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:42.175036",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T12:34:42.206092",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.786552",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.800389",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.811895",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.832511",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.863687",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.873655",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.895006",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.906030",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.918904",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:53.930034",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:54.441659",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:54.769274",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:13:54.800869",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:08.972960",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:08.989694",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:08.999526",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.020071",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.051287",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.061412",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.072213",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.098168",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.129467",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.160051",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-08T13:54:09.690010",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.589000",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.603123",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.619824",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.636905",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.652675",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.669737",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.686800",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.720074",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.737589",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.754003",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.769855",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:30.786859",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    },
+    {
+      "ts": "2026-07-24T08:12:31.320509",
+      "ip": "127.0.0.1",
+      "attack_type": "scanning",
+      "severity": 3,
+      "details": "超过1秒速率限制(10次)",
+      "resolved": false
+    }
+  ],
+  "learned_patterns": {
+    "scanning::127.0.0.": {
+      "first_seen": "2026-07-08T12:34:41.227353",
+      "count": 50,
+      "counters": [
+        "蜜罐数据污染",
+        "扫描器指纹库",
+        "返回虚假响应混淆"
+      ]
+    }
+  },
+  "evolved_defenses": {
+    "scanning": {
+      "activated": "2026-07-08T13:22:34.161163",
+      "strategy": "蜜罐数据污染",
+      "effectiveness_score": 0,
+      "times_seen": 26
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "generated_at": "2026-05-28T09:19:42.673104",
+  "regulations_checked": 10,
+  "risk": 4,
+  "needs_audit": 1,
+  "ok": 5,
+  "compliance_score": 50.0,
+  "results": [
+    {
+      "id": "PIPL-01",
+      "name": "个人信息保护法-告知同意",
+      "region": "中国",
+      "status": "risk",
+      "check_result": {
+        "found": false,
+        "detail": "未找到隐私政策弹窗或同意记录"
+      },
+      "detail": "微信小程序首次启动时是否有隐私政策弹窗？数据收集是否明确告知用途？",
+      "action": "检查 miniprogram/app.js 是否有 showPrivacyGuide"
+    },
+    {
+      "id": "PIPL-02",
+      "name": "个人信息保护法-最小必要",
+      "region": "中国",
+      "status": "audit",
+      "check_result": {
+        "issues": [],
+        "total_issues": 0
+      },
+      "detail": "是否只收集了必要的睡眠数据？有没有收集不相关的敏感信息？",
+      "action": "审核 user_profile.json 的字段，确认全部都是睡眠分析必需字段"
+    },
+    {
+      "id": "PIPL-03",
+      "name": "个人信息保护法-数据删除权",
+      "region": "中国",
+      "status": "ok",
+      "check_result": {
+        "found": true,
+        "detail": "已实现删除接口"
+      },
+      "detail": "用户能否一键删除所有个人数据？当前没有delete-data接口",
+      "action": "新增 /api/delete-user-data 接口"
+    },
+    {
+      "id": "PIPL-04",
+      "name": "个人信息保护法-数据本地化",
+      "region": "中国",
+      "status": "ok",
+      "check_result": {
+        "local": true,
+        "detail": "全部数据存储在本地D盘"
+      },
+      "detail": "所有数据存储在本地D盘，未跨境传输",
+      "action": "无需操作"
+    },
+    {
+      "id": "SEC-01",
+      "name": "人脸数据-加密存储",
+      "region": "通用",
+      "status": "risk",
+      "check_result": {
+        "encrypted": false,
+        "file_size_kb": 640.1,
+        "detail": "面部特征CSV明文存储，未加密"
+      },
+      "detail": "facial_features_v9.csv直接存储面部特征数据，未加密",
+      "action": "对面部特征CSV进行AES加密或脱敏处理"
+    },
+    {
+      "id": "SEC-02",
+      "name": "录音数据-脱敏",
+      "region": "通用",
+      "status": "risk",
+      "check_result": {
+        "raw_audio_count": 88,
+        "encrypted": false,
+        "detail": "录音文件明文存储(88个.m4a)"
+      },
+      "detail": "录音.m4a文件包含声音特征，可直接识别个人身份",
+      "action": "录音分析JSON脱敏后存储，原始文件定期清理"
+    },
+    {
+      "id": "SEC-03",
+      "name": "访问日志-审计",
+      "region": "通用",
+      "status": "risk",
+      "check_result": {
+        "found": false,
+        "detail": "无数据访问审计日志"
+      },
+      "detail": "没有用户数据访问日志，谁什么时候看了什么数据不可追溯",
+      "action": "新增 /api/audit-trail 记录数据访问行为"
+    },
+    {
+      "id": "MED-01",
+      "name": "医疗器械注册-免责",
+      "region": "中国",
+      "status": "ok",
+      "check_result": {
+        "found": true,
+        "detail": "medical_filter.py 已实现免责声明"
+      },
+      "detail": "medical_filter.py已注入免责声明",
+      "action": "无需操作"
+    },
+    {
+      "id": "MED-02",
+      "name": "医疗建议-AI责任边界",
+      "region": "通用",
+      "status": "ok",
+      "check_result": {
+        "found": true,
+        "detail": "医疗审计日志存在"
+      },
+      "detail": "AI是否明确标注为\"非医疗器械\"？当前无此标注",
+      "action": "在回复头或UI中增加「非医疗器械」声明"
+    },
+    {
+      "id": "GDPR-01",
+      "name": "GDPR-数据可移植性",
+      "region": "欧盟",
+      "status": "ok",
+      "check_result": {
+        "found": true,
+        "detail": "数据格式为JSON/CSV，可导出"
+      },
+      "detail": "所有数据为JSON/CSV格式，可导出",
+      "action": "目前不面向欧盟用户，继续监控即可"
+    }
+  ],
+  "urgent_actions": [
+    "检查 miniprogram/app.js 是否有 showPrivacyGuide",
+    "对面部特征CSV进行AES加密或脱敏处理",
+    "录音分析JSON脱敏后存储，原始文件定期清理",
+    "新增 /api/audit-trail 记录数据访问行为"
+  ]
+}

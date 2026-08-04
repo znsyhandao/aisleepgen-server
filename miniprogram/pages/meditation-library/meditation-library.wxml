@@ -1,0 +1,69 @@
+<!-- pages/meditation-library/meditation-library.wxml — 眠小兔冥想内容库 -->
+<view class="container">
+
+  <!-- 头部 -->
+  <view class="header">
+    <text wx:if="{{selectedSeries}}" class="back-btn" bindtap="goBack">‹</text>
+    <text class="header-title">{{selectedSeries ? selectedSeries.name : '🧘 冥想库'}}</text>
+  </view>
+
+  <!-- 标签过滤（只在列表页显示） -->
+  <scroll-view class="tag-row" scroll-x wx:if="{{!selectedSeries}}">
+    <view wx:for="{{tags}}" wx:key="id"
+      class="tag {{activeTag === item.id ? 'active' : ''}}"
+      data-tag="{{item.id}}" bindtap="onTagTap">{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 加载中 -->
+  <view class="loading-area" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载冥想内容...</text>
+  </view>
+
+  <!-- 系列列表 -->
+  <view class="series-grid" wx:elif="{{!selectedSeries && series.length}}">
+    <view class="series-card" wx:for="{{series}}" wx:key="id" data-sid="{{item.id}}" bindtap="onSeriesTap">
+      <view class="series-card-header">
+        <text class="series-name">{{item.name}}</text>
+        <text class="series-count">{{item.count}}集</text>
+      </view>
+      <text class="series-desc">{{item.description}}</text>
+      <text class="series-ambient">🎵 {{item.ambient_text || '氛围音'}}</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="loading-area" wx:elif="{{!selectedSeries}}">
+    <text style="font-size:60rpx;margin-bottom:16rpx;">🧘</text>
+    <text class="loading-text">暂无冥想内容</text>
+  </view>
+
+  <!-- 系列详情：冥想列表 -->
+  <block wx:if="{{selectedSeries}}">
+    <!-- 加载详情 -->
+    <view class="loading-area" wx:if="{{detailLoading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载冥想列表...</text>
+    </view>
+
+    <!-- 冥想条目 -->
+    <view class="item-list" wx:elif="{{items.length}}">
+      <view class="item-card" wx:for="{{items}}" wx:key="id"
+        data-mid="{{item.id}}" data-title="{{item.title}}" bindtap="onItemTap">
+        <text class="item-title">{{item.title}}</text>
+        <text class="item-duration">{{item.duration ? item.duration + '"' : ''}}</text>
+        <text class="item-play">▶</text>
+      </view>
+    </view>
+
+    <!-- 空详情 -->
+    <view class="loading-area" wx:elif="{{!detailLoading}}">
+      <text class="loading-text">该系列暂无内容</text>
+    </view>
+  </block>
+
+  <!-- 日志 -->
+  <view class="log-area" wx:if="{{logs.length}}">
+    <text wx:for="{{logs}}" wx:for-item="log" class="log-line">{{log}}</text>
+  </view>
+</view>

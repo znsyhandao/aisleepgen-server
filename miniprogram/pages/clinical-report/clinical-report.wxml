@@ -1,0 +1,53 @@
+<view class="page" wx:if="{{loaded && report}}">
+  <view class="header">
+    <text class="title">AISleepGen 临床验证报告</text>
+    <text class="subtitle">{{report.generated_at}}</text>
+  </view>
+
+  <view class="card summary">
+    <text class="card-title">📊 两周数据汇总</text>
+    <view class="row">
+      <text class="label">记录天数</text>
+      <text class="value">{{report.days_recorded}} 天</text>
+    </view>
+    <view class="row">
+      <text class="label">平均睡眠评分</text>
+      <text class="value highlight">{{report.avg_score}} 分</text>
+    </view>
+    <view class="row">
+      <text class="label">平均入睡时长</text>
+      <text class="value">{{report.avg_latency_min}} min</text>
+    </view>
+    <view class="row">
+      <text class="label">平均深睡比例</text>
+      <text class="value">{{report.avg_deep_pct}}%</text>
+    </view>
+  </view>
+
+  <view class="card comparison">
+    <text class="card-title">📈 使用前后对比</text>
+    <view class="row">
+      <text class="label">前半周平均分</text>
+      <text class="value">{{report.avg_first_week}} 分</text>
+    </view>
+    <view class="row">
+      <text class="label">后半周平均分</text>
+      <text class="value">{{report.avg_second_week}} 分</text>
+    </view>
+    <view class="improvement-badge" wx:if="{{report.improvement >= 0}}">
+      <text>改善 {{report.improvement}} 分 🎉</text>
+    </view>
+    <view class="improvement-badge" wx:else>
+      <text>波动中，继续记录</text>
+    </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">AISleepGen — 你的AI睡眠顾问</text>
+    <button class="share-btn" open-type="share">分享报告</button>
+  </view>
+</view>
+
+<view class="loading" wx:if="{{!loaded}}">
+  <text>加载中...</text>
+</view>

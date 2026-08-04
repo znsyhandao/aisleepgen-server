@@ -1,0 +1,288 @@
+name: Model CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * *'  # 每天UTC时间3点运行
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install torch --extra-index-url https://download.pytorch.org/whl/cu113
+
+    - name: Run unit tests
+      timeout-minutes: 10
+      run: |
+        cd tests
+        python -m unittest test_model.py -v > unittest-report-${{ matrix.python-version }}.txt 2>&1
+      continue-on-error: false
+      retry-max: 2
+      
+    - name: Upload unit test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: unit-test-report-${{ matrix.python-version }}
+        path: tests/unittest-report-${{ matrix.python-version }}.txt
+
+    - name: Run in Docker
+      run: |
+        docker buildx create --use
+        docker buildx build --cache-from type=gha --cache-to type=gha,mode=max -t model-test .
+        docker run --gpus all model-test python -m unittest tests/test_model.py
+      if: |
+        contains(github.event.pull_request.labels.*.name, 'model-change') ||
+        github.ref == 'refs/heads/main'
+
+# ... 保留unit-test job ...
+
+  integration-test:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check GPU availability
+      if: runner.os == 'Linux'
+      run: |
+        nvidia-smi || echo "No GPU available"
+
+    - name: Security scan
+      run: |
+        pip install safety
+        safety check --full-report
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest-cov pytest-benchmark
+
+    - name: Run integration tests
+      run: |
+        pytest tests/integration/ --cov=src --cov-report=xml
+
+    - name: Run benchmark tests
+      run: |
+        pytest tests/benchmark/ --benchmark-json=benchmark.json
+        
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-results
+        path: benchmark.json
+
+    - name: Analyze benchmark results
+      run: |
+        python scripts/analyze_benchmark.py benchmark.json
+
+  test-dependency-management:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        pip install pip-tools
+        pip-compile --generate-hashes requirements.in > requirements.txt
+    - uses: actions/upload-artifact@v3
+      with:
+        name: locked-dependencies
+        path: requirements.txt
+
+  test-history-analysis:
+    needs: test-dependency-management
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        pip install pandas scikit-learn
+        python scripts/analyze_test_history.py
+
+  # 新增操作系统兼容性测试
+  os-compatibility:
+    needs: unit-test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        python -m pip install -r requirements.txt
+        python -m unittest tests/basic_compatibility.py
+  # 新增Docker扫描步骤
+  docker-scan:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        docker scan --file Dockerfile --exclude-base
+
+  performance-regression:
+    needs: integration-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: benchmark-results
+        path: benchmark.json
+    - run: |
+        pip install pandas matplotlib
+        python scripts/check_regression.py benchmark.json
+
+  stress-test:
+    needs: integration-test
+    runs-on: [self-hosted, gpu]
+    timeout-minutes: 120
+    steps:
+    - name: Verify GPU resources
+      run: |
+        if ! nvidia-smi; then
+          echo "GPU not available"
+          exit 1
+        fi
+        
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run stress tests
+      run: |
+        python tests/stress_test.py --duration 60
+
+    - name: Monitor GPU resources
+      run: |
+        nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv -l 10 > gpu_stats.csv &
+        MONITOR_PID=$!
+
+        # ... 保留现有stress-test步骤 ...
+    - name: Cleanup test environment
+      if: always()
+      run: |
+        kill $MONITOR_PID || true
+        docker system prune -f
+  test-data-management:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        python scripts/setup_test_data.py
+    - uses: actions/upload-artifact@v3
+      with:
+        name: test-data
+        path: test_data/
+    
+  test-diagnostics:
+    needs: stress-test
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: test-results
+        path: test-reports/
+    - run: |
+        pip install pandas
+        python scripts/analyze_failures.py test-reports/
+
+  visualize-results:
+    needs: publish-results
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: test-results
+        path: test-reports/
+    - run: |
+        pip install matplotlib plotly
+        python scripts/generate_visual_report.py test-reports/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: test-visualizations
+        path: test-reports/visualizations/
+
+  publish-results:
+    needs: stress-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: test-results
+        path: test-reports/
+        
+    - name: Publish test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          test-reports/
+          coverage.xml
+      
+    - name: Code coverage
+      uses: codecov/codecov-action@v3
+      
+    - name: Send Slack notification
+      if: always()
+      uses: act10ns/slack@v1
+      with:
+        status: ${{ job.status }}
+        fields: workflow,job,commit
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  resource-monitoring:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        pip install psutil
+        python scripts/check_test_environment.py
+
+  # 可选的最终增强项
+  final-check:
+    needs: publish-results
+    runs-on: ubuntu-latest
+    steps:
+    - name: Validate workflow completion
+      run: echo "All CI/CD stages completed successfully"
+      
+    - name: Archive test reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-reports-archive
+        path: |
+          test-reports/
+          coverage.xml
+        retention-days: 30

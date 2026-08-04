@@ -1,0 +1,90 @@
+{
+  "version": "1.0",
+  "updated": "2026-05-21 21:25",
+  "description": "AISleepGen 所有标的资产索引 — 统一登记，方便交叉引用",
+  "sleep_recordings": {
+    "path": "D:/AISleepGen_Optimized/sleep_record",
+    "total_files": 82,
+    "converted": 80,
+    "analyzed": 80,
+    "date_coverage": "20260411 ~ 20260521",
+    "fields": ["sleep_efficiency", "duration_hours", "movement", "stability", "breath", "snore", "snore_pct"],
+    "label_source": "analyzed/*_analysis.json"
+  },
+  "sleep_labels_verified": {
+    "path": "D:/AISleepGen_Optimized/sleep-skin image database",
+    "files": [
+      "band_sleep_data_verified.json (6天: 5/5~5/10)",
+      "band_sleep_data_v2.json",
+      "band_sleep_data.json"
+    ],
+    "note": "来自band手环的已验证睡眠标签，日期不连续，编码可能为utf-8-sig"
+  },
+  "skin_photos": {
+    "path": "D:/AISleepGen_Optimized/sleep-skin image database",
+    "total_days": 34,
+    "total_photos": 916,
+    "date_coverage": "20260418 ~ 20260521",
+    "note": "每日清晨面部照片, 多角度"
+  },
+  "skin_features_v9": {
+    "path": "D:/AISleepGen_Optimized/sleep-skin features",
+    "outputs": {
+      "ridge_model_v9.json": "Ridge回归系数",
+      "rf_results_v9.json": "随机森林R²=0.70, MAE=0.68(6天标签)",
+      "pca_model_v9.json": "PCA降维9->2维",
+      "ensemble_model_v1.json": "集成模型v1",
+      "ensemble_model_v3.json": "集成模型v3(4特征)",
+      "sleep_data_log.json": "8天对齐日志(含8维皮肤特征+predicted_score)"
+    },
+    "features": ["roi_grad_forehead_jaw", "roi_forehead_jaw_ratio", "hsv_H_std", 
+                 "freq_high_low_ratio", "hsv_S_mean", "roi_forehead_L", 
+                 "gabor_mean_00", "gabor_std_00"],
+    "note": "白平衡校正+Retinex光照归一化+Lab肤色+纹理FFT+Haar人脸检测"
+  },
+  "face_analysis": {
+    "path": "D:/AISleepGen_Optimized",
+    "scripts": ["face_analyzer.py (8.7KB)", "face_proxy.py (2.6KB)"]
+  },
+  "models": {
+    "sleep_predictor": {
+      "type": "FlatSleepPredictor (展平MLP)",
+      "path": "D:/AISleepGen_Optimized/.toto_cache/toto2_finetuned.pt",
+      "baseline_avg_err": "9.9%",
+      "cron": "train_toto2_incremental 每天23:30"
+    },
+    "skin_sleep_ensemble": {
+      "path": "D:/AISleepGen_Optimized/sleep-skin features",
+      "types": ["ridge_model_v9", "ensemble_model_v3", "rf_results_v9"],
+      "best_r2": 0.70,
+      "best_mae": 0.68,
+      "limitation": "仅6天标签训练"
+    }
+  },
+  "expert_board": {
+    "path": "D:/AISleepGen_Optimized/expert_board.json"
+  },
+  "chat": {
+    "chat_data": "daytime_mood.json (情绪标签)",
+    "timely_ask": "timely_ask.py (时机追问模块)",
+    "intervene": "intervene_injector.py (干预注入模块)"
+  },
+  "cron_jobs": [
+    {"name": "train_toto2_incremental", "schedule": "23:30", "desc": "增量训练"},
+    {"name": "trend_monitor_check", "schedule": "0,30 7-23", "desc": "趋势监测"},
+    {"name": "auto_intervene_check", "schedule": "15,45 7-23", "desc": "自动干预"},
+    {"name": "expert_board_wake", "schedule": "*/15 7-23", "desc": "黑板轮询"}
+  ],
+  "todo_merge": {
+    "skin_vs_sleep_cross_validate": {
+      "status": "done(10样本, Top5特征R²=0.28, MAE=2.35%, 比基线好但微弱)",
+      "limitation": "睡眠效率范围90-100%太窄, 无法评估真实预测能力",
+      "best_features": ["roi_grad_forehead_jaw", "roi_forehead_jaw_ratio", "lab_B_std", "glcm_dissimilarity_mean"],
+      "next_step": "积累更多低效数据(60-80%效率)后重新验证"
+    },
+    "extend_sleep_data_log": {
+      "status": "done(8->13天对齐, 10天有录音标签)",
+      "script": "extend_sleep_data_log.py (新文件)"
+    }
+  }
+}

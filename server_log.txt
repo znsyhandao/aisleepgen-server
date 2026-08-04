@@ -1,0 +1,130 @@
+[Startup] version=20260601_1
+DeepSeek API Key OK
+Preference storage ready
+[PubmedFrontier] 开始每日自动更新...
+[PubmedFrontier] 后台更新线程已启动
+[SelfHeal] 自愈系统v2已启动（每10分钟自检+修复）
+[Agent] 自主感知引擎已启动（每5分钟扫描）
+[Scheduler] 定时调度引擎已启动（昼夜窗口推送管理）
+[IC] 干预检查引擎已启动（每30秒扫描）
+Server on http://localhost:8090
+  /health, /api/chat, /api/sleep-report, /api/meditation-plan
+[PubmedFrontier] 找到11篇潜在文献，开始拉取详情...
+[PubmedFrontier] 成功解析11篇文献
+[PubmedFrontier] 合并完成: 新增0篇, 总计88篇
+[PubmedFrontier] 每日更新完成: 找到11篇, 新增0篇
+[PubmedFrontier] 开始每日自动更新...
+[PubmedFrontier] 找到11篇潜在文献，开始拉取详情...
+[PubmedFrontier] 成功解析11篇文献
+[PubmedFrontier] 合并完成: 新增0篇, 总计88篇
+[PubmedFrontier] 每日更新完成: 找到11篇, 新增0篇
+[ProfileCreate] 新用户 test_sas_v3 (文件有 64 个用户)
+[WorldModel] 已加载 88 条自动循证证据
+[WorldModel] 加载自学习校准: pain_penalty=0.0962417577461056
+[WorldModel] 世界模型v4.1已加载
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioCache] 从缓存加载 29个音频评分
+[AudioRec] Chat注入2个推荐
+[ProfileCreate] 新用户 test_sas_full (文件有 65 个用户)
+[EvidenceInject] 已注入2篇相关文献
+[Cache] HIT (hits=1, miss=1, ratio=50%)
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[DailyBatch] [test123...] logs=2 completed=0 rate=0.00 avg_rounds=3.0
+[DailyBatch] [test123...] done: threshold=0.66 base=2 scale=0.5
+[EvidenceInject] 已注入2篇相关文献
+[Cache] HIT (hits=2, miss=1, ratio=67%)
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[DailyBatch] [default...] logs=5 completed=0 rate=0.00 avg_rounds=3.0
+[DailyBatch] [default...] done: threshold=0.75 base=2 scale=0.5
+[WxLogin] 开发模式 openid=dev_d63f82f5fc250288
+[Profile] [test123...] 用户信息已更新
+[ProfileCreate] 新用户 test_idem (文件有 66 个用户)
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[ProfileCreate] 新用户 test_lat (文件有 67 个用户)
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[EvidenceInject] 已注入2篇相关文献
+[Cache] HIT (hits=9, miss=1, ratio=90%)
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[EvidenceInject] 已注入2篇相关文献
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[ProfileCreate] 新用户 test_conc (文件有 68 个用户)
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[Profile] 保存失败: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'D:\\AISleepGen_Optimized\\user_profile.json.tmp' -> 'D:\\AISleepGen_Optimized\\user_profile.json'
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[EvidenceInject] 已注入2篇相关文献
+[Cache] HIT (hits=19, miss=1, ratio=95%)
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[Memory] 对话摘要+情绪已存储
+[AudioRec] Chat注入2个推荐
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[Memory] 对话摘要+情绪已存储
+[AudioRec] Chat注入2个推荐
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[Memory] 对话摘要+情绪已存储
+[AudioRec] Chat注入2个推荐
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[Memory] 对话摘要+情绪已存储
+[AudioRec] Chat注入2个推荐
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[AudioRec] Chat注入2个推荐
+[Memory] 对话摘要+情绪已存储
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[Memory] 对话摘要+情绪已存储
+[AudioRec] Chat注入2个推荐
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)
+[Memory] 对话摘要+情绪已存储
+[AudioRec] Chat注入2个推荐
+[Ops] 跳过: expected an indented block after 'except' statement on line 73 (ops_engine.py, line 74)

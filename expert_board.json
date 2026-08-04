@@ -1,0 +1,167 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-05-21 20:04",
+  "active_experts": [
+    "data_pipeline",
+    "ai_modeling"
+  ],
+  "blocked_experts": [],
+  "data_pipeline": {
+    "status": "ready",
+    "last_run": "2026-05-21 19:30",
+    "files_processed": 80,
+    "files_total": 82,
+    "files_failed": 2,
+    "samples_total": 80,
+    "output": "sleep_record/analyzed/*.json"
+  },
+  "ai_modeling": {
+    "status": "running",
+    "last_run": "2026-05-21 19:56",
+    "session": "salty-ridge",
+    "baseline_avg_err": 0.099,
+    "best_avg_err": 0.099,
+    "model_key": "toto2_finetuned.pt",
+    "model_type": "FlatSleepPredictor (128-32-1, Dropout 0.3)",
+    "needs_input_from": [
+      "data_pipeline"
+    ],
+    "output_to": [
+      "reliability_engineer"
+    ]
+  },
+  "reliability_engineer": {
+    "status": "blocked",
+    "needs_input_from": [
+      "ai_modeling"
+    ],
+    "blocking_reason": "等待model avg_err稳定在5%以下再激活三重投票",
+    "output_to": [
+      "interaction_orchestrator"
+    ]
+  },
+  "interaction_orchestrator": {
+    "status": "reviewed",
+    "needs_input_from": [
+      "reliability_engineer"
+    ],
+    "code_written": [
+      "settings.js",
+      "settings.wxml"
+    ],
+    "blocking_reason": "前端代码已写好, 等待用户微信开发者工具编译上线",
+    "output_to": [
+      "sleep_experience_designer"
+    ],
+    "_mtime": 1779350292.2149224
+  },
+  "sleep_experience_designer": {
+    "status": "blocked",
+    "needs_input_from": [
+      "interaction_orchestrator"
+    ],
+    "blocking_reason": "等待风格选择器上线后获取用户风格偏好数据",
+    "output_to": [
+      "ai_modeling"
+    ]
+  },
+  "data_analyst": {
+    "status": "ready",
+    "needs_trigger": "数据超过200个独立样本后自动激活",
+    "output_to": [
+      "research_specialist",
+      "sleep_experience_designer"
+    ],
+    "notes": "mood_from_sleep.py: 可从睡眠特征推断情绪(3条规则), 已与文字标签对齐"
+  },
+  "system_architect": {
+    "status": "idle",
+    "notes": "T2阶段激活: 对称性破缺白噪声 + 双耳节拍集成"
+  },
+  "research_specialist": {
+    "status": "ready",
+    "last_update": "2026-05-21 20:23",
+    "insights_stored": 22,
+    "tasks_stored": 15,
+    "output_type": "T4储备",
+    "next_review": "2026-06-04",
+    "notes": "Stage 1->Stage 2 transition: 白天情绪标签捕获已注入_handle_chat和_handle_sleep_report"
+  },
+  "market_analyst": {
+    "status": "blocked",
+    "needs_input_from": [
+      "sleep_experience_designer"
+    ],
+    "blocking_reason": "无产品功能可分析"
+  },
+  "quality_assurance": {
+    "status": "alert_efficiency_dropping",
+    "sla": "每T1任务前后触发check health + audit triple",
+    "last_check": "never",
+    "output_to": [
+      "release_manager"
+    ],
+    "_last_model_mtime": 1779355183.3771796,
+    "notes": "近期效率连续下降，建议关注日间压力/情绪管理，今晚考虑干预"
+  },
+  "customer_service": {
+    "status": "idle",
+    "notes": "等待用户反馈数据积累"
+  },
+  "release_manager": {
+    "status": "active",
+    "experts_active": [
+      "data_pipeline(ready)",
+      "ai_modeling(incremental_cron)",
+      "trend_monitor(every_30min)",
+      "auto_intervene(every_30min)",
+      "intervene_injector(standby)"
+    ],
+    "experts_blocked": [
+      "reliability_engineer",
+      "interaction_orchestrator",
+      "sleep_experience_designer",
+      "market_analyst"
+    ],
+    "experts_idle": [
+      "data_analyst",
+      "system_architect",
+      "quality_assurance",
+      "customer_service"
+    ],
+    "experts_ready": [
+      "research_specialist"
+    ],
+    "cron_jobs": [
+      {
+        "name": "train_toto2_incremental",
+        "schedule": "每天23:30",
+        "enabled": true
+      }
+    ],
+    "next_milestone": "微信前端编译上线风格选择器 + intervene_injector挂钩chat回复",
+    "milestone_achieved": "数据驱动闭环: 趋势监测->自动干预->注入对话"
+  },
+  "_last_wake_check": 1780041971,
+  "trend_monitor": {
+    "last_check": "2026-05-29 16:05",
+    "result": {
+      "status": "needs_intervention",
+      "err_trend": -0.0010000000000000009,
+      "avg_err": 0.098,
+      "recent_effs": [
+        100.0,
+        98.1,
+        97.1,
+        94.4,
+        98.3,
+        96.1,
+        91.7
+      ],
+      "last_eff": 91.7,
+      "eff_trend": -8.299999999999997,
+      "alert": "efficiency_dropping",
+      "suggestion": "近期效率连续下降，建议关注日间压力/情绪管理，今晚考虑干预"
+    }
+  }
+}

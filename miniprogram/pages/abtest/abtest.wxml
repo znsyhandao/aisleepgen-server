@@ -1,0 +1,49 @@
+<!-- pages/abtest/abtest.wxml - A/B 实验管理 -->
+<view class="page">
+  <view class="top-glow"></view>
+
+  <!-- Loading -->
+  <view class="ab-loading" wx:if="{{loading}}">
+    <view class="ab-loading-spinner"></view>
+    <text class="ab-loading-text">加载实验中...</text>
+  </view>
+
+  <!-- Empty -->
+  <view class="ab-empty" wx:elif="{{experiments.length === 0}}">
+    <text class="ab-empty-icon">🧪</text>
+    <text class="ab-empty-text">暂无运行中的实验</text>
+  </view>
+
+  <!-- Experiment List -->
+  <view class="ab-list" wx:else>
+    <view class="ab-section-title">运行中的实验</view>
+    <view class="ab-card" wx:for="{{experiments}}" wx:key="id" wx:for-item="exp">
+      <view class="ab-card-header">
+        <text class="ab-card-name">{{exp.name}}</text>
+        <view class="ab-card-status {{exp.status}}">{{exp.status === 'running' ? '运行中' : exp.status}}</view>
+      </view>
+      <view class="ab-card-desc">{{exp.description}}</view>
+      <view class="ab-card-metrics" wx:if="{{exp.metrics}}">
+        <view class="ab-metric" wx:for="{{exp.metrics}}" wx:key="name">
+          <text class="ab-metric-label">{{item.label}}</text>
+          <text class="ab-metric-value">{{item.value}}</text>
+        </view>
+      </view>
+      <view class="ab-card-footer">
+        <text class="ab-card-date">开始: {{exp.startDate}}</text>
+        <text class="ab-card-sample">样本: {{exp.sampleSize || 0}}</text>
+      </view>
+    </view>
+
+    <view class="ab-section-title" wx:if="{{completedExperiments.length > 0}}">已完成的实验</view>
+    <view class="ab-card completed" wx:for="{{completedExperiments}}" wx:key="id" wx:for-item="exp">
+      <view class="ab-card-header">
+        <text class="ab-card-name">{{exp.name}}</text>
+        <view class="ab-card-status completed">已完成</view>
+      </view>
+      <view class="ab-card-result" wx:if="{{exp.result}}">
+        <text class="ab-result-text">结论: {{exp.result}}</text>
+      </view>
+    </view>
+  </view>
+</view>

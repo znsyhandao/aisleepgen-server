@@ -1,0 +1,59 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "🔄 全量审核（数学+动力学+运行时）",
+            "dependsOn": [
+                "📐 数学深度审核",
+                "🔄 突变动力学扫描",
+                "🔬 运行时突变探测"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "📐 数学深度审核",
+            "type": "shell",
+            "command": "python D:\\OpenClaw_TestingFramework\\aisleepgen_mathematical_audit.py",
+            "options": {
+                "cwd": "D:\\AISleepGen_Optimized"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🔄 突变动力学扫描",
+            "type": "shell",
+            "command": "python D:\\OpenClaw_Unified_Tools\\ClawHub_Compliance\\clawhub_toolkit.py kinetic \"${workspaceFolder}\"",
+            "options": {
+                "cwd": "D:\\OpenClaw_Unified_Tools\\ClawHub_Compliance"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🔬 运行时突变探测",
+            "type": "shell",
+            "command": "python mutant_watch.py \"${workspaceFolder}\"",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

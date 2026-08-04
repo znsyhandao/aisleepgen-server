@@ -1,0 +1,17 @@
+page { background: #0f0f23; color: #fff; font-family: -apple-system, PingFang SC, sans-serif; }
+.page { padding: 20px; }
+.header { text-align: center; margin-bottom: 24px; }
+.title { font-size: 20px; font-weight: bold; color: #e8d8ff; }
+.subtitle { font-size: 12px; color: #888; margin-top: 6px; display: block; }
+.card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.card-title { font-size: 14px; font-weight: bold; color: #8b7cb0; margin-bottom: 12px; display: block; }
+.row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.label { font-size: 13px; color: #aaa; }
+.value { font-size: 14px; color: #e8d8ff; font-weight: bold; }
+.highlight { color: #7dd3fc; font-size: 16px; }
+.improvement-badge { text-align: center; margin-top: 12px; }
+.improvement-badge text { background: #059669; color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+.footer { text-align: center; margin-top: 24px; }
+.footer-text { font-size: 11px; color: #666; display: block; margin-bottom: 12px; }
+.share-btn { background: #7c5bbf; color: #fff; border-radius: 20px; font-size: 14px; padding: 8px 0; }
+.loading { text-align: center; padding-top: 100px; color: #888; font-size: 14px; }

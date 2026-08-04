@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-05-23 16:34:42",
+  "results": [
+    {
+      "name": "📊 数据科学专家 (align_data_sources)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🏋️ 模型训练专家 (migrate_to_lgb)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🌓 Shadow Bridge 健康检查 (shadow_model_bridge)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🏛️ Ridge 旧管线 (retrain_model)",
+      "status": "ok",
+      "output_preview": ""
+    }
+  ],
+  "summary": {
+    "ok": 4,
+    "fail": 0,
+    "skip": 0
+  }
+}

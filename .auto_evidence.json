@@ -1,0 +1,2010 @@
+[
+  {
+    "name": "Written Exposure Therapy for Posttraumatic Stress Disorder a...",
+    "evidence": " et al., 2026, PMID: 42097790",
+    "description": "Despite posttraumatic stress disorder's (PTSD) significant burden in China, accessible and effective treatments remain limited. This pilot randomized controlled trial examined the feasibility, accepta",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42097790",
+    "doi": "10.1016/j.beth.2025.09.011",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "A digital cognitive behavioural therapy programme for insomn...",
+    "evidence": " et al., 2026, PMID: 42096653",
+    "description": "Insomnia and anxiety are highly prevalent and often comorbid in older adults. Although cognitive behavioural therapy is the first-line treatment for insomnia, few interventions simultaneously address ",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "观察性研究, 待提取效应量",
+    "certainty": "low",
+    "pmid": "42096653",
+    "doi": "10.1093/ageing/afag123",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Mobile Application as a Digital Therapeutic for Chronic Tinn...",
+    "evidence": " et al., 2026, PMID: 42096236",
+    "description": "Tinnitus is a highly prevalent condition that has no cure and can severely impair quality of life. Patients who receive cognitive behavioral therapy (CBT) and hearing aid therapy for chronic tinnitus ",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42096236",
+    "doi": "10.1001/jamaoto.2026.0858",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Effectiveness of non-pharmacological interventions for insom...",
+    "evidence": " et al., 2026, PMID: 42090940",
+    "description": "Insomnia is common in the general population and is more prevalent in menopausal women. This meta-analysis synthesized and assessed the effect of non-pharmacological interventions for insomnia related",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42090940",
+    "doi": "10.1016/j.maturitas.2026.108970",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Non-pharmacologic therapies for sleep disturbances after tra...",
+    "evidence": " et al., 2026, PMID: 42086508",
+    "description": "Sleep disturbances are common after traumatic brain injury (TBI), yet there are no guidelines specific to non-pharmacologic management in this population.",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42086508",
+    "doi": "10.1071/IB25014",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Cognitive behavioral therapy for menopausal insomnia in peri...",
+    "evidence": " et al., 2026, PMID: 42084929",
+    "description": "The objective of this randomized-controlled pilot trial was to develop and test a cognitive behavioral therapy intervention for both insomnia and vasomotor symptoms (VMS) in perimenopausal and postmen",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42084929",
+    "doi": "10.1097/GME.0000000000002779",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Personalizing sleep therapy: Integrating EEG neurofeedback i...",
+    "evidence": " et al., 2026, PMID: 42081294",
+    "description": "Insomnia, a highly prevalent sleep disorder, adversely affects daytime functioning, cognitive performance, and overall health, increasing the risk of cardiovascular, metabolic, and psychiatric conditi",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "观察性研究, 待提取效应量",
+    "certainty": "low",
+    "pmid": "42081294",
+    "doi": "10.1080/08869634.2026.2666591",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Hybrid-delivered cognitive behavioral symptom management and...",
+    "evidence": " et al., 2026, PMID: 42070654",
+    "description": "Patients undergoing hematopoietic stem cell transplant (HCT) and chimeric antigen receptor T-cell (CAR-T) therapy experience significant disability exacerbated by persistent fatigue, pain, and psychol",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42070654",
+    "doi": "10.1016/j.cct.2026.108332",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "What is the most effective non-pharmacological treatment for...",
+    "evidence": " et al., 2026, PMID: 42069826",
+    "description": "Chronic obstructive pulmonary disease (COPD) features poor sleep quality due to nocturnal dyspnea and psychological distress, leading to increased hospital admissions and reduced quality of life. Cons",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42069826",
+    "doi": "10.1007/s11325-026-03692-1",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Effectiveness and Cost-Effectiveness of an App-Based Mindful...",
+    "evidence": " et al., 2026, PMID: 42061848",
+    "description": "Breast cancer surgery and corresponding treatments have significant residual effects on survivors of breast cancer in China. Body image distress and stigma are persistent challenges that negatively af",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42061848",
+    "doi": "10.2196/85913",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Ivermectin for Critically and Noncritically Ill Hospitalized...",
+    "evidence": " et al., 2026, PMID: 42101205",
+    "description": "To determine whether ivermectin improves outcomes for critically and noncritically ill hospitalized patients with COVID-19.",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42101205",
+    "doi": "10.1097/CCM.0000000000007134",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Ketotifen for Preventing Oxaliplatin-Induced Neuropathy in S...",
+    "evidence": " et al., 2026, PMID: 42096115",
+    "description": "Oxaliplatin-induced peripheral neuropathy (OIPN) is a frequent, dose-limiting toxicity in colorectal cancer and markedly impairs quality of life. This study aimed to evaluate the protective role of ke",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42096115",
+    "doi": "10.1007/s12029-026-01456-4",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Impact of the gut microbiome on health impacts of Haskap ber...",
+    "evidence": " et al., 2026, PMID: 42087172",
+    "description": "Haskap berries have great potential as a superfood due to high polyphenolic content which confers both anti-inflammatory and antioxidant activity. These health impacts are mitigated, at least in part,",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42087172",
+    "doi": "10.1186/s13063-026-09759-4",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "The Effects of a Phytochemical Supplement Blend on Markers o...",
+    "evidence": " et al., 2026, PMID: 42075011",
+    "description": "This study examined the effects of a novel phytochemical supplement blend on markers of exercise-induced muscle damage.",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "观察性研究, 待提取效应量",
+    "certainty": "low",
+    "pmid": "42075011",
+    "doi": "10.3390/nu18081199",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "The Burden of Chronic Rhinosinusitis Without Nasal Polyps: A...",
+    "evidence": " et al., 2026, PMID: 42060156",
+    "description": "Chronic rhinosinusitis (CRS) is a heterogeneous and often debilitating disease characterized by persistent sinonasal symptoms and inflammation and is phenotypically classified as CRS with nasal polyps",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42060156",
+    "doi": "10.1007/s12325-026-03575-7",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Effects of mindfulness yoga intervention on physical functio...",
+    "evidence": " et al., 2026, PMID: 42058068",
+    "description": "Methamphetamine (MA) addiction is a chronic relapsing disorder that impairs physical health, induces mental distress (e.g., anxiety), and triggers abnormal inflammatory and neurotransmitter responses,",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42058068",
+    "doi": "10.3389/fpubh.2026.1788887",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Comprehensive proteomic classifier for molecular characteris...",
+    "evidence": " et al., 2026, PMID: 42049299",
+    "description": "Sarcoidosis is a multisystem disorder with variable presentation and disease course. Diagnosis requires the exclusion of other causes of granulomatous inflammation. Current clinical management is ofte",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "观察性研究, 待提取效应量",
+    "certainty": "low",
+    "pmid": "42049299",
+    "doi": "10.1136/bmjopen-2026-118207",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Effect of Continuous Theta-Burst Stimulation on Postoperativ...",
+    "evidence": " et al., 2026, PMID: 42033441",
+    "description": "Postoperative delirium (POD) is a common complication after cardiac surgery in older patients, associated with higher mortality and prolonged stays. Continuous theta-burst stimulation (cTBS), a noninv",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "观察性研究, 待提取效应量",
+    "certainty": "low",
+    "pmid": "42033441",
+    "doi": "10.1016/j.neurom.2026.03.003",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Efficacy, Safety and Immunomodulatory Effect of Intramuscula...",
+    "evidence": " et al., 2026, PMID: 42010987",
+    "description": "The use of acupoint autohemotherapy (A-AHT) has shown promise in the management of atopic dermatitis (AD); however, the lack of rigorously controlled comparative studies presents a significant obstacl",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42010987",
+    "doi": "10.1002/iid3.70453",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "Activating the vagus nerve-adrenal anti-inflammatory axis to...",
+    "evidence": " et al., 2026, PMID: 42005520",
+    "description": "Aging is a primary risk factor for chronic diseases, yet safe and effective interventions remain limited. Traditional Chinese Medicine (TCM) highlights the role of acupuncture in health preservation, ",
+    "indications": [
+      "inflammation"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42005520",
+    "doi": "10.1016/j.conctc.2026.101632",
+    "added_on": "2026-05-09"
+  },
+  {
+    "name": "[Acupoint thread-embedding therapy in treatment of postoperative complications of mixed hemorrhoids: a randomized controlled trial].",
+    "evidence": "Zhongguo zhen jiu = Chinese acupuncture & moxibustion et al., 2026, PMID: 42116778",
+    "description": "To compare the clinical efficacy on the common postoperative complications of mixed hemorrhoids between the acupoint thread-embedding therapy combined with conventional treatment and the simple conventional treatment. A total of 68 patients with mixed hemorrhoids and surgery scheduled were randomize",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42116778",
+    "doi": "10.13703/j.0255-2930.20250620-0003",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "[Effect of medicated-thread moxibustion of Zhuang medicine on amnestic mild cognitive impairment with sleep disorder and its influence on event-related potential P300].",
+    "evidence": "Zhongguo zhen jiu = Chinese acupuncture & moxibustion et al., 2026, PMID: 42116773",
+    "description": "To observe the clinical effect of medicated-thread moxibustion of Zhuang medicine on amnestic mild cognitive impairment (aMCI) with sleep disorder. Sixty-four aMCI patients with sleep disorder were randomly divided into an observation group (32 cases, 1 case withdrawn) and a control group (32 cases,",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42116773",
+    "doi": "10.13703/j.0255-2930.20250113-k0008",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Pilates during pregnancy for maternal musculoskeletal pain and discomfort: a systematic review and meta-analysis.",
+    "evidence": "BMJ open et al., 2026, PMID: 42114864",
+    "description": "The predominant concern during pregnancy is musculoskeletal pain, often accompanied by additional discomforts such as anxiety and insomnia. Pilates, as a low-impact mind-body exercise, may be beneficial in managing musculoskeletal pain and associated symptoms in adults. This systematic review and me",
+    "indications": [
+      "stress",
+      "women_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42114864",
+    "doi": "10.1136/bmjopen-2025-112441",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Couples Sharing Sleep and Sickness: Dyadic Sleep-Wake Patterns, Health Consequences, and Intervention Efficacy in Cancer Patient-Caregiver Dyads-A Systematic Review and Preliminary Meta-Analysis.",
+    "evidence": "Psycho-oncology et al., 2026, PMID: 42112787",
+    "description": "Sleep disturbances are prevalent among cancer patient-caregiver dyads, yet their interdependent sleep patterns remain understudied. Therefore, this systematic review aimed to synthesize evidence on dyadic sleep-wake patterns, health consequences (physical, psychological, and relationship health), an",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42112787",
+    "doi": "10.1002/pon.70480",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Examining the Influence of Promoting Physical Activity Bouts on Adolescent Movement Dispersion: Secondary Analysis of a Randomized Control Trial.",
+    "evidence": "Journal for specialists in pediatric nursing : JSPN et al., 2026, PMID: 42104903",
+    "description": "Most adolescents fail to meet the guidelines for 60&#x2009;min daily of moderate to vigorous physical activity (MVPA). Movement dispersion provides an alternative approach to evaluating daily physical activity (PA) and sedentary behavior (SB) patterns. Total movement dispersion calculates the spread",
+    "indications": [
+      "adolescent"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42104903",
+    "doi": "10.1111/jspn.70016",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Breathing therapy as a supplement to opioid management for complex chronic non-cancer pain conditions&#xa0;- a systematic review.",
+    "evidence": "Scandinavian journal of pain et al., 2026, PMID: 42104567",
+    "description": "The purpose of this systematic review was to analyze whether breathing therapy is effective in reducing pain, improving health-related quality of life, improving physical functioning/activity, and improving sleep quality in patients suffering from complex chronic non-cancer pain conditions (CNCP). A",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42104567",
+    "doi": "10.1515/sjpain-2026-0008",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Caffeine ingestion improves morning neuromuscular performance to evening levels in healthy females.",
+    "evidence": "PloS one et al., 2026, PMID: 42096438",
+    "description": "To investigate whether caffeine ingestion offsets the circadian-related decline in morning neuromuscular performance in females. Thirteen healthy females completed three experimental trials: i) evening placebo (PMPLAC), ii) morning placebo (AMPLAC), and iii) morning caffeine ingestion (6 mg&#xb7;kg&",
+    "indications": [
+      "circadian",
+      "adolescent"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42096438",
+    "doi": "10.1371/journal.pone.0336199",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Night-time compression with a Mobiderm&#xae; auto-adjustable arm-sleeve in addition to daytime compression was superior to daytime compression alone for maintenance therapy of upper limb lymphedema in",
+    "evidence": "Supportive care in cancer : official journal of the Multinational Association of Supportive Care in  et al., 2026, PMID: 42091704",
+    "description": "To assess the benefit of night-time compression in addition to daytime compression on arm excess volume after 3&#xa0;months of maintenance treatment in patients with secondary upper limb breast cancer-related lymphedema (BCRL). This multicenter, controlled, randomized study was carried out in six ce",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42091704",
+    "doi": "10.1007/s00520-026-10735-6",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Virtual Reality-Based Cue Exposure and Aversion Therapy for Alcohol Dependence: A Randomized Controlled Trial.",
+    "evidence": "Addiction biology et al., 2026, PMID: 42091202",
+    "description": "Alcohol dependence (AD) is characterized by a high relapse rate. Virtual reality (VR) technology can provide immersive cue exposure therapy (VR-CET) and aversion therapy (VR-AT). This study aimed to evaluate the efficacy of VR-CET, VR-AT and their combination on craving, emotional and sleep states, ",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42091202",
+    "doi": "10.1111/adb.70166",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Multidimensional Effects of Telemedicine on Patients With Spinal Cord Injury: Systematic Review and Meta-Analysis of Randomized Controlled Trials.",
+    "evidence": "Journal of medical Internet research et al., 2026, PMID: 42090333",
+    "description": "Spinal cord injury (SCI) causes persistent physical and psychological impairments and is associated with reduced quality of life. Telemedicine may improve rehabilitation access and follow-up care, but its effectiveness across multiple outcome domains in SCI remains uncertain. This study aimed to eva",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42090333",
+    "doi": "10.2196/87088",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of Desflurane and Propofol General Anesthesia on Postoperative Recovery Quality in Elderly Patients Undergoing Spinal Surgery: A Randomized Non-Inferiority Trial.",
+    "evidence": "Drug design, development and therapy et al., 2026, PMID: 42089010",
+    "description": "Postoperative recovery quality is a key concern for elderly patients undergoing spinal surgery, yet evidence comparing different anesthetic techniques in this population remain limited. This study aimed to compare the quality of recovery between desflurane-based inhalational anesthesia and propofol-",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42089010",
+    "doi": "10.2147/DDDT.S601299",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Melatonin, Caffeine, or Their Combination: Effects on Sleep, Performance, Perceived Exertion in a Placebo-Controlled Crossover Study.",
+    "evidence": "Nutrients et al., 2026, PMID: 42124027",
+    "description": "Background/Objectives: Melatonin (MEL) promotes sleep and recovery, while caffeine (CAF) enhances alertness and performance. Despite their common use among athletes, their potential interaction remains underexplored. This study examined the effects of MEL and CAF, administered separately or in combi",
+    "indications": [
+      "circadian",
+      "adolescent"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42124027",
+    "doi": "10.3390/nu18091425",
+    "added_on": "2026-05-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The effect of preoperative melatonin patches on sleep quality in patients undergoing urological surgery.",
+    "evidence": "Revista da Associacao Medica Brasileira (1992) et al., 2026, PMID: 42138936",
+    "description": "The aim of this study was to determine the effects of transdermal melatonin patches on sleep quality in patients undergoing urological surgery. This study is a randomized controlled trial. Fifty-seven patients hospitalized in the urology department of a university hospital in Istanbul were included.",
+    "indications": [
+      "circadian",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42138936",
+    "doi": "10.1590/1806-9282.20251486",
+    "added_on": "2026-05-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Music-based interventions for chronic pain management.",
+    "evidence": "The Cochrane database of systematic reviews et al., 2026, PMID: 42138335",
+    "description": "This is a protocol for a Cochrane Review (intervention). The objectives are as follows: Primary objective To evaluate the benefits and harms of music-based interventions (MBIs) for chronic pain management in adults with pain lasting more than 12 weeks, comparing MBIs with the following comparators: ",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42138335",
+    "doi": "10.1002/14651858.CD016354",
+    "added_on": "2026-05-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Bimekizumab treatment for sustained improvements in patient symptoms and health-related quality of life to 3 years in axial spondyloarthritis: results from the BE MOBILE studies and their open-label e",
+    "evidence": "RMD open et al., 2026, PMID: 42128532",
+    "description": "To assess the sustained, long-term efficacy of bimekizumab in improving patient symptoms and health-related quality of life (HRQoL) in axial spondyloarthritis (axSpA) to 3 years. Both BE MOBILE 1 (non-radiographic axSpA) and 2 (radiographic axSpA) comprised a 16-week double-blind, placebo-controlled",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42128532",
+    "doi": "10.1136/rmdopen-2025-006670",
+    "added_on": "2026-05-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Normal polysomnography parameters in healthy children: a systematic review and meta-analysis.",
+    "evidence": "European respiratory review : an official journal of the European Respiratory Society et al., 2026, PMID: 42128488",
+    "description": "There is a lack of normative values for polysomnographic parameters in childhood. This study presents a comprehensive meta-analysis of paediatric polysomnography parameters scored using recent criteria to establish normative values adjusted for age and sex. A systematic search was conducted in Web o",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42128488",
+    "doi": "10.1183/16000617.0224-2025",
+    "added_on": "2026-05-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Differential Responsiveness to Exercise and Cognitive Remediation in Physical Health in People With Schizophrenia: Results From the CORTEX-SP Study.",
+    "evidence": "European journal of sport science et al., 2026, PMID: 42141376",
+    "description": "Non-pharmacological interventions, such as exercise and cognitive remediation, have been widely investigated in people with schizophrenia (SZ), showing beneficial effects and supporting their role as complementary approaches to pharmacological treatment. Moving towards precision medicine, it is impo",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42141376",
+    "doi": "10.1002/ejsc.70182",
+    "added_on": "2026-05-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Feasibility, Safety and Preliminary Efficacy of 1:1 THC:CBD Cannabis Oil for Fibromyalgia Symptoms: Results From a Randomised, Double-Blind, Placebo-Controlled Pilot Trial.",
+    "evidence": "Pain research & management et al., 2026, PMID: 42142029",
+    "description": "Fibromyalgia is a chronic disorder characterised by widespread pain and other symptoms that substantially impact the quality of life. This double-blind, randomised, placebo-controlled trial primarily assessed feasibility (procedures and intervention adherence) and safety/tolerability of a 1:1 delta-",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42142029",
+    "doi": "10.1155/prm/7311235",
+    "added_on": "2026-05-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy of Closed Loop Spinal Cord Stimulation for Chronic Back and Leg Pain: A Systematic Review.",
+    "evidence": "Pain practice : the official journal of World Institute of Pain et al., 2026, PMID: 42149411",
+    "description": "Spinal cord stimulation (SCS) is an established therapy for chronic pain of the trunk and limbs. Conventional open-loop systems are sometimes limited by habituation, positional variability, and inconsistent neural recruitment. Closed-loop SCS is an approach that uses evoked compound action potential",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42149411",
+    "doi": "10.1111/papr.70166",
+    "added_on": "2026-05-19",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Clinical efficacy of peloidotherapy on pain, sleep quality, and central sensitization-related symptoms in chronic low back pain: a comparative analysis.",
+    "evidence": "International journal of biometeorology et al., 2026, PMID: 42154299",
+    "description": "This study aimed to investigate the effect of peloidotherapy applied in chronic low back pain on pain and central sensitization and its reflections on patients' sleep quality, fatigue levels, functional capacity, and disability status. In this prospective, randomized, single-blind study, 74 patients",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42154299",
+    "doi": "10.1007/s00484-026-03225-1",
+    "added_on": "2026-05-20",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of an herbal supplement on quality of life in participants with insomnia: A randomized placebo controlled cross-over pilot trial.",
+    "evidence": "PloS one et al., 2026, PMID: 42160360",
+    "description": "Insomnia is a common sleep disorder linked to poor quality of life. Patients with insomnia frequently rely on herbal supplements to improve sleep and quality of life; however, most supplements do not undergo rigorous testing to determine their effectiveness. The primary objective of the pilot trial ",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42160360",
+    "doi": "10.1371/journal.pone.0350039",
+    "added_on": "2026-05-21",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy of Internet-Based Cognitive Behavioural Therapy (iCBT) on Pain Symptoms and Sleep Quality Improvement in Chronic Pain Patients: A Meta-Analysis of Randomised Controlled Trials.",
+    "evidence": "Nursing open et al., 2026, PMID: 42166653",
+    "description": "Chronic pain is defined as pain that persists or recurs for more than 3 months, involving complex pathological mechanisms and affecting a significant global population. In recent years, Internet-Based Cognitive Behavioural Therapy (iCBT) has garnered increasing attention as a treatment modality, par",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42166653",
+    "doi": "10.1002/nop2.70539",
+    "added_on": "2026-05-22",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "A randomized controlled trial comparison of three music therapy formats on cognitive function and psychological well-being in normal aging.",
+    "evidence": "The journals of gerontology. Series B, Psychological sciences and social sciences et al., 2026, PMID: 42161569",
+    "description": "Prior studies suggest a benefit of music-based activities for supporting cognitive function and psychological well-being in normal aging, but few have rigorously examined the effect of music therapy (MT) interventions in this population, or contrasted delivery format. We conducted a randomized contr",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42161569",
+    "doi": "10.1093/geronb/gbag070",
+    "added_on": "2026-05-22",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy and Safety of Repetitive Transcranial Magnetic Stimulation (rTMS) in Peripheral Neuropathic Pain: A GRADE-Assessed Meta-Analysis of Randomized Sham-Controlled Trials.",
+    "evidence": "Pain practice : the official journal of World Institute of Pain et al., 2026, PMID: 42171529",
+    "description": "Peripheral neuropathic pain (PNP) results from damage to peripheral nerves, leading to intractable or exaggerated pain. Repetitive transcranial magnetic stimulation (rTMS) is a non-invasive therapeutic method that modulates cortical neuronal activity and can promote endogenous opioid release, with a",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42171529",
+    "doi": "10.1111/papr.70169",
+    "added_on": "2026-05-23",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Sleep and cognition in Hispanic/Latin American adults: A systematic review.",
+    "evidence": "Alzheimer's & dementia : the journal of the Alzheimer's Association et al., 2026, PMID: 42174397",
+    "description": "Sleep disturbance is associated with increased risk for cognitive impairment. However, previous research is primarily based on non-Hispanic White individuals, despite higher rates of sleep problems and disorders among Hispanic/Latin American individuals (H/Ls). The present study reviews the current ",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42174397",
+    "doi": "10.1002/alz.71512",
+    "added_on": "2026-05-23",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Home-based postural exercise as an adjunct to duloxetine improves sleep quality, physical quality of life, and trunk mobility in fibromyalgia: a randomized controlled trial.",
+    "evidence": "Rheumatology international et al., 2026, PMID: 42174272",
+    "description": "In fibromyalgia syndrome (FMS), current guidelines recommend combining pharmacological treatments such as duloxetine with exercise interventions. This randomized controlled trial aimed to evaluate the effectiveness of a home-based postural exercise program as an adjunct to pharmacological treatment ",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42174272",
+    "doi": "10.1007/s00296-026-06137-w",
+    "added_on": "2026-05-23",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The effect of probiotic and synbiotic supplementation on sleep parameters in exercised population: a systematic review and synthesis without meta-analysis (SWiM) of randomized controlled trials.",
+    "evidence": "Journal of the International Society of Sports Nutrition et al., 2026, PMID: 42184272",
+    "description": "Sleep is crucial for recovery and optimal performance in athletes; however, poor sleep is common during periods of intensive training or competition. The microbiota-gut-brain axis suggests probiotics and synbiotics could modulate sleep, but evidence in exercised populations is limited. To systematic",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42184272",
+    "doi": "10.1080/15502783.2026.2670564",
+    "added_on": "2026-05-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Investigating the effects of CPAP/BiPAP therapy on cognitive function and reaction time in patients with obesity hypoventilation syndrome.",
+    "evidence": "Respiratory physiology & neurobiology et al., 2026, PMID: 42150628",
+    "description": "Obesity hypoventilation syndrome (OHS) causes significant neurocognitive dysfunction through chronic hypercapnia and sleep disruption. While continuous positive airway pressure (CPAP) and bilevel positive airway pressure (BiPAP) effectively treat respiratory symptoms, their comparative effects on co",
+    "indications": [
+      "sleep_apnea"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42150628",
+    "doi": "10.1016/j.resp.2026.104589",
+    "added_on": "2026-05-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The impact of different rapid palatal expansion appliances on sleep, nasal airway resistance, and dentoskeletal/dentoalveolar characteristics: a prospective, randomized controlled trial.",
+    "evidence": "European journal of orthodontics et al., 2026, PMID: 42186098",
+    "description": "The effects of rapid palatal expansion (RPE) on sleep-related breathing and nasal airway resistance have been extensively investigated in prepubertal individuals; however, interpretation of these findings is confounded by growth-related changes. To evaluate and compare the effects of different RPE a",
+    "indications": [
+      "adolescent"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42186098",
+    "doi": "10.1093/ejo/cjag030",
+    "added_on": "2026-05-27",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The Effect of Low-Dose Dexmedetomidine Nasal Spray on Anxiety Levels in Gynaecological Patients on the Day of Surgery: A Randomised Controlled Study.",
+    "evidence": "Drug design, development and therapy et al., 2026, PMID: 42199809",
+    "description": "To evaluate the effects of dexmedetomidine nasal spray on preoperative anxiety, perioperative sleep, and intraoperative haemodynamic stability in patients undergoing laparoscopic hysterectomy or myomectomy. This is a prospective, randomised, double-blind, placebo-controlled, single-centre clinical t",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42199809",
+    "doi": "10.2147/DDDT.S610070",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy and Safety of Bacillus coagulans IDCC 1201 for Sleep Improvement in Adults with Sleep Disturbance: A Randomized, Double-Blind, Placebo-Controlled Polysomnographic Study.",
+    "evidence": "Nutrients et al., 2026, PMID: 42196985",
+    "description": "Background/Objectives: Sleep continuity is a key determinant of daytime functioning; however, accessible and well-tolerated interventions remain limited. We investigated whether Bacillus coagulans IDCC 1201 improves objective sleep continuity and subjective sleep quality in adults with sleep disturb",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42196985",
+    "doi": "10.3390/nu18101525",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The Caffeinated Brain Part 1: The Effects of Caffeine on Event-Related Potentials (ERPs)-A Systematic and Mechanistic Review.",
+    "evidence": "Nutrients et al., 2026, PMID: 42196950",
+    "description": "Caffeine is a widely consumed adenosine receptor antagonist with well-documented effects on arousal and performance, but its time-resolved neurophysiological signature across stages of information processing remains fragmented across event-related potential (ERP) paradigms. This systematic and mecha",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42196950",
+    "doi": "10.3390/nu18101489",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Digital Cognitive Behavioral Therapy for Insomnia Versus Sleep Hygiene Education for Prevention of Perinatal Depression: Protocol for a Randomized Clinical Trial.",
+    "evidence": "JMIR research protocols et al., 2026, PMID: 42190644",
+    "description": "Insomnia during pregnancy is a modifiable risk factor for depression. Research in nonpregnant populations and preliminary findings in a pregnant population suggest that targeting insomnia with digital cognitive behavioral therapy for insomnia (CBT-I) may prevent depression. This study aims to evalua",
+    "indications": [
+      "cbt_i",
+      "stress",
+      "sleep_quality",
+      "women_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42190644",
+    "doi": "10.2196/90969",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The Impact of Pilates Exercise on the Overall Health of Patients With Breast Cancer: A Systematic Review and Meta-Analysis.",
+    "evidence": "Oncology nursing forum et al., 2026, PMID: 42189649",
+    "description": "A systematic literature review and meta-analysis investigated the impact of Pilates on pain, fatigue, sleep quality, and depression among patients with breast cancer. Eight databases were searched for studies with randomized controlled trials published between January 2017 and May 2024. Six studies ",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42189649",
+    "doi": "10.1188/26.ONF.e26535306",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Individualized cognitive-behavioral therapy improves anxiety, depression, sleep quality, hopelessness, and disease severity in fibromyalgia syndrome: a single-blind randomized controlled trial.",
+    "evidence": "Rheumatology international et al., 2026, PMID: 42189251",
+    "description": "The current study evaluates the effects of individualized cognitive-behavioral therapy (CBT), administered alongside routine treatment, on anxiety, depression, sleep quality, hopelessness, and disease severity in patients with fibromyalgia syndrome (FMS). This is a randomized, controlled, single-bli",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42189251",
+    "doi": "10.1007/s00296-026-06146-9",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "A Pilot Study Assessing the Feasibility, Acceptability and Potential Impact of an 8-Week Sophrology Intervention for People With Chronic Pain in the UK.",
+    "evidence": "Journal of evaluation in clinical practice et al., 2026, PMID: 42189101",
+    "description": "Chronic pain is difficult to treat and pain medication is often ineffective and associated with side-effects. Thus, alternative treatments are frequently used. Sophrology is a method to improve wellbeing combining Western and Eastern practices. Widely used in French-speaking countries for over 40 ye",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42189101",
+    "doi": "10.1111/jep.70474",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Impact of different exercise modalities on blood pressure in patients with nocturnal hypertension.",
+    "evidence": "Journal of hypertension et al., 2026, PMID: 42159763",
+    "description": "Nocturnal hypertension is the blood pressure (BP) phenotype most strongly associated with cardiovascular morbidity and mortality, yet no specific therapeutic strategy has been established. Physical activity effectively lowers BP, but the impact of different exercise modalities on nocturnal BP remain",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42159763",
+    "doi": "10.1097/HJH.0000000000004317",
+    "added_on": "2026-05-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "A scoping review of 24-h movement behaviours research in Chinese children and adolescents.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42205454",
+    "description": "Physical activity, sleep, and sedentary behaviour are essential components within the 24-h time frame. A scientific understanding of 24-h movement behaviours is crucial for formulating targeted intervention guidelines and programs. The objective of this study was to map the current research landscap",
+    "indications": [
+      "adolescent"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42205454",
+    "doi": "10.3389/fpubh.2026.1801708",
+    "added_on": "2026-05-29",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "A Systematic Review of Functional MRI Studies on Seasonal Modulation of Brain Functional Connectivity.",
+    "evidence": "British journal of hospital medicine (London, England : 2005) et al., 2026, PMID: 42216611",
+    "description": "Seasonal fluctuations in environmental conditions, particularly variations in photoperiod and ambient temperature, influence diverse physiological and behavioral processes. With advances in functional magnetic resonance imaging (fMRI), researchers have begun to investigate how such environmental fac",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42216611",
+    "doi": "10.31083/BJHM53980",
+    "added_on": "2026-05-31",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of Transcutaneous Electrical Nerve Stimulation, Electrical Muscle Stimulation, Exercise and Heat on Back Pain-A Randomized Controlled Clinical Exploratory Trial.",
+    "evidence": "European journal of pain (London, England) et al., 2026, PMID: 42212718",
+    "description": "This randomized controlled study compared different forms of therapy for chronic back pain. Seventy-nine patients with chronic back pain with a duration of symptoms of more than 6&#x2009;months were included in the study and randomly assigned to one of four therapy groups (a) sports therapy with a f",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42212718",
+    "doi": "10.1002/ejp.70302",
+    "added_on": "2026-05-31",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Perioperative sleep optimisation and brain health in older adults (SLEEP-BOOST): protocol for a randomised controlled trial.",
+    "evidence": "BMJ open et al., 2026, PMID: 42209013",
+    "description": "Postoperative neurocognitive disorders, including delirium and longer-term cognitive decline, are among the most common and costly complications of surgery in older adults, yet effective preventive strategies remain limited. Insomnia and sleep-circadian disruption are highly prevalent in this popula",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42209013",
+    "doi": "10.1136/bmjopen-2026-116526",
+    "added_on": "2026-05-31",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Acute Sleep Deprivation Shifts Substrate Utilization Toward Greater Fat Oxidation During Incremental Exercise in Recreationally Trained Adults.",
+    "evidence": "Scandinavian journal of medicine & science in sports et al., 2026, PMID: 42223297",
+    "description": "Sleep deprivation alters metabolic homeostasis and substrate metabolism, but its effect on fat and carbohydrate utilization during exercise is unclear. This study examined the effects of one night of total and partial sleep deprivation on substrate utilization during a maximal fat oxidation test (MF",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42223297",
+    "doi": "10.1111/sms.70314",
+    "added_on": "2026-06-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects on secondary outcomes following a three-month personalized app-based lifestyle intervention among working adults: a three-armed randomized controlled trial.",
+    "evidence": "Scientific reports et al., 2026, PMID: 42225824",
+    "description": "Lifestyle improvements can bring individual and societal benefits. Most interventions are standardized; however, personalized interventions may be more effective. We examined the effect of a personalized app&#x2011;based lifestyle intervention, with or without monthly coaching, on physical activity,",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42225824",
+    "doi": "10.1038/s41598-026-54919-w",
+    "added_on": "2026-06-04",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy of fully automated digital cognitive behavioral therapy for insomnia in adults: a systematic review and meta-analysis.",
+    "evidence": "Sleep & breathing = Schlaf & Atmung et al., 2026, PMID: 42240717",
+    "description": "Fully automated digital cognitive behavioral therapy for insomnia (dCBT-I) is increasingly used as a scalable intervention for adults with insomnia. Although recent reviews have supported its overall efficacy, uncertainty remains regarding the interpretation of platform-related differences across tr",
+    "indications": [
+      "cbt_i"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42240717",
+    "doi": "10.1007/s11325-026-03723-x",
+    "added_on": "2026-06-11",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Self-Guided Internet-Based Mindfulness-Informed Stress Management for Generalized Anxiety Disorder: Randomized Controlled Trial With Longitudinal Network Analysis.",
+    "evidence": "Journal of medical Internet research et al., 2026, PMID: 42247657",
+    "description": "Generalized anxiety disorder (GAD) is characterized by stress-anxiety reinforcement cycles. Evidence for brief, self-guided, internet-based stress management as an adjunct to pharmacotherapy remains limited. This study aimed to evaluate the efficacy of an 8-week self-guided, internet-based stress ma",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42247657",
+    "doi": "10.2196/91751",
+    "added_on": "2026-06-11",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy and safety of holographic scraping in insomnia: A systematic review and meta-analysis of randomized controlled trials.",
+    "evidence": "Medicine et al., 2026, PMID: 42260818",
+    "description": "Insomnia is a common chronic disease affecting an increasing number of people. Holographic scraping has been widely used in patients with insomnia. However, the efficacy of holographic scraping in the treatment of insomnia is controversial, and systematic reviews and meta-analyses are lacking. There",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42260818",
+    "doi": "10.1097/MD.0000000000048997",
+    "added_on": "2026-06-12",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Relationship Between Sleep and Meal Timing with Glycemia Parameters in Individuals with Obesity Participating in a Randomized Time-Restricted Eating Study.",
+    "evidence": "Nutrients et al., 2026, PMID: 42280467",
+    "description": "Background/Objectives: Circadian misalignment, including mistimed sleep or eating, is associated with altered glucose metabolism. The importance of eating window timing for time-restricted eating (TRE) is increasingly recognized. This secondary analysis examined associations between meal to sleep ti",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42280467",
+    "doi": "10.3390/nu18111824",
+    "added_on": "2026-06-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effectiveness of Fitbit-Based Interventions in Improving 24-hour Movement Behaviors: A Systematic Review and Meta-Analysis.",
+    "evidence": "Inquiry : a journal of medical care organization, provision and financing et al., 2026, PMID: 42274402",
+    "description": "IntroductionAll activities performed by an individual over a 24-hour period can be classified into four categories-moderate-to-vigorous physical activity (MVPA), light physical activity (LPA), sedentary behavior (SB), and sleep-collectively referred to as 24-hour movement behaviors. Fitbit devices c",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42274402",
+    "doi": "10.1177/00469580261460723",
+    "added_on": "2026-06-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effectiveness of Digital Tools on Lifestyle & Health-Related Outcomes Across the Full Continuum of the Maternal Journey: A Systematic Review.",
+    "evidence": "Current obesity reports et al., 2026, PMID: 42265507",
+    "description": "Maternal health is a global public health priority and a key determinant of generational and societal well-being. Healthy lifestyle behaviors from preconception through postpartum can be promoted by mobile applications, telehealth and chatbots, but evidence on their effectiveness remains limited des",
+    "indications": [
+      "women_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42265507",
+    "doi": "10.1007/s13679-026-00723-6",
+    "added_on": "2026-06-13",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Do subjective and objective baseline sleep disturbances predict post-traumatic stress disorder treatment response? A secondary analysis of a randomized controlled trial.",
+    "evidence": "European journal of psychotraumatology et al., 2026, PMID: 42296016",
+    "description": "Background: Sleep disturbances are highly prevalent in individuals with post-traumatic stress disorder (PTSD) and might interfere with trauma-focused treatments by disrupting memory consolidation, extinction and safety learning. However, evidence on the impact of sleep deficits on PTSD treatments re",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42296016",
+    "doi": "10.1080/20008066.2026.2674492",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Circadian clock regulation of hemostasis: a systematic review of molecular pathways.",
+    "evidence": "Research and practice in thrombosis and haemostasis et al., 2026, PMID: 42293739",
+    "description": "Thrombotic events such as myocardial infarction and stroke exhibit circadian variation with early-morning peaks, implicating intrinsic biological regulation, yet the molecular mechanisms coordinating hemostatic function remain unclear. This systematic review synthesizes evidence linking circadian rh",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42293739",
+    "doi": "10.1016/j.rpth.2026.106642",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Physical activity for insomnia: a scoping review within the Nursing Science Precision Health model.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42293610",
+    "description": "Physical activity (PA) is an established non-pharmacological intervention for insomnia; however, its clinical application remains largely non-personalized. The Nursing Science Precision Health (NSPH) model provides a structured framework to link symptom patterns, phenotypes, and biological mechanism",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42293610",
+    "doi": "10.3389/fpubh.2026.1834146",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The impact of different types of exercise on sleep in sedentary populations: a systematic review and network meta-analysis.",
+    "evidence": "PeerJ et al., 2026, PMID: 42291438",
+    "description": "The widespread prevalence of sleep disturbances poses substantial challenges to both public health and individual well-being. Exercise may serve as an effective non-pharmacological intervention. However, the comparative efficacy of different exercise modalities and the influence of participant or in",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42291438",
+    "doi": "10.7717/peerj.21037",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Bipolar spectrum disorders in divers: risks, recognition, and recommendations.",
+    "evidence": "Diving and hyperbaric medicine et al., 2026, PMID: 42290577",
+    "description": "Bipolar disorder is a recurrent psychiatric condition characterised by episodic mood disturbances, residual functional impairment, and high rates of psychiatric and medical comorbidity. While many individuals achieve symptomatic remission, persistent deficits in cognition, emotional regulation, and ",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42290577",
+    "doi": "10.28920/dhm56.2.170-176",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "[Effectiveness of breathing exercises compared to audio signals to improve sleep].",
+    "evidence": "Zhurnal nevrologii i psikhiatrii imeni S.S. Korsakova et al., 2026, PMID: 42268268",
+    "description": "To compare the effectiveness of three non-pharmacological interventions - binaural beats (BB) combined with suggestive instructions (SI), diaphragmatic breathing (DB), and BB combined with DB - for improving sleep, with consideration of sex differences among participants. The study included 217 heal",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42268268",
+    "doi": "10.17116/jnevro202612605223",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "A systematic review and meta-analysis on the benefits of resistance exercise in patients with fibromyalgia.",
+    "evidence": "Journal of bodywork and movement therapies et al., 2026, PMID: 42264849",
+    "description": "This systematic review and meta-analysis aimed to analyse the effects of resistance-based exercise programs on pain, fatigue, depression, anxiety, sleep quality, quality of life, physical function, and muscle strength in patients with fibromyalgia. Additionally, we investigated whether these effects",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42264849",
+    "doi": "10.1016/j.jbmt.2026.05.010",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Beyond pain: Impact of movement-based mindful exercises in fibromyalgia. A systematic review with meta-analysis.",
+    "evidence": "Journal of bodywork and movement therapies et al., 2026, PMID: 42264784",
+    "description": "Current literature supports exercise for the management of fibromyalgia (FM), although the optimal type of exercise remains unclear. This systematic review aims to summarize the effectiveness of qigong, yoga, and tai chi for FM-related symptoms beyond pain. Searches were conducted in CINAHL (via EBS",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42264784",
+    "doi": "10.1016/j.jbmt.2026.03.019",
+    "added_on": "2026-06-16",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "[Clinical efficacy of acupuncture combined with estazolam on chronic insomnia].",
+    "evidence": "Zhen ci yan jiu = Acupuncture research et al., 2026, PMID: 42343684",
+    "description": "To observe and evaluate the clinical efficacy of acupuncture combined with estazolam on chronic insomnia, so as to provide an effective intervention protocol for patients with chronic insomnia. Sixty-four patients with chronic insomnia were randomized into a treatment group and a control group, with",
+    "indications": [
+      "sleep_apnea"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42343684",
+    "doi": "10.13702/j.1000-0607.20250215",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "[Effects of electroacupuncture on sleep quality, cognitive function and cerebral hemodynamics in elderly maintenance hemodialysis patients].",
+    "evidence": "Zhongguo zhen jiu = Chinese acupuncture & moxibustion et al., 2026, PMID: 42343511",
+    "description": "To observe the effects of electroacupuncture (EA) on sleep quality, cognitive function, sleep process and structure, as well as cerebral hemodynamics in elderly patients with maintenance hemodialysis (MHD). Sixty elderly MHD patients were randomized into an EA group (30 cases) and a sham acupuncture",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42343511",
+    "doi": "10.13703/j.0255-2930.20250216-k0001",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Compliance With Physical Activity, Sedentary Behaviour and Sleep Recommendations in Children Aged 5-13&#x2009;Years: A Systematic Review and Meta-Analysis Across 15 Countries.",
+    "evidence": "Child: care, health and development et al., 2026, PMID: 42338101",
+    "description": "Several regions have published 24-h Movement Guidelines recommending durations of moderate-to-vigorous physical activity (MVPA), recreational screen time (ST) and sleep. This study aimed to investigate the global prevalence of school-aged children meeting the individual and combined recommendations ",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42338101",
+    "doi": "10.1111/cch.70307",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Exploratory crossover field study indicates efficacy and feasibility of light therapy glasses to mitigate fatigue in multiple sclerosis.",
+    "evidence": "Scientific reports et al., 2026, PMID: 42336901",
+    "description": "Fatigue is highly prevalent, clinically significant, and persistent in multiple sclerosis (MS), highlighting the need for effective countermeasures. To evaluate the feasibility and efficacy of blue-enriched bright light (BL) therapy glasses in reducing MS-related fatigue, this single-blind, randomiz",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42336901",
+    "doi": "10.1038/s41598-026-56950-3",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Sleep deprivation increases levels of the synaptic density marker SV2A in the human brain.",
+    "evidence": "PLoS biology et al., 2026, PMID: 42335020",
+    "description": "Sleep is essential for synaptic homeostasis, a proposed mechanism whereby wakefulness leads to synaptic potentiation and sleep facilitates synaptic down-selection. Synaptic vesicle glycoprotein 2A (SV2A), whose availability is quantifiable by [&#xb9;&#x2078;F]SynVesT-1 positron emission tomography (",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42335020",
+    "doi": "10.1371/journal.pbio.3003816",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of photobiomodulation on pain and quality of life in fibromyalgia syndrome: a systematic review.",
+    "evidence": "Lasers in medical science et al., 2026, PMID: 42334638",
+    "description": "Fibromyalgia Syndrome (FMS) is a chronic pain disorder characterized by widespread pain and central sensitization that significantly impacts the quality of life (QoL). For management to be effective, a multidisciplinary approach to care is typically required. Photobiomodulation therapy (PBMT), a non",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42334638",
+    "doi": "10.1007/s10103-026-04930-4",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Tolerability, Safety and Effectiveness of Sigh Introduction During Non-Invasive Mechanical Ventilation Cycles in Patients With Amyotrophic Lateral Sclerosis.",
+    "evidence": "European journal of neurology et al., 2026, PMID: 42334216",
+    "description": "Respiratory failure is the main cause of death in Amyotrophic lateral sclerosis (ALS), in which the physiological sigh reflex is impaired due to inspiratory muscle weakness. Aim of this study is to assess the tolerability, safety, and effectiveness of adding a sigh cycle to non-invasive mechanical v",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42334216",
+    "doi": "10.1111/ene.70660",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "A Randomized Controlled Trial of Multisensory Stimulation and Family-Involved Rehabilitation in Elderly Thoracic Surgery Patients.",
+    "evidence": "Journal of visualized experiments : JoVE et al., 2026, PMID: 42330020",
+    "description": "Elderly patients undergoing thoracic surgery often experience postoperative pain, anxiety, and delayed functional recovery. Multisensory stimulation nursing (MSSN) and family-participatory rehabilitation training (FPRT) are recognized non-pharmacological approaches; however, evidence for their combi",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42330020",
+    "doi": "10.3791/70305",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Impact of nursing shift patterns on work-related gastrointestinal disorders: a systematic review and meta-analysis.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42326947",
+    "description": "Gastrointestinal diseases are highly prevalent worldwide and are linked to poorer quality of life and increased use of healthcare services. Nursing shift work may disrupt circadian rhythms and contribute to functional gastrointestinal disorders through chronodisruption, sleep impairment, stress, and",
+    "indications": [
+      "circadian",
+      "stress"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42326947",
+    "doi": "10.3389/fpubh.2026.1839569",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Randomised feasibility trial of a remotely delivered holistic UK employee programme combining tailored sleep hygiene, diet, and physical activity counselling for weight management: a mixed-methods eva",
+    "evidence": "Journal of nutritional science et al., 2026, PMID: 42325726",
+    "description": "Workplaces offer a key setting for health improvement interventions, given their reach and potential to promote lasting behaviour change. While diet and physical activity (PA) are common targets, sleep remains an underexplored yet influential factor in employee health. This randomised feasibility tr",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42325726",
+    "doi": "10.1017/jns.2026.10104",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Photobiomodulation and sleep quality: systematic review and meta-analysis.",
+    "evidence": "Lasers in medical science et al., 2026, PMID: 42322437",
+    "description": "Sleep disturbances are increasingly prevalent and associated with altered brain metabolism and neuroinflammation. Photobiomodulation, a non-invasive technique using red or near-infrared light, can modulate mitochondrial activity, cerebral perfusion, and glial function, suggesting potential benefits ",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42322437",
+    "doi": "10.1007/s10103-026-04913-5",
+    "added_on": "2026-06-26",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of Probiotic and Dietary Fiber Supplementation on Metabolic Syndrome-Related Features, Mood, and Sleep in Adults with Obesity.",
+    "evidence": "Nutrients et al., 2026, PMID: 42356238",
+    "description": "Background: Obesity is associated with metabolic dysregulation, mood disturbance, and poor sleep quality. Although dietary fiber and probiotic supplementation have both been proposed as microbiome-targeted strategies for obesity management, their independent and combined effects remain unclear. Meth",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42356238",
+    "doi": "10.3390/nu18121851",
+    "added_on": "2026-06-27",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of a Synchronous Telehealth Exercise Program on Clinical, Functional, and Psychosocial Outcomes in Individuals with Type 2 Diabetes Mellitus (RED Study): A Randomized Clinical Trial.",
+    "evidence": "International journal of environmental research and public health et al., 2026, PMID: 42354303",
+    "description": "Individuals with type 2 diabetes mellitus (T2D) are at increased cardiovascular risk. Although exercise is an important strategy for reducing cardiometabolic risk, accessible and scalable intervention delivery strategies, such as synchronous telehealth programs, remain underexplored. This randomized",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42354303",
+    "doi": "10.3390/ijerph23060773",
+    "added_on": "2026-06-27",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of electro-thumbtack needles on symptoms during high-altitude exposure: a pilot, single-blind, randomized, controlled study.",
+    "evidence": "Journal of traditional Chinese medicine = Chung i tsa chih ying wen pan et al., 2026, PMID: 42365414",
+    "description": "To investigate the efficacy and safety of electro-thumbtack needles (ETN) compared with sham acupuncture (SA) on symptoms during high-altitude exposure. In this pilot, single-blind, randomized, controlled study, we assessed the impact of ETN acupuncture on symptoms associated with high-altitude expo",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42365414",
+    "doi": "10.19852/j.cnki.jtcm.2026.03.009",
+    "added_on": "2026-06-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of acupuncture on cancer-related fatigue and quality of life in breast cancer survivors: A systematic review and meta-analysis of randomized controlled trials.",
+    "evidence": "Medicine et al., 2026, PMID: 42363469",
+    "description": "Cancer-related fatigue (CRF) and impaired quality of life (QoL) are common consequences among breast cancer survivors. While acupuncture is increasingly applied as a complementary therapy, its efficacy remains unclear owing to inconsistent results across randomized controlled trials (RCTs) that have",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42363469",
+    "doi": "10.1097/MD.0000000000049393",
+    "added_on": "2026-06-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The effectiveness of non-pharmacological interventions on sleep quality in lung cancer patients: a systematic review and meta-analysis (2015-2025).",
+    "evidence": "Supportive care in cancer : official journal of the Multinational Association of Supportive Care in  et al., 2026, PMID: 42362784",
+    "description": "Sleep disorders are highly prevalent among lung cancer patients and seriously affect their quality of life and mental health. This systematic review and meta-analysis aimed to assess the effects of non-pharmacological interventions on sleep quality, quality of life, and anxiety in lung cancer patien",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42362784",
+    "doi": "10.1007/s00520-026-10910-9",
+    "added_on": "2026-06-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Digital Interventions Targeting Parents to Improve Early Childhood Movement, Nutrition, and Sleep Behaviors: Systematic Review.",
+    "evidence": "Journal of medical Internet research et al., 2026, PMID: 42361330",
+    "description": "Early childhood (0-5 years) is key for shaping health behaviors, yet optimal behaviors are rarely achieved. Digital health promotion interventions offer scalable support for families; however, most research has focused on childhood more broadly, leaving limited evidence for the early childhood perio",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42361330",
+    "doi": "10.2196/85525",
+    "added_on": "2026-06-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Microsurgical education for medical students: systematic review.",
+    "evidence": "Acta cirurgica brasileira et al., 2026, PMID: 42384991",
+    "description": "To perform a systematic review about microsurgical training for medical students. A systematic search was conducted in several databases. Screening was performed by two independent reviewers based on predetermined criteria, following PRISMA 2020 guidelines. A total of 433 articles were obtained. Aft",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42384991",
+    "doi": "10.1590/acb412726",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Walking and subjective sleep quality in adults: a Bayesian three-level meta-analysis with probabilistic clinical relevance assessment and dose-response modeling.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42375593",
+    "description": "To evaluate the effect of walking on subjective sleep quality in adults using a Bayesian three-level meta-analysis and to identify moderators of treatment response. PubMed, Embase, the Cochrane Library, and Web of Science were searched from inception through March 2026 for randomized controlled tria",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42375593",
+    "doi": "10.3389/fpubh.2026.1864607",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of Multimodal Physiotherapy on Sleep Quality and Architecture in Patients With Chronic Neck Pain With Sleep Disturbance: A Randomised Clinical Trial.",
+    "evidence": "Musculoskeletal care et al., 2026, PMID: 42373586",
+    "description": "Chronic neck pain is frequently associated with disturbed sleep, yet evidence on physiotherapy's impact on objective sleep parameters remains limited. To our knowledge, this study is the first to evaluate the effects of exercises, interferential current therapy (IFT) and myofascial release therapy o",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42373586",
+    "doi": "10.1002/msc.70242",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy of an exercise oncology program on sleep quality and circadian rhythm in head and neck cancer patients undergoing chemo-radiation therapy: a randomized controlled trial.",
+    "evidence": "PeerJ et al., 2026, PMID: 42371549",
+    "description": "Head and neck cancer (HNC) presents a significant challenge in oncology. It has high prevalence rates, especially in India, where 30-40% of cancer cases are attributed to HNC. While chemotherapy and radiation therapy are essential components of treatment, they often lead to significant sleep disturb",
+    "indications": [
+      "circadian",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42371549",
+    "doi": "10.7717/peerj.21409",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Enhanced Recovery and Postoperative Analgesia After Laparoscopic Myomectomy: A Randomized Controlled Trial Comparing Total Intravenous Anesthesia, Transversus Abdominis Plane Block with Rectus Sheath ",
+    "evidence": "Drug design, development and therapy et al., 2026, PMID: 42369368",
+    "description": "This study compares the effects of total intravenous anesthesia (TIVA, Group A), general anesthesia combined with transversus abdominis plane block and rectus sheath block (TAPB+RSB, Group B), and general anesthesia combined with quadratus lumborum block at the lateral supra-arcuate ligament (QLB-LS",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42369368",
+    "doi": "10.2147/DDDT.S622304",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of Diaphragmatic Breathing in Primary Dysmenorrhea: A Randomized Controlled Trial.",
+    "evidence": "Pain research & management et al., 2026, PMID: 42366725",
+    "description": "This study aimed to investigate the effects of diaphragmatic breathing (DB) on menstrual pain and symptoms, quality of life, stress level, and sleep quality in women with primary dysmenorrhea (PD). Women with PD were randomly divided into two groups: the DB (n&#x2009;=&#x2009;22) and the control gro",
+    "indications": [
+      "stress",
+      "sleep_quality",
+      "women_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42366725",
+    "doi": "10.1155/prm/5555669",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Lifestyle interventions and 24-hour movement behaviors in preschool children: a systematic review and meta-analysis.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42388736",
+    "description": "Unhealthy 24-h movement behaviors, including insufficient physical activity, excessive sedentary behavior, excessive screen time, and inadequate sleep, are common among preschool children. However, evidence for the effectiveness of lifestyle interventions across these behavioral domains remains limi",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42388736",
+    "doi": "10.3389/fpubh.2026.1846736",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of mind-body therapies on sleep quality in perinatal women: a systematic review and meta-analysis of randomized controlled trials.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42388735",
+    "description": "Sleep quality often worsens in perinatal women because of physiological, endocrine, and psychosocial changes. This may increase the risk of maternal and infant complications, making it a public health concern. Because pharmacological treatments may pose safety risks, mind-body therapies have gained ",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42388735",
+    "doi": "10.3389/fpubh.2026.1857655",
+    "added_on": "2026-07-02",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Insomnia and poor sleep quality in refugee and asylum-seeking populations: A systematic review and meta-analysis.",
+    "evidence": "PloS one et al., 2026, PMID: 42391198",
+    "description": "Refugees and asylum seekers face significant mental health challenges, yet sleep disturbances remain underrecognized despite their critical impact on well-being. This systematic review and meta-analysis assessed sleep quality and insomnia severity across 66 studies (n&#x2009;=&#x2009;42,956). Pooled",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42391198",
+    "doi": "10.1371/journal.pone.0352964",
+    "added_on": "2026-07-03",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effectiveness of WeChat Public Account Intervention Based on the Information-Motivation-Behavioral Skills Model Among College Students With Internet Addiction: Randomized Controlled Trial.",
+    "evidence": "Journal of medical Internet research et al., 2026, PMID: 42398925",
+    "description": "Internet addiction (IA) among college students causes multiple harms and increases suicide risk. Effective interventions can reduce these and have public health value. This study evaluates a WeChat public-account intervention based on the information, motivation, behavioral skills (IMB) model to red",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42398925",
+    "doi": "10.2196/84664",
+    "added_on": "2026-07-05",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of sub-anesthetic doses of esketamine on immune function and postoperative negative emotions in acoustic neuroma patients: a randomized clinical trial.",
+    "evidence": "Annals of medicine et al., 2026, PMID: 42396903",
+    "description": "Patients undergoing acoustic neuroma (AN) surgery often experience&#xa0;postoperative negative emotions, including anxiety, depression, and immune function suppression. This trial evaluated whether perioperative sub-anesthetic esketamine improves early postoperative negative emotions and immune func",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42396903",
+    "doi": "10.1080/07853890.2026.2692804",
+    "added_on": "2026-07-05",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of different intervention modalities combined with exercise in patients with insomnia: a systematic review and network meta-analysis.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42395307",
+    "description": "Exercise, as a non-pharmacological intervention, is a promising adjunct for improving sleep outcomes in insomnia. However, a comprehensive assessment of exercise-based combination interventions remains insufficient. This study aimed to systematically evaluate and rank the intervention effects of dif",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42395307",
+    "doi": "10.3389/fpubh.2026.1873034",
+    "added_on": "2026-07-05",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Continuous Glucose Monitoring in Glycogen Storage Diseases: A Systematic Review of Clinical Utility, Accuracy and Patient Outcomes.",
+    "evidence": "Endocrinology, diabetes & metabolism et al., 2026, PMID: 42394382",
+    "description": "Achieving euglycemia in Glycogen Storage Diseases (GSD) depends on strict dietary adherence; however, intermittent monitoring frequently fails to detect rapid hypoglycemic excursions. This systematic review evaluates the clinical utility, accuracy and psychosocial impact of Continuous Glucose Monito",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42394382",
+    "doi": "10.1002/edm2.70274",
+    "added_on": "2026-07-05",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Clinical Study of Clay Pot Combined With Thunder Fire Moxibustion in the Treatment of Chronic Refractory Wounds in Department of Orthopedics.",
+    "evidence": "Medical science monitor : international medical journal of experimental and clinical research et al., 2026, PMID: 42394157",
+    "description": "BACKGROUND Chronic refractory wounds in orthopedic patients not only impede physical recovery but also cause sleep disturbances due to treatment-related anxiety. This study aims to investigate the effects of combining clay pot therapy with thunder-fire moxibustion on the wound healing and sleep qual",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42394157",
+    "doi": "10.12659/MSM.951574",
+    "added_on": "2026-07-05",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Automatic Sleep Staging Using Cardiorespiratory Signals: A Systematic Review of Methodologies and Performance.",
+    "evidence": "Journal of medical systems et al., 2026, PMID: 42412255",
+    "description": "Cardiorespiratory-based methods offer promising alternatives to traditional PSG for longitudinal sleep monitoring, holding significant systemic medical value for scalable sleep health management. This systematic review synthesizes methodological frameworks and performance outcomes of automatic sleep",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42412255",
+    "doi": "10.1007/s10916-026-02435-9",
+    "added_on": "2026-07-08",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The effect of zolpidem on sleep efficiency and obstructive sleep apnea severity in OSA patients: A systematic review and meta&#x2011;analysis.",
+    "evidence": "Medicine et al., 2026, PMID: 42410839",
+    "description": "Insomnia and obstructive sleep apnea (OSA) comorbidity is prevalent and leads to worse outcomes. While zolpidem may improve sleep in OSA, existing trials report inconsistent results on safety and efficacy. We aimed to perform a meta-analysis to systematically evaluate the effect of zolpidem in OSA p",
+    "indications": [
+      "sleep_apnea",
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42410839",
+    "doi": "10.1097/MD.0000000000049588",
+    "added_on": "2026-07-08",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Safer Sleep Guidance in Standalone UK Smartphone Apps for Parents of Newborns and Infants: Systematic mHealth App Review.",
+    "evidence": "JMIR mHealth and uHealth et al., 2026, PMID: 42429296",
+    "description": "Parents are increasingly using smartphone apps to help guide decision-making around aspects of caregiving, including safer sleep. However, it remains unclear whether the guidance provided aligns with best practice guidelines. This review aimed to identify smartphone apps that provide safer sleep gui",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42429296",
+    "doi": "10.2196/95642",
+    "added_on": "2026-07-14",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of Automatic Infant Swing on Sleep-Wake Cycles and Comfort: A Randomized Controlled Study Protocol.",
+    "evidence": "Nursing in critical care et al., 2026, PMID: 42429091",
+    "description": "Sleep-wake regulation and comfort are essential for neurodevelopment and physiological stability in newborns in neonatal intensive care units, yet evidence on non-pharmacological interventions such as automatic infant swings is limited. This is a study protocol which outlines a randomized controlled",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42429091",
+    "doi": "10.1111/nicc.70570",
+    "added_on": "2026-07-14",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Validating a novel driving simulation-based MWT against the standard MWT in an OSA-cohort challenged by CPAP-withdrawal (DS-MWT2) - Protocol for a monocentric, controlled, randomized, crossover trial.",
+    "evidence": "PloS one et al., 2026, PMID: 42424269",
+    "description": "Excessive daytime sleepiness (EDS) is a major yet under-recognized contributor to road traffic accidents. Traditional diagnostic tools, such as the Maintenance of Wakefulness Test (MWT), assess wakefulness under passive conditions but may not accurately reflect real-world driving risks. To address t",
+    "indications": [
+      "sleep_apnea"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42424269",
+    "doi": "10.1371/journal.pone.0341997",
+    "added_on": "2026-07-14",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "'I Didn't Even Associate the Two Together at All': A Qualitative Study of 'Information Work' Undertaken by Parents and Their Children With Epilepsy to Make Sense of Sleep and Seizures.",
+    "evidence": "Health expectations : an international journal of public participation in health care and health pol et al., 2026, PMID: 42444506",
+    "description": "Epilepsy in children presents challenges for families who must navigate the condition itself, along with complex medical information and the emotional realities of daily care. Underpinning a recent randomised control trial (CASTLE Sleep-E) was the acknowledgement that sleep was a problem that had no",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42444506",
+    "doi": "10.1111/hex.70763",
+    "added_on": "2026-07-15",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "[Tongyuan acupuncture for postherpetic neuralgia: a randomized controlled trial].",
+    "evidence": "Zhongguo zhen jiu = Chinese acupuncture & moxibustion et al., 2026, PMID: 42443075",
+    "description": "To observe the clinical efficacy of Tongyuan acupuncture in treatment of postherpetic neuralgia (PHN). A total of 106 patients with PHN were randomly divided into a Tongyuan electroacupuncture group (53 cases, 3 cases dropped out) and a conventional electroacupuncture group (53 cases, 4 cases droppe",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42443075",
+    "doi": "10.13703/j.0255-2930.20250518-k0002",
+    "added_on": "2026-07-15",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of low-dose naltrexone for long COVID: a systematic review and meta-analysis.",
+    "evidence": "BMJ open et al., 2026, PMID: 42463201",
+    "description": "Long covid is a debilitating chronic condition, and the effect of low-dose naltrexone (LDN) on its symptoms is unclear. We aimed to determine the effectiveness of LDN on symptoms of long covid. Systematic review and meta-analysis. PubMed, Embase and Cochrane Library for published studies; ClinicalTr",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42463201",
+    "doi": "10.1136/bmjopen-2025-111253",
+    "added_on": "2026-07-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Comparative and Dose-Response Effects of Exercise Modalities on Sleep Quality in Individuals With Breast Cancer: A Bayesian Network Meta-Analysis.",
+    "evidence": "Psycho-oncology et al., 2026, PMID: 42461508",
+    "description": "To compare the effects of exercise modalities on sleep quality in individuals with breast cancer, and to examine dose-response associations between exercise dose and sleep improvement. PubMed, Web of Science, Embase, the Cochrane Library, and EBSCO were searched from inception to March 2026. Risk of",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42461508",
+    "doi": "10.1002/pon.70553",
+    "added_on": "2026-07-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Association between circadian rhythm disturbances and cognitive decline in the elderly: a systematic review.",
+    "evidence": "Neurological sciences : official journal of the Italian Neurological Society and of the Italian Soci et al., 2026, PMID: 42458137",
+    "description": "Circadian rhythm dysregulation may contribute to sleep-wake disorders and cognitive impairment. In the elderly, circadian abnormalities have been observed in Mild Cognitive Impairment (MCI), suggesting a possible association between neurocognitive deficits and circadian dysfunctions. To analyze the ",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42458137",
+    "doi": "10.1007/s10072-026-09221-y",
+    "added_on": "2026-07-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effect of Dexmedetomidine Hydrochloride Nasal Spray on Anxiety and Sleep in Patients Undergoing Gynecological Laparoscopic Surgery.",
+    "evidence": "Medical science monitor : international medical journal of experimental and clinical research et al., 2026, PMID: 42452824",
+    "description": "BACKGROUND Postoperative sleep disturbances are common after gynecological laparoscopic surgery, possibly delaying recovery. This study evaluated whether additional postoperative administration of dexmedetomidine hydrochloride nasal spray could improve anxiety, sleep quality, and early recovery in p",
+    "indications": [
+      "stress",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42452824",
+    "doi": "10.12659/MSM.952465",
+    "added_on": "2026-07-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The Effectiveness of Non-Soy Oral Herbal Supplements for Menopausal Symptoms: A Systematic Review.",
+    "evidence": "Nutrients et al., 2026, PMID: 42451042",
+    "description": "Background: Menopause is a biological process characterised by the cessation of menstruation and substantial changes in ovarian hormone production. As many women seek non-hormonal alternatives to hormone replacement therapy, interest in herbal supplements has increased. However, the evidence for the",
+    "indications": [
+      "women_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42451042",
+    "doi": "10.3390/nu18132037",
+    "added_on": "2026-07-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Delayed school start times to improve sleep duration and mitigate depression in adolescents: a systematic review and meta-analysis.",
+    "evidence": "Journal of clinical sleep medicine : JCSM : official publication of the American Academy of Sleep Me et al., 2026, PMID: 42449039",
+    "description": "Delayed school start time (DSST) has been associated with prolonged sleep duration and reduced depressive symptoms. However, the overall magnitude of these effects remains unclear. We therefore conducted a systematic review and meta-analysis to assess the impact of DSST on sleep duration and depress",
+    "indications": [
+      "stress",
+      "sleep_quality",
+      "adolescent"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42449039",
+    "doi": "10.1007/s44470-026-00116-5",
+    "added_on": "2026-07-18",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Physical therapy interventions for awake and sleep bruxism: What has been the approach over the last decades? A systematic review of the evidence and research gaps.",
+    "evidence": "Dental and medical problems et al., 2026, PMID: 42497348",
+    "description": "The objective of this systematic review was to summarize the physiotherapy (PT) treatments used over the last few decades to manage awake bruxism (AB), sleep bruxism (SB) or unspecified bruxism in adults. Searches were conducted in 5 databases, and all stages of the review were performed independent",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42497348",
+    "doi": "10.17219/dmp/215136",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Sleep disturbances in tension-type headache: a systematic review and meta-analysis.",
+    "evidence": "Journal of neurology et al., 2026, PMID: 42493638",
+    "description": "Tension-type headache (TTH) is the most common primary headache, yet accompanying sleep disturbances have not been quantitatively synthesized. PubMed, Embase, Web of Science, and the Cochrane Library were searched from inception to January 3, 2026, for observational studies reporting sleep outcomes ",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42493638",
+    "doi": "10.1007/s00415-026-14011-9",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of Tai Chi on Mental Health in college students: a systematic review and meta-analysis of randomized controlled trials.",
+    "evidence": "Frontiers in public health et al., 2026, PMID: 42491127",
+    "description": "To systematically evaluate and quantitatively synthesize the effects of Tai Chi interventions on the mental health of college students. This study was conducted in accordance with the PRISMA 2020 guidelines for systematic reviews and meta-analyses and was registered in PROSPERO (CRD420261329121). Pu",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42491127",
+    "doi": "10.3389/fpubh.2026.1830203",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Integrative group psychotherapy reduces daily cortisol output and hair cortisol: A randomized active&#x2011;controlled trial with multi&#x2011;day profiling.",
+    "evidence": "PloS one et al., 2026, PMID: 42490633",
+    "description": "Chronic psychosocial stress can disrupt hypothalamic-pituitary-adrenal (HPA) axis and sympathetic nervous system function, yet randomized trials rarely combine multi-day diurnal salivary profiling with hair glucocorticoid assessment. We conducted a parallel-group, superiority randomized controlled t",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42490633",
+    "doi": "10.1371/journal.pone.0352095",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of andropause-related health education on general health and sleep quality among retired men: a quasi-experimental study.",
+    "evidence": "Sleep & breathing = Schlaf & Atmung et al., 2026, PMID: 42489974",
+    "description": "Andropause, which is characterized by a decline in testosterone levels, has a significant impact on the general health and sleep quality of aging men, especially retired men. In this study, the effects of a structured andropause-related health education program on the general health and sleep qualit",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42489974",
+    "doi": "10.1007/s11325-026-03734-8",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Interindividual Sleep Variability Across the Psychosis Spectrum: A Systematic Review and Meta-Analysis.",
+    "evidence": "JAMA network open et al., 2026, PMID: 42485043",
+    "description": "Sleep disturbances are common across the psychosis spectrum and may precede overt core clinical symptoms. Most studies focus on mean differences and overlook interindividual variability, which can be informative for stratified care. To quantify interindividual variability in actigraphy sleep measure",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42485043",
+    "doi": "10.1001/jamanetworkopen.2026.24358",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The incidence of sleepiness in newer-generation antihistamine users: a systematic review and network meta-analysis.",
+    "evidence": "European journal of clinical pharmacology et al., 2026, PMID: 42481869",
+    "description": "This systematic review and meta-analysis aimed to summarize the incidence of sleepiness in patients who used newer-generation antihistamines. CINAHL Complete, Medline, Scopus, ScienceDirect, and Google Scholar were systematically searched from inception to July 2025. The pairwise meta-analysis of th",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42481869",
+    "doi": "10.1007/s00228-026-04147-y",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of Neiyanggong on cancer-related fatigue in breast cancer patients undergoing chemotherapy: a randomized controlled trial.",
+    "evidence": "Supportive care in cancer : official journal of the Multinational Association of Supportive Care in  et al., 2026, PMID: 42498825",
+    "description": "This study aimed to develop a dynamic-static combined Neiyanggong intervention for breast cancer patients undergoing chemotherapy and to evaluate its effectiveness in alleviating cancer-related fatigue, with sleep quality assessed as a secondary outcome. A single-center, parallel-group randomized co",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42498825",
+    "doi": "10.1007/s00520-026-11029-7",
+    "added_on": "2026-07-25",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Comparative effectiveness of traditional Chinese non-pharmacological therapies for chemotherapy-related symptoms in cancer patients: a systematic review and network meta-analysis.",
+    "evidence": "Supportive care in cancer : official journal of the Multinational Association of Supportive Care in  et al., 2026, PMID: 42507011",
+    "description": "Chemotherapy-related fatigue, sleep disturbance, and psychological distress significantly impair quality of life (QoL) in cancer patients. Traditional Chinese medicine (TCM) non-pharmacological therapies are increasingly used as supportive care, yet their comparative effectiveness remains unclear. T",
+    "indications": [
+      "stress"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42507011",
+    "doi": "10.1007/s00520-026-10990-7",
+    "added_on": "2026-07-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The Effect of a Mindfulness-Based Stress Reduction (MBSR) Program on Quality of Life, Life Satisfaction, Sleep Quality, and Mental Well-Being in Menopausal Women: A Randomized Controlled Trial.",
+    "evidence": "Journal of nursing scholarship : an official publication of Sigma Theta Tau International Honor Soci et al., 2026, PMID: 42503602",
+    "description": "Menopause affects nearly one-third of women's lives and is associated with a wide range of physical and psychological symptoms-including sleep disturbances, mood fluctuations, and reduced quality of life-that represent a significant public health concern. While pharmacological treatments carry well-",
+    "indications": [
+      "stress",
+      "sleep_quality",
+      "women_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42503602",
+    "doi": "10.1111/jnu.70116",
+    "added_on": "2026-07-28",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Efficacy of an anonymous, preventive, personalized online counselling to improve shift workers' sleep quality: a randomized controlled trial.",
+    "evidence": "Scientific reports et al., 2026, PMID: 42527422",
+    "description": "Shift work is associated with an increased risk of sleep disorders, yet tailored prevention and treatment programs remain rare and understudied. Cognitive behavioral therapy for insomnia is the first-line treatment for insomnia in the general population. We thus developed an anonymous online counsel",
+    "indications": [
+      "cbt_i",
+      "circadian",
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42527422",
+    "doi": "10.1038/s41598-026-64210-7",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of physical exercise on sleep quality in patients with psychiatric disorders: a systematic review and meta-analysis.",
+    "evidence": "BMC psychiatry et al., 2026, PMID: 42522010",
+    "description": "As an evidence-based complementary modality, physical exercise showed significant potential in mitigating sleep disturbances across various populations. The objective of this study was to determine how physical exercise interventions influence the sleep quality among clinical populations diagnosed w",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42522010",
+    "doi": "10.1186/s12888-026-08354-w",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Interaction of Person-Affect-Cognition-Execution-Based Digital Interventions for Sleep Procrastination in Chinese University Students: Pilot Randomized Study.",
+    "evidence": "JMIR formative research et al., 2026, PMID: 42520253",
+    "description": "Sleep procrastination is a prevalent and detrimental behavior among university students. While digital interventions offer scalable solutions, they often lack a robust theoretical foundation and fail to differentiate themselves from clinical insomnia treatments. This pilot study examined the feasibi",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42520253",
+    "doi": "10.2196/93920",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The Impact of Rhinosinusitis and Its Treatment on Sleep-Disordered Breathing: A Systematic Review.",
+    "evidence": "Medicina (Kaunas, Lithuania) et al., 2026, PMID: 42512935",
+    "description": "Background and Objectives: Rhinosinusitis contributes to the development of sleep-disordered breathing (SDB) by causing nasal obstruction and airway inflammation; however, the extent to which treatment improves these conditions remains unclear. To address this, this study systematically evaluated th",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42512935",
+    "doi": "10.3390/medicina62071392",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Circadian Disruption as a Determinant of the Tumor Temporal State in Colorectal Cancer: A PRISMA-Based Systematic Review Integrating Metabolism, Immunity, and Metastasis.",
+    "evidence": "International journal of molecular sciences et al., 2026, PMID: 42511510",
+    "description": "Circadian rhythms synchronize physiological processes with the light-dark cycle and regulate biological functions relevant to cancer, including cell-cycle control, metabolism, DNA repair, immunity, and tissue homeostasis. Growing evidence indicates that disruption of these temporal mechanisms contri",
+    "indications": [
+      "circadian"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42511510",
+    "doi": "10.3390/ijms27146164",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Gut Microbiota Modulation as a Therapeutic Strategy for Insomnia: A Systematic Review of Nutritional and Botanical Interventions.",
+    "evidence": "Biomolecules et al., 2026, PMID: 42509727",
+    "description": "Background: Insomnia and stress-related sleep disorders are increasingly recognized as systemic conditions linked to the microbiota-gut-brain axis (MGBA). With growing clinical interest in natural products that modulate the gut environment, this systematic review evaluates the efficacy and mechanism",
+    "indications": [
+      "circadian",
+      "stress"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42509727",
+    "doi": "10.3390/biom16070933",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Individual variability in hydrogen-producing microbes influences the response to hydrogen supplementation on sleep quality: a randomized, double-blind, placebo-controlled, parallel study.",
+    "evidence": "Scientific reports et al., 2026, PMID: 42509250",
+    "description": "Hydrogen has been reported to exert antioxidant and anti-inflammatory effects, and its potential health benefits have been investigated. However, to our knowledge, evidence regarding its impact on sleep quality in healthy individuals remains extremely limited. In addition, the influence of inter-ind",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42509250",
+    "doi": "10.1038/s41598-026-52342-9",
+    "added_on": "2026-07-30",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Comparative efficacy of various exercise modalities on sleep quality in breast cancer survivors after primary treatment: A systematic review and dose-response network meta-analysis.",
+    "evidence": "Medicine et al., 2026, PMID: 42536584",
+    "description": "This study aims to assess the dose-response relationship between different exercise modalities and sleep quality in breast cancer survivors who have completed their primary treatment, and to propose evidence-based exercise prescriptions for clinical practice. Bayesian network and dose-response meta-",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42536584",
+    "doi": "10.1097/MD.0000000000050074",
+    "added_on": "2026-08-01",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Clinical efficacy of Mepilex Lite dressings combined with indomethacin suppositories in the treatment of acute radiation dermatitis caused by rectal cancer radiotherapy: a study protocol for a randomi",
+    "evidence": "BMJ open et al., 2026, PMID: 42532557",
+    "description": "Acute radiation dermatitis is a common adverse reaction in radiotherapy, especially in patients with rectal cancer undergoing radiotherapy. At present, acute radiation dermatitis of the perianal skin has received widespread attention; however, acute radiation skin injury of the anal canal skin has n",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42532557",
+    "doi": "10.1136/bmjopen-2026-122248",
+    "added_on": "2026-08-01",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Reducing Screen Time in Children With Borderline IQ: A Randomized Controlled Trial of a Parent-Mediated Screen Time Usage Module.",
+    "evidence": "The primary care companion for CNS disorders et al., 2026, PMID: 42530874",
+    "description": "Objective: The rapid expansion of mobile technology has significantly altered children's screen time behaviors, contributing to concerns about excessive usage. These changes are particularly relevant for children with borderline intellectual functioning, in whom unmanaged screen time may exacerbate ",
+    "indications": [
+      "general_sleep"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42530874",
+    "doi": "10.4088/PCC.25m04135",
+    "added_on": "2026-08-01",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "Effects of motivational music on sleep quality for caregivers of patients with advanced cancer: a randomized controlled trial.",
+    "evidence": "Supportive care in cancer : official journal of the Multinational Association of Supportive Care in  et al., 2026, PMID: 42545530",
+    "description": "To investigate the benefits of listening to pre-bedtime music on sleep quality and daytime sleepiness for family caregivers of palliative care patients at home. Multicenter, randomized controlled clinical trial. Seventy-six caregivers were randomly assigned to intervention (n&#x2009;=&#x2009;38) and",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "RCT, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42545530",
+    "doi": "10.1007/s00520-026-11038-6",
+    "added_on": "2026-08-04",
+    "source": "pubmed_auto"
+  },
+  {
+    "name": "The effect of water immersion thermotherapy on sleep quality: a systematic review and meta-analysis of randomized controlled trials.",
+    "evidence": "International journal of biometeorology et al., 2026, PMID: 42545422",
+    "description": "A systematic review of the effects of water immersion thermotherapy (WIT) on sleep quality in healthy adults. A comprehensive search was conducted in PubMed, Cochrane Library, Web of science, Embase, Scopus, Ovid MEDLINE, Wiley Online Library, PEDro, CNKI, SinoMed and Yiigle databases. A meta-analys",
+    "indications": [
+      "sleep_quality"
+    ],
+    "effect_size": "Meta分析, 待提取效应量",
+    "certainty": "high",
+    "pmid": "42545422",
+    "doi": "10.1007/s00484-026-03281-7",
+    "added_on": "2026-08-04",
+    "source": "pubmed_auto"
+  }
+]

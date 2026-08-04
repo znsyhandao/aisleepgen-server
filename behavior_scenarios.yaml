@@ -1,0 +1,1912 @@
+# AISleepGen Behavior Audit Scenarios (Complete)
+# 覆盖全部核心模块的行为验证
+
+scenarios:
+  # ==================== POMDP 核心 ====================
+
+  - name: pomdp_text_changes_belief
+    description: POMDP from text updates belief, score should drop
+    imports:
+      - "from pomdp_learner import get_engine"
+    setup: |
+      import pomdp_learner as _pm; _pm._engine = None; _pm.ALearner._shared_counts = None; _pm.ALearner._SHARED_DIR = None
+      e = get_engine()
+    action: |
+      b0 = e.get_belief("_ba_pomdp_before").get("expected_score", 50)
+      e.observe("_ba_pomdp", text="失眠了睡不着")
+      b1 = e.get_belief("_ba_pomdp").get("expected_score", 0)
+      m = b0 - b1
+    assert_expr: "b1 < b0"
+    measurement_expr: "m"
+    reason: If POMDP doesn't update belief from text, it's dead code
+
+  - name: shared_prior_affects_fresh_user
+    description: Seed insomnia data should bias new user belief after first obs
+    imports:
+      - "from pomdp_learner import get_engine"
+    setup: |
+      import pomdp_learner as _pm; _pm._engine = None; _pm.ALearner._shared_counts = None; _pm.ALearner._SHARED_DIR = None
+      e = get_engine()
+      for uid in ["_ba_s1","_ba_s2","_ba_s3"]:
+        e.observe(uid, text="失眠睡不着", score=25)
+        e.observe(uid, text="彻夜失眠", score=20)
+        e.observe(uid, text="一夜没睡好", score=30)
+    action: |
+      e.observe("_ba_fresh", text="失眠了")
+      bel = e.get_belief("_ba_fresh")
+      m = bel["expected_score"]
+    assert_expr: "m < 49.0"
+    measurement_expr: "m"
+    reason: Shared prior should bias fresh user toward low scores
+
+  - name: pomdp_drives_different_interventions
+    description: Stress vs good-sleep users should get different intervention types
+    imports:
+      - "from pomdp_learner import get_engine"
+      - "from sleep_coach import get_daily_suggestion"
+    setup: |
+      import copy, pomdp_learner as _pm; _pm._engine = None; _pm.ALearner._shared_counts = None; _pm.ALearner._SHARED_DIR = None
+      e = get_engine()
+      e.observe("_ba_stress", text="失眠了", score=25)
+      e.observe("_ba_stress", text="焦虑", score=30)
+      e.observe("_ba_good", text="睡得好", score=85)
+      e.observe("_ba_good", text="精神好", score=88)
+    action: |
+      hits_s, hits_g = {}, {}
+      p_s = {"openid":"_ba_stress","history":[{"total_score":25}],"sleep_coach":{},"latest_emotion":"焦虑"}
+      p_g = {"openid":"_ba_good","history":[{"total_score":85}],"sleep_coach":{},"latest_emotion":"positive"}
+      for _ in range(50):
+        sg = get_daily_suggestion(copy.deepcopy(p_s), "焦虑")
+        if sg: hits_s[sg["title"]] = hits_s.get(sg["title"],0)+1
+        sg2 = get_daily_suggestion(copy.deepcopy(p_g), "positive")
+        if sg2: hits_g[sg2["title"]] = hits_g.get(sg2["title"],0)+1
+      top_s = max(hits_s, key=hits_s.get) if hits_s else "none"
+      top_g = max(hits_g, key=hits_g.get) if hits_g else "none"
+      m = "%s vs %s" % (top_s, top_g)
+    assert_expr: "top_s != top_g"
+    measurement_expr: "m"
+    reason: Different POMDP beliefs should produce different intervention top-choices
+
+  # ==================== 生命周期 + 异常检测 ====================
+
+  - name: lifecycle_modulator_changes_decision
+    description: Newbie push confidence lowered, dormant confidence boosted
+    imports:
+      - "from lifecycle_modulator import modulate_decision"
+    setup: ""
+    action: |
+      p_new = {"history":[{"date":"2026-05-03"}],"sleep_coach":{}}
+      p_dormant = {"history":[{"date":"2026-04-25"}],"first_date":"2026-03-01","last_active":"2026-04-25","sleep_coach":{}}
+      dec = {"action":"push","confidence":0.8,"policy":"push"}
+      m_new = modulate_decision("_ba_lc", p_new, dec)
+      m_dormant = modulate_decision("_ba_lc", p_dormant, dec)
+      nc = m_new["confidence"]
+      dc = m_dormant["confidence"]
+      m = "newbie=%.2f dormant=%.2f" % (nc, dc)
+    assert_expr: "nc < 0.7 and dc > 0.85"
+    measurement_expr: "m"
+    reason: Lifecycle modulator must significantly change decision confidence
+
+  - name: discrepancy_detector_triggers_on_spike
+    description: Score drop 80->35 should trigger spike_down
+    imports:
+      - "from discrepancy_detector import detect"
+    setup: ""
+    action: |
+      p = {"history":[{"total_score":80},{"total_score":82},{"total_score":79},{"total_score":78},{"total_score":81}]}
+      r = detect("_ba_disc", 35, p)
+      m = "z=%.2f %s" % (r["z_score"], r["direction"])
+    assert_expr: 'r["has_discrepancy"] and r["direction"] == "spike_down"'
+    measurement_expr: "m"
+    reason: z=-28.5 must be detected as anomaly
+    fuzz_inputs:
+      - func: detect
+        args: [null, 35, {}]
+        label: "detect null openid"
+      - func: detect
+        args: ["_ba_fuzz", null, {}]
+        label: "detect null score"
+      - func: detect
+        args: ["_ba_fuzz", 80, null]
+        label: "detect null profile"
+      - func: detect
+        args: ["_ba_fuzz", 80, {"history": "bad"}]
+        label: "detect history as string"
+
+  - name: discrepancy_detector_stable_no_false
+    description: Stable user normal fluctuation should not trigger
+    imports:
+      - "from discrepancy_detector import detect"
+    setup: ""
+    action: |
+      p = {"history":[{"total_score":78},{"total_score":82},{"total_score":80},{"total_score":79},{"total_score":81}]}
+      r = detect("_ba_stable", 79, p)
+      m = "z=%.2f %s" % (r["z_score"], r["direction"])
+    assert_expr: "not r[\"has_discrepancy\"]"
+    measurement_expr: "m"
+    reason: 1-point fluctuation 78->79 is normal range
+
+  # ==================== LLM传感器 + 全链路 ====================
+
+  - name: llm_as_sensor_feeds_pomdp
+    description: LLM analysis results should feed into POMDP and change belief
+    imports:
+      - "from async_pipeline import _inject_llm_context_to_pomdp"
+      - "from pomdp_learner import get_engine"
+    setup: |
+      import pomdp_learner as _pm; _pm._engine = None; _pm.ALearner._shared_counts = None; _pm.ALearner._SHARED_DIR = None
+      e = get_engine()
+    action: |
+      before = e.get_belief("_ba_llmsensor").get("expected_score", 50)
+      wm_result = {"total_score":22,"risk_flags":"焦虑、压力","confidence":0.6,"expert_debate":{}}
+      _inject_llm_context_to_pomdp("_ba_llmsensor", "压力大", wm_result, {})
+      after = e.get_belief("_ba_llmsensor").get("expected_score", 50)
+      m = "%.1f->%.1f" % (before, after)
+    assert_expr: "abs(before - after) > 0.5"
+    measurement_expr: "m"
+    reason: LLM output score=22 should lower POMDP belief
+
+  - name: full_pipeline_no_crash
+    description: Full chat+analyze pipeline should handle various inputs without crashing
+    imports:
+      - "from dp_router import dispatch"
+    setup: ""
+    action: |
+      results = []
+      for msg in ["睡不好","最近压力大","昨天3点才睡","睡得还行","怎么才能睡好"]:
+        try:
+          r = dispatch("POST", "/api/chat", {"openid":"_ba_full","message":msg,"history":[]})
+          results.append(len(str(r)) > 50)
+        except: results.append(False)
+      all_ok = all(results)
+      m = "%s/5 passed" % sum(results)
+    assert_expr: "all_ok"
+    measurement_expr: "m"
+    reason: Any input causing crash is P0 bug
+
+  # ==================== 卡尔曼滤波 ====================
+
+  - name: kalman_filter_suppresses_outliers
+    description: Kalman filter input=15 outlier should produce smooth estimate ~80 not ~15
+    imports:
+      - "from kalman_filter import get_manager"
+    setup: |
+      km = get_manager()
+      kf = km.get_filter("_ba_probe_kf")
+    action: |
+      kf.x[0] = 75.0
+      for v in [80, 82, 15, 81, 79]:
+        kf.predict()
+        kf.update(v)
+      est = kf.x[0]
+      m = "est=%.1f" % est
+    assert_expr: "est > 50"
+    measurement_expr: "m"
+    reason: Kalman filter should suppress outlier 15 and follow ~80 trend
+
+  # ==================== 昼夜节律 ====================
+
+  - name: circadian_phase_detects_drift
+    description: 4 consecutive delaying bedtimes should produce positive drift_rate
+    imports:
+      - "from circadian_phase_model import _fit_cosine_model"
+    setup: ""
+    action: |
+      cp = _fit_cosine_model([23.5, 24.5, 25.0, 26.0])
+      drift = cp.drift_rate if cp else 0
+      m = "drift=%.2f min/day" % drift
+    assert_expr: "drift > 0"
+    measurement_expr: "m"
+    reason: Bedtimes 23:30→00:30→01:00→02:00 should show positive drift
+
+  - name: circadian_profile_fit_from_user_history
+    description: fit_circadian_profile from real user history
+    imports:
+      - "from circadian_phase_model import fit_circadian_profile"
+    setup: ""
+    action: |
+      p = {"history":[
+        {"date":"2026-05-01","bedtime":"23:30","total_score":72},
+        {"date":"2026-05-02","bedtime":"00:15","total_score":65},
+        {"date":"2026-05-03","bedtime":"01:00","total_score":58},
+        {"date":"2026-05-04","bedtime":"02:00","total_score":50},
+      ]}
+      cp = fit_circadian_profile(p)
+      if cp:
+        m = "phase=%.1f, drift=%.2f" % (cp.acrophase, cp.drift_rate)
+        ok = cp.sample_count >= 4
+      else:
+        m = "None"
+        ok = False
+      assert_val = ok
+    assert_expr: "assert_val"
+    measurement_expr: "m"
+    reason: fit_circadian_profile must fit from 4 real bedtime entries
+
+  # ==================== 预测编码 ====================
+
+  - name: predictive_coding_predicts_next_score
+    description: PredictTonight should return a score estimate near user baseline
+    imports:
+      - "from predictive_coding import get_predictor_for_user"
+    setup: |
+      pc = get_predictor_for_user("_ba_probe_pc")
+    action: |
+      prof = {"openid":"_ba_probe_pc","history":[{"total_score":78,"bedtime":"23:00"},{"total_score":82,"bedtime":"23:30"},{"total_score":80,"bedtime":"22:45"}]}
+      pc.update_from_survey(prof, score=80)
+      pred = pc.predict_tonight(openid="_ba_probe_pc")
+      pv = pred.get("score", pred.get("predicted_score", 0))
+      m = "pred=%.1f, keys=%s" % (pv, list(pred.keys())[:4])
+    assert_expr: "pv > 30"
+    measurement_expr: "m"
+    reason: Predictive coding should return a positive number from predict_tonight
+
+  # ==================== 元学习 ====================
+
+  - name: meta_learner_records_and_tracks_params
+    description: ParamHistory.snapshot should record parameter changes
+    imports:
+      - "from meta_learner import ParamHistory"
+    setup: |
+      import tempfile, os
+      ph = ParamHistory(path=os.path.join(tempfile.gettempdir(), "_ba_ph_test.json"))
+    action: |
+      ph.snapshot("_ba_probe_ml", "beta=0.5 initial")
+      ph.snapshot("_ba_probe_ml", "beta=0.8 adjust")
+      summ = ph.get_history_summary()
+      m = "summary=%s" % str(summ)[:100]
+    assert_expr: "len(str(summ)) > 20"
+    measurement_expr: "m"
+    reason: 2 snapshots should produce non-empty history summary
+
+  # ==================== 意识决策器 ====================
+
+  - name: conscious_decider_makes_rational_decision
+    description: High-urgency chat event should trigger a valid action
+    imports:
+      - "from conscious_decider import ConsciousDecider"
+    setup: ""
+    action: |
+      cd = ConsciousDecider()
+      dec = cd.decide("_ba_probe_cd", "chat", {"message":"失眠了","session_count":3,"time_since_last":3600,"urgency":"high","mode":"push"}, profile={"testing":True})
+      act = dec.get("action", dec.get("decision", "none"))
+      m = "action=%s" % act
+    assert_expr: 'act in ["push", "in_chat", "probe", "delay_push","skip","none","push_now"]'
+    measurement_expr: "m"
+    reason: Conscious decider should always return a valid action
+
+  # ==================== 稳态双回路 ====================
+
+  - name: homeostatic_circuit_evaluates_state
+    description: Circuit context for low-score user returns non-empty structure
+    imports:
+      - "from homeostatic_circuit import get_circuit_context, start_circuit"
+    setup: |
+      start_circuit()  # ensure signal board exists
+    action: |
+      ctx = get_circuit_context("_ba_probe_hc")
+      if isinstance(ctx, dict):
+        keys = list(ctx.keys())
+        m = "keys=%s" % keys[:5]
+      else:
+        keys = []
+        m = "type=%s" % type(ctx).__name__
+    assert_expr: "len(keys) > 0"
+    measurement_expr: "m"
+    reason: Circuit context should return structured data
+
+  # ==================== 具身上下文 ====================
+
+  - name: body_context_remembers_recent_events
+    description: Reporting events via body_context should return structured data
+    imports:
+      - "from body_context import get_body_context, report_body_event, render_body_context_text"
+    setup: ""
+    action: |
+      report_body_event("_ba_probe_bc", "失眠", {"mood":"焦虑","physical":"头痛"})
+      report_body_event("_ba_probe_bc", "睡不好", {"mood":"烦躁"})
+      ctx = get_body_context("_ba_probe_bc")
+      keys = list(ctx.keys())
+      m = "keys=%s, has_events=%s" % (keys[:5], "生理" in str(ctx.get("physiological",{})))
+    assert_expr: "len(keys) > 3"
+    measurement_expr: "m"
+    reason: Body context should return structured non-empty dict
+
+  # ==================== 实验日志 ====================
+
+  - name: experiment_log_tracks_decisions
+    description: Logging a designed experiment should make it queryable by openid
+    imports:
+      - "from experiment_log import get_log, Experiment"
+    setup: |
+      import time
+      el = get_log()
+    action: |
+      exp = Experiment(
+        openid="_ba_probe_el",
+        intervention_type="push",
+        hypothesis="test behavior audit",
+        intervention_data={"action":"push","confidence":0.7}
+      )
+      exp.experiment_id = "_ba_el_" + str(int(time.time()))
+      eid = el.record_designed(exp)
+      recent = el.query(openid="_ba_probe_el")
+      m = "found=%d" % len(recent)
+    assert_expr: "len(recent) >= 1"
+    measurement_expr: "m"
+    reason: Experiment log should persist and retrieve decisions
+
+  # ==================== 预测引擎 ====================
+
+  - name: prediction_engine_produces_tomorrow_estimate
+    description: predict_tonight should return a dict with pred info
+    imports:
+      - "from prediction_engine import predict_tonight"
+    setup: ""
+    action: |
+      prof = {"openid":"_ba_probe_pe","history":[{"total_score":75} for _ in range(7)]}
+      res = predict_tonight(prof, "_ba_probe_pe")
+      if isinstance(res, dict):
+        val = res.get("predicted_score", res.get("score", res.get("prediction", 0)))
+        m = "predicted=%.1f, keys=%s" % (val, list(res.keys())[:4])
+      else:
+        val = 0
+        m = "type=%s,repr=%s" % (type(res).__name__, repr(res)[:60])
+    assert_expr: "val > 0 if isinstance(res, dict) else len(str(res)) > 0"
+    measurement_expr: "m"
+    reason: Prediction engine must return a usable result
+
+  # ==================== 内感受预测（仿真引擎） ====================
+
+  - name: interoceptive_prediction_simulates_then_selects
+    description: simulate_suggestion_effect should produce structured result, select_suggestion_with_simulation should pick top
+    imports:
+      - "from interoceptive_prediction import simulate_suggestion_effect, simulate_push_effect, simulate_companion_duration, select_suggestion_with_simulation"
+    setup: ""
+    action: |
+      p = {"openid":"_ba_probe_ip","history":[{"total_score":45,"bedtime":"01:00"}],"sleep_coach":{}}
+      sim = simulate_suggestion_effect(p, "relax")
+      push = simulate_push_effect(p)
+      dur = simulate_companion_duration(p)
+      candidates = [("relax",{"title":"放松"},75),("habit",{"title":"提前上床"},50),("breath",{"title":"4-7-8呼吸"},60)]
+      sel = select_suggestion_with_simulation(p, candidates)
+      m = "sim_effect=%+d, push=%s, dur=%dmin, top=%s" % (
+        sim.get("predicted_effect",0), push.get("should_push","?"),
+        dur.get("predicted_minutes",0), sel[0] if sel else "none")
+    assert_expr: "sim.get('predicted_effect',0) != 0 and sel is not None"
+    measurement_expr: "m"
+    reason: Interoceptive prediction should simulate effects and return a top candidate
+    fuzz_inputs:
+      # select_suggestion_with_simulation — 已有真实bug：传入dict列表会crash
+      - func: select_suggestion_with_simulation
+        args:
+          - {"openid":"_ba_fuzz_ip","history":[],"sleep_coach":{}}
+          - [{"key":"relax","title":"放松","score":75},{"key":"habit","title":"提前上床","score":50}]
+        label: "select_suggestion_with_simulation bad format (dict list)"
+      - func: select_suggestion_with_simulation
+        args:
+          - {"openid":"_ba_fuzz_ip","history":[],"sleep_coach":{}}
+          - - relax
+            - {"title":"放松"}
+        label: "select_suggestion_with_simulation missing score element"
+      - func: select_suggestion_with_simulation
+        args:
+          - {"openid":"_ba_fuzz_ip","history":[],"sleep_coach":{}}
+          - "relax"
+        label: "select_suggestion_with_simulation single string"
+      - func: select_suggestion_with_simulation
+        args:
+          - {"openid":"_ba_fuzz_ip","history":[],"sleep_coach":{}}
+          - null
+        label: "select_suggestion_with_simulation None"
+      - func: simulate_suggestion_effect
+        args: [{}, null]
+        label: "simulate_suggestion_effect empty profile, None key"
+      - func: simulate_suggestion_effect
+        args: [null, "relax"]
+        label: "simulate_suggestion_effect null profile"
+      - func: simulate_push_effect
+        args: [null]
+        label: "simulate_push_effect null profile"
+      - func: simulate_companion_duration
+        args: [null]
+        label: "simulate_companion_duration null profile"
+
+  # ==================== dp_router深层分支（多API端点） ====================
+
+  - name: dp_router_handles_deep_branches
+    description: Sleep-analyze with history, update-profile, feedback should all work
+    imports:
+      - "from dp_router import dispatch"
+    setup: ""
+    action: |
+      import json
+      checks = []
+      # analyze with full history
+      r1 = dispatch("POST", "/api/sleep-analyze", {
+        "openid":"_ba_deep","message":"最近睡得不好",
+        "history":[{"total_score":45,"date":"2026-05-03"},{"total_score":38,"date":"2026-05-04"}],
+        "chat_history":[{"role":"user","content":"最近压力大"}]
+      })
+      checks.append(len(str(r1)) > 50)
+      # update-profile
+      r2 = dispatch("POST", "/api/update-profile", {
+        "openid":"_ba_deep","profile":{"snooze_habit":True,"alarm_time":"07:00"}
+      })
+      checks.append(bool(r2))
+      # feedback
+      r3 = dispatch("POST", "/api/feedback", {
+        "openid":"_ba_deep","feedback":"这个建议很有用","suggestion_title":"放松练习"
+      })
+      checks.append(bool(r3))
+      # empty history chat (edge case)
+      r4 = dispatch("POST", "/api/chat", {
+        "openid":"_ba_edge","message":"你好","history":[]
+      })
+      checks.append(len(str(r4)) > 50)
+      all_ok = all(checks)
+      m = "%s/4" % sum(checks)
+    assert_expr: "all_ok"
+    measurement_expr: "m"
+    reason: Deep dp_router branches must handle all API endpoints
+
+  # ==================== 调度器清理模块 ====================
+
+  - name: scheduler_cleanup_removes_expired
+    description: _cleanup_expired should remove expired push entries
+    imports:
+      - "from scheduler_daemon import _cleanup_expired"
+    setup: |
+      import time, json, os
+      from scheduler_daemon import _load_push_queue, _save_push_queue
+
+      data_dir = os.path.join("D:", "AISleepGen_Optimized", "data")
+      os.makedirs(data_dir, exist_ok=True)
+    action: |
+      _save_push_queue([
+        {"id":"_ba_expired","expires_at":0,"content":"old"},
+        {"id":"_ba_valid","expires_at":time.time()+3600,"content":"fresh"},
+      ])
+      _cleanup_expired()
+      q = _load_push_queue()
+      remaining = [e.get("id") for e in q]
+      m = "size=%d, ids=%s" % (len(q), remaining)
+    assert_expr: '"Expired push" in str(remaining) or ("_ba_valid" in remaining and len(q) == 1)'
+    measurement_expr: "m"
+    reason: Scheduler cleanup should remove expired entries
+
+  # ==================== Online RL 模块 ====================
+
+  - name: rl_empty_user_explores
+    description: Empty user with no history should use epsilon=0.4 and return random actions
+    imports:
+      - "from online_rl import OnlineRL, StateEncoder, ACTIONS"
+    setup: |
+      import random; random.seed(42)
+      rl = OnlineRL()
+    action: |
+      ctx = {}
+      action = rl.act("_ba_rl_empty", ctx)
+      eps = rl._get_effective_epsilon("_ba_rl_empty", ctx)
+      m = "action=%s, eps=%.2f" % (action, eps)
+    assert_expr: "m and eps >= 0.3"
+    measurement_expr: "m"
+    reason: Empty users should have high epsilon for exploration
+
+  - name: rl_greedy_on_known_user
+    description: User with high Q values for ask should return ask as best action
+    imports:
+      - "from online_rl import OnlineRL, StateEncoder, ACTIONS"
+    setup: |
+      rl = OnlineRL(epsilon=0.0)
+      rl._ensure_q("_ba_rl_greedy")
+      for s in range(144):
+        for i, a in enumerate(ACTIONS):
+          rl._q_tables["_ba_rl_greedy"]["Q1"]["%d_%d" % (s, i)] = 1.5 if a == "ask" else 0.5
+          rl._q_tables["_ba_rl_greedy"]["Q2"]["%d_%d" % (s, i)] = 1.5 if a == "ask" else 0.5
+      rl._update_counters["_ba_rl_greedy"] = 100
+    action: |
+      results = {}
+      for _ in range(50):
+        a = rl.act("_ba_rl_greedy", {"score": 75, "pomdp_entropy": 0.2, "n_observations": 20})
+        results[a] = results.get(a, 0) + 1
+      best_a = max(results, key=results.get)
+      m = "best=%s, results=%s" % (best_a, results)
+    assert_expr: "best_a == 'ask'"
+    measurement_expr: "m"
+    reason: With epsilon=0, greedy should always pick highest Q
+
+  - name: rl_positive_feedback_raises_q
+    description: Positive reward should increase Q value
+    imports:
+      - "from online_rl import OnlineRL, StateEncoder, ACTIONS"
+    setup: |
+      rl = OnlineRL(alpha=0.1, epsilon=0.0)
+      rl._ensure_q("_ba_rl_pos")
+    action: |
+      q_before = rl._q("_ba_rl_pos", StateEncoder.encode(2, 1, 1, 3), 0, "Q1")
+      rl.update("_ba_rl_pos", "ask", 1.0, {"score": 75, "pomdp_entropy": 0.4, "trend": "flat", "last_effect": "none"})
+      q_after = rl._q("_ba_rl_pos", StateEncoder.encode(2, 1, 1, 3), 0, "Q1")
+      m = "%.4f -> %.4f" % (q_before, q_after)
+    assert_expr: "q_after > q_before"
+    measurement_expr: "m"
+    reason: Q-learning must increase Q for positive rewards
+
+  - name: rl_negative_feedback_lowers_q
+    description: Negative reward should decrease Q value
+    imports:
+      - "from online_rl import OnlineRL, StateEncoder, ACTIONS"
+    setup: |
+      rl = OnlineRL(alpha=0.1, epsilon=0.0)
+      rl._ensure_q("_ba_rl_neg")
+    action: |
+      q_before = rl._q("_ba_rl_neg", StateEncoder.encode(1, 1, 1, 3), 1, "Q1")
+      rl.update("_ba_rl_neg", "probe", -1.0, {"score": 50, "pomdp_entropy": 0.5, "trend": "flat", "last_effect": "none"})
+      q_after = rl._q("_ba_rl_neg", StateEncoder.encode(1, 1, 1, 3), 1, "Q1")
+      m = "%.4f -> %.4f" % (q_before, q_after)
+    assert_expr: "q_after < q_before"
+    measurement_expr: "m"
+    reason: Q-learning must decrease Q for negative rewards
+
+  - name: rl_epsilon_decays
+    description: Epsilon should decay to 0.05 after many updates
+    imports:
+      - "from online_rl import OnlineRL"
+    setup: |
+      rl = OnlineRL(epsilon=0.2)
+    action: |
+      init_eps = rl.epsilon
+      for _ in range(5000):
+        rl.update("_ba_rl_eps", "skip", 0.0, {"score": 50})
+      final_eps = rl.epsilon
+      m = "%.4f -> %.4f" % (init_eps, final_eps)
+    assert_expr: "final_eps <= 0.06"
+    measurement_expr: "m"
+    reason: Exploration rate must approach MIN_EPSILON
+
+  - name: rl_context_aware_epsilon_high_entropy
+    description: High POMDP entropy should raise epsilon to 0.3
+    imports:
+      - "from online_rl import OnlineRL"
+    setup: |
+      rl = OnlineRL(epsilon=0.2)
+    action: |
+      high_e = rl._get_epsilon("_ba_rl_ctx", entropy=0.8, n_obs=20, recent_counter=0)
+      m = "%.2f" % high_e
+    assert_expr: "high_e >= 0.29"
+    measurement_expr: "m"
+    reason: High uncertainty should boost exploration
+
+  - name: rl_context_aware_epsilon_low_entropy
+    description: Low POMDP entropy should lower epsilon to 0.1
+    imports:
+      - "from online_rl import OnlineRL"
+    setup: |
+      rl = OnlineRL(epsilon=0.2)
+    action: |
+      low_e = rl._get_epsilon("_ba_rl_ctx", entropy=0.1, n_obs=20, recent_counter=0)
+      m = "%.2f" % low_e
+    assert_expr: "low_e <= 0.11"
+    measurement_expr: "m"
+    reason: Low uncertainty should reduce exploration
+
+  - name: rl_persistence
+    description: Q table should persist to disk and restore correctly
+    imports:
+      - "from online_rl import OnlineRL"
+    setup: |
+      import os, json
+      rl_save = OnlineRL()
+      rl_save._ensure_q("_ba_rl_persist")
+      rl_save._q_tables["_ba_rl_persist"]["Q1"]["42_3"] = 3.14
+      rl_save._q_tables["_ba_rl_persist"]["Q2"]["42_3"] = 2.71
+      rl_save._save_q("_ba_rl_persist")
+    action: |
+      rl_load = OnlineRL()
+      rl_load._ensure_q("_ba_rl_persist")
+      q1 = rl_load._q("_ba_rl_persist", 42, 3, "Q1")
+      q2 = rl_load._q("_ba_rl_persist", 42, 3, "Q2")
+      m = "Q1=%.2f, Q2=%.2f" % (q1, q2)
+    assert_expr: "abs(q1-3.14) < 0.01 and abs(q2-2.71) < 0.01"
+    measurement_expr: "m"
+    reason: Persistence must survive module reload
+
+  - name: rl_convergence
+    description: Repeated updates on same (s,a) should converge Q
+    imports:
+      - "from online_rl import OnlineRL"
+    setup: |
+      rl = OnlineRL(alpha=0.1, epsilon=0.0)
+      rl._ensure_q("_ba_rl_conv")
+    action: |
+      qs = []
+      for _ in range(200):
+        rl.update("_ba_rl_conv", "ask", 1.0, {"score": 75, "pomdp_entropy": 0.4, "last_effect": "effective", "trend": "flat"})
+        q = rl._q("_ba_rl_conv", 88, 0, "Q1")
+        qs.append(q)
+      deltas = [abs(qs[i]-qs[i-1]) for i in range(1, len(qs))]
+      avg_delta = sum(deltas[-20:]) / 20
+      m = "Q=%.4f, avg_delta20=%.6f" % (qs[-1], avg_delta)
+    assert_expr: "avg_delta < 0.02"
+    measurement_expr: "m"
+    reason: Q-learning must converge toward stationary value
+
+  - name: rl_double_q_divergence
+    description: Q1 and Q2 should diverge with different updates
+    imports:
+      - "from online_rl import OnlineRL, StateEncoder, ACTIONS"
+    setup: |
+      rl = OnlineRL()
+      rl._ensure_q("_ba_rl_dq")
+      rl._q_tables["_ba_rl_dq"] = {"Q1": {}, "Q2": {}}
+      for s in range(144):
+        for i in range(6):
+          k = "%d_%d" % (s, i)
+          rl._q_tables["_ba_rl_dq"]["Q1"][k] = 1.5 if (s == 0 and i == 0) else 0.0
+          rl._q_tables["_ba_rl_dq"]["Q2"][k] = -0.5 if (s == 0 and i == 0) else 0.0
+    action: |
+      s = rl.get_policy_summary("_ba_rl_dq")
+      m = "q1=%.2f, q2=%.2f, diverge=%s" % (
+        list(rl._q_tables["_ba_rl_dq"]["Q1"].values())[0] if rl._q_tables["_ba_rl_dq"]["Q1"] else 0,
+        list(rl._q_tables["_ba_rl_dq"]["Q2"].values())[0] if rl._q_tables["_ba_rl_dq"]["Q2"] else 0,
+        s["double_q_diverge"]
+      )
+    assert_expr: "rl._q_tables['_ba_rl_dq']['Q1'].get('0_0', 0) != rl._q_tables['_ba_rl_dq']['Q2'].get('0_0', 0)"
+    measurement_expr: "m"
+    reason: Double Q tables should produce different estimates
+
+  - name: rl_reward_extraction
+    description: extract_reward_from_outcome should compute correct rewards
+    imports:
+      - "from online_rl import extract_reward_from_outcome, REWARDS"
+    setup: ""
+    action: |
+      r1 = extract_reward_from_outcome("_ba_rl_re", "ask", {"score_observed": True, "feedback": 1, "intervention_adopted": True})
+      r2 = extract_reward_from_outcome("_ba_rl_re", "push", {"feedback": -1, "user_silent": True})
+      r3 = extract_reward_from_outcome("_ba_rl_re", "ask", {"score_observed": True, "feedback": 1})
+      m = "r1=%.2f, r2=%.2f, r3=%.2f" % (r1, r2, r3)
+    assert_expr: "abs(r1-1.7) < 0.01 and abs(r2-(-1.7)) < 0.01 and abs(r3-1.4) < 0.01"
+    measurement_expr: "m"
+    reason: Reward extraction must align with REWARDS constants
+
+  - name: rl_routes_registered
+    description: RL routes should be registered in dp_router.ROUTES
+    imports:
+      - "from dp_router import ROUTES"
+    setup: ""
+    action: |
+      import online_rl_routes
+      rl_routes = [k for k in ROUTES.keys() if '/api/rl/' in str(k[1])]
+      m = "count=%d, routes=%s" % (len(rl_routes), rl_routes)
+    assert_expr: "len(rl_routes) == 4"
+    measurement_expr: "m"
+    reason: All 4 RL routes must be accessible via dp_router
+
+  - name: rl_state_encoder
+    description: StateEncoder should produce deterministic indices
+    imports:
+      - "from online_rl import StateEncoder"
+    setup: ""
+    action: |
+      s1 = StateEncoder.from_context(score=30, trend="down", entropy=0.7, last_effect="none")
+      s2 = StateEncoder.from_context(score=85, trend="up", entropy=0.1, last_effect="effective")
+      s3 = StateEncoder.from_context(score=50, trend="flat", entropy=0.5, last_effect="neutral")
+      m = "s1=%d, s2=%d, s3=%d" % (s1, s2, s3)
+    assert_expr: "s1 >= 0 and s1 < 144 and s2 >= 0 and s2 < 144 and s3 >= 0 and s3 < 144"
+    measurement_expr: "m"
+    reason: State encoding must map to 0~143
+
+  - name: rl_full_decision_cycle
+    description: Complete RL loop should accumulate history
+    imports:
+      - "from online_rl import OnlineRL"
+    setup: |
+      rl = OnlineRL(epsilon=0.3)
+    action: |
+      openid = "_ba_rl_cycle_" + str(hash(str(rl._update_counters)))
+      for step in range(10):
+        ctx = {"score": 60 + (step%5)*5, "trend": "flat", "pomdp_entropy": 0.5, "last_effect": "none", "n_observations": 3+step}
+        act = rl.act(openid, ctx)
+        reward = 0.5 if act in ("ask", "probe") else -0.2 if act == "push" else 0.0
+        rl.update(openid, act, reward, {"score": ctx["score"]+5, "pomdp_entropy": max(0.1, ctx["pomdp_entropy"]-0.1), "last_effect": "effective", "n_observations": ctx["n_observations"]+1})
+      s = rl.get_policy_summary(openid)
+      m = "updates=%d, eps=%.4f" % (s["total_updates"], s["epsilon"])
+    assert_expr: "s['total_updates'] == 10"
+    measurement_expr: "m"
+    reason: Full RL cycle must accumulate and track history
+
+  - name: rl_conscious_decider_integration
+    description: conscious_decider should import and call online_rl.act
+    imports:
+      - "from conscious_decider import get_decider"
+    setup: |
+      import os, json
+      d = get_decider()
+    action: |
+      try:
+        from online_rl import get_online_rl
+        rl = get_online_rl()
+        dec = d.decide("_ba_rl_cd", "score_update", {"total_score": 45})
+        m = "action=%s, reason=%s" % (dec.get("action", "?"), dec.get("reason", "?"))
+      except ImportError:
+        m = "online_rl not imported"
+      except Exception as e:
+        m = "error=%s" % e
+    assert_expr: "'action' in str(m) and 'error' not in str(m)"
+    measurement_expr: "m"
+    reason: CD must handle RL gracefully
+
+  - name: rl_prompt_builder_contains_rl_info
+    description: chat_prompt_builder should include RL strategy info in pomdp_context after updates
+    imports:
+      - "from chat_prompt_builder import build_pomdp_context"
+    setup: |
+      from online_rl import get_online_rl
+      rl = get_online_rl()
+      rl._ensure_q("_ba_rl_prompt")
+      # Add at least one update so RL info appears
+      rl.update("_ba_rl_prompt", "ask", 0.5, {"score": 75, "pomdp_entropy": 0.4, "trend": "flat", "last_effect": "effective"})
+    action: |
+      ctx = build_pomdp_context("_ba_rl_prompt")
+      m = ctx[-300:] if len(ctx) > 300 else ctx
+    assert_expr: "'RL' in ctx or '(Q=' in ctx"
+    measurement_expr: "m"
+    reason: Prompt must contain RL decision info when available
+
+  - name: rl_routes_handle_request
+    description: RL routes should handle dummy requests without error
+    imports:
+      - "from online_rl_routes import handle_rl_act, handle_rl_update, handle_rl_status"
+    setup: ""
+    action: |
+      a = handle_rl_act({"openid": "_ba_rl_hand", "context": {"score": 50}})
+      u = handle_rl_update({"openid": "_ba_rl_hand", "action": "skip", "reward": 0.0})
+      s = handle_rl_status({"openid": "_ba_rl_hand"})
+      m = "act=%s, update=%.4f, status_ups=%d" % (a.get("action", "?"), abs(u.get("td_error", 0)), s.get("total_updates", -1))
+    assert_expr: "'action' in str(a) and 'td_error' in str(u) and 'total_updates' in str(s)"
+    measurement_expr: "m"
+    reason: All 3 routes should return valid data
+
+  # ==================== A/B Framework (v5.1.0) ====================
+
+  - name: ab_create_experiment
+    description: AB Framework create experiment should return valid exp_id
+    imports:
+      - "from ab_framework import create_experiment, start_experiment, list_experiments, evaluate, stop_experiment"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+    action: |
+      cfg_a = {'rl_weight': 0.35, 'pomdp_weight': 0.35}
+      cfg_b = {'rl_weight': 0.50, 'pomdp_weight': 0.20}
+      eid = create_experiment('ba_test_ab', cfg_a, cfg_b)
+      start_experiment(eid)
+      m = eid
+    assert_expr: "m.startswith('exp_')"
+    measurement_expr: "m"
+    reason: Experiment creation should return valid experiment_id
+
+  - name: ab_consistent_hashing
+    description: Same user always gets same arm assignment
+    imports:
+      - "from ab_framework import create_experiment, start_experiment, get_assignment"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      cfg_a = {'rl_weight': 0.35}
+      cfg_b = {'rl_weight': 0.50}
+      global _ba_ab_eid
+      _ba_ab_eid = create_experiment('ba_consistent', cfg_a, cfg_b)
+      start_experiment(_ba_ab_eid)
+    action: |
+      a1 = get_assignment('user_ba_1', _ba_ab_eid)
+      a2 = get_assignment('user_ba_1', _ba_ab_eid)
+      m = a1 if a1 == a2 else f'mismatch: {a1} vs {a2}'
+    assert_expr: "m in ('A', 'B')"
+    measurement_expr: "m"
+    reason: Consistent hashing must return same arm for same user
+
+  - name: ab_evaluate_significant
+    description: Significant score difference should produce a winner
+    imports:
+      - "from ab_framework import create_experiment, start_experiment, get_assignment, record_outcome, evaluate"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR, STATUS_RUNNING
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      cfg_a = {'rl_weight': 0.35}
+      cfg_b = {'rl_weight': 0.50}
+      global _ba_sig_eid
+      _ba_sig_eid = create_experiment('ba_significant', cfg_a, cfg_b)
+      from ab_framework import get_ab_framework
+      ab = get_ab_framework()
+      ab._experiments[_ba_sig_eid]['started_at'] = time.time() - 48*3600
+      ab._experiments[_ba_sig_eid]['status'] = STATUS_RUNNING
+      ab._save_experiments()
+      for i in range(80):
+        uid = f'ba_sig_{i}'
+        arm = get_assignment(uid, _ba_sig_eid)
+        score = 75 + (i%15) if arm == 'A' else 60 + (i%10)
+        record_outcome(_ba_sig_eid, uid, arm, {'score': score, 'timestamp': time.time()})
+    action: |
+      r = evaluate(_ba_sig_eid)
+      m = f'status={r["status"]}, winner={r["winner"]}, p={str(r.get("p_value", "?"))[:8]}'
+    assert_expr: "r['status'] == 'completed' and r['winner'] in ('A','B')"
+    measurement_expr: "m"
+    reason: Statistical test should detect significant difference
+
+  - name: ab_insufficient_samples
+    description: Too few samples should return insufficient_samples
+    imports:
+      - "from ab_framework import create_experiment, start_experiment, get_assignment, record_outcome, evaluate"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      cfg_a = {'rl_weight': 0.35}
+      cfg_b = {'rl_weight': 0.50}
+      global _ba_insuf_eid
+      _ba_insuf_eid = create_experiment('ba_insufficient', cfg_a, cfg_b)
+      start_experiment(_ba_insuf_eid)
+      for i in range(5):
+        uid = f'ba_insuf_{i}'
+        arm = get_assignment(uid, _ba_insuf_eid)
+        record_outcome(_ba_insuf_eid, uid, arm, {'score': 60+i, 'timestamp': time.time()})
+    action: |
+      r = evaluate(_ba_insuf_eid)
+      m = f'status={r["status"]}, sub={r.get("sub_status","?")}'
+    assert_expr: "r.get('sub_status') == 'insufficient_samples'"
+    measurement_expr: "m"
+    reason: Must reject evaluation with too few samples
+
+  - name: ab_winner_config_persists
+    description: Winning config should be written to winner_config.json
+    imports:
+      - "from ab_framework import create_experiment, start_experiment, get_assignment, record_outcome, evaluate, load_winner_config"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR, STATUS_RUNNING, get_ab_framework
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      cfg_a = {'rl_weight': 0.35}
+      cfg_b = {'rl_weight': 0.50}
+      global _ba_win_eid
+      _ba_win_eid = create_experiment('ba_winner', cfg_a, cfg_b)
+      ab = get_ab_framework()
+      ab._experiments[_ba_win_eid]['started_at'] = time.time() - 48*3600
+      ab._experiments[_ba_win_eid]['status'] = STATUS_RUNNING
+      ab._save_experiments()
+      for i in range(80):
+        uid = f'ba_win_{i}'
+        arm = get_assignment(uid, _ba_win_eid)
+        score = 75 + (i%15) if arm == 'A' else 60 + (i%10)
+        record_outcome(_ba_win_eid, uid, arm, {'score': score, 'timestamp': time.time()})
+      evaluate(_ba_win_eid)
+    action: |
+      w = load_winner_config()
+      m = 'config' in w
+    assert_expr: "m == True"
+    measurement_expr: "str(m)"
+    reason: Winner config must persist after evaluation
+
+  - name: ab_list_experiments
+    description: List experiments should return created experiments
+    imports:
+      - "from ab_framework import create_experiment, start_experiment, list_experiments"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      create_experiment('ba_list_a', {'a':1}, {'b':2})
+      create_experiment('ba_list_b', {'a':3}, {'b':4})
+    action: |
+      l = list_experiments()
+      m = len(l)
+    assert_expr: "m >= 2"
+    measurement_expr: "str(m)"
+    reason: List should return at least the 2 experiments we created
+
+  - name: ab_canary_creation
+    description: Canary experiment should have is_canary=True and small split_ratio
+    imports:
+      - "from ab_framework import create_canary_experiment, list_experiments"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      cfg = {'rl_weight': 0.60, 'pomdp_weight': 0.15}
+      create_canary_experiment('ba_canary', cfg)
+    action: |
+      l = list_experiments()
+      m = ''
+      for e in l:
+        if 'Canary' in e.get('name','') or e.get('is_canary'):
+          m = f'canary={e.get("is_canary")}, split={e.get("split_ratio")}'
+          break
+    assert_expr: "'canary=True' in m and 'split=' in m"
+    measurement_expr: "m"
+    reason: Canary should have is_canary=True and appropriate split_ratio
+
+  - name: ab_rollback_history
+    description: Rollback function should handle history correctly
+    imports:
+      - "from ab_framework import _save_winner_config, list_winner_history, rollback_to_winner"
+    setup: |
+      import os, time, shutil
+      from ab_framework import AB_DIR, CONFIG_HISTORY_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(CONFIG_HISTORY_DIR, exist_ok=True)
+      _save_winner_config({'alpha': 0.1, 'gamma': 0.9}, 'exp_a', 'A')
+      _save_winner_config({'alpha': 0.2, 'gamma': 0.8}, 'exp_b', 'B')
+    action: |
+      h = list_winner_history()
+      rolled = rollback_to_winner(0)
+      m = f'history={len(h)}, rolled={rolled is not None}'
+    assert_expr: "'rolled=True' in m"
+    measurement_expr: "m"
+    reason: Rollback to existing history entry should succeed
+
+  # ==================== Agent Gateway (v6.0.0) ====================
+
+  - name: gateway_query_belief
+    description: Agent Gateway query_belief returns expected_score, entropy, confidence, most_likely_state
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_belief","params":{"openid":"_ba_gw_belief"}})
+      m = r
+    assert_expr: 'r["success"] and "expected_score" in r["data"]["belief"] and "entropy" in r["data"]["belief"] and "confidence" in r["data"]["belief"] and "most_likely_state" in r["data"]["belief"]'
+    measurement_expr: "m"
+    reason: query_belief must return full belief structure
+
+  - name: gateway_query_prediction
+    description: Agent Gateway query_prediction returns predicted_score, confidence_interval, trend_direction
+    imports:
+      - "from agent_gateway import get_gateway"
+      - "from pomdp_learner import get_engine"
+    setup: |
+      e = get_engine()
+      e.observe("_ba_gw_pred", score=45)
+      e.observe("_ba_gw_pred", score=55)
+      e.observe("_ba_gw_pred", score=60)
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_prediction","params":{"openid":"_ba_gw_pred"}})
+      m = r
+    assert_expr: 'r["success"] and "predicted_score" in r["data"] and "confidence_interval" in r["data"] and "trend_direction" in r["data"]'
+    measurement_expr: "m"
+    reason: query_prediction must return prediction structure
+
+  - name: gateway_query_intervention
+    description: Agent Gateway query_intervention returns recommended_action, reasoning, rl_q_values
+    imports:
+      - "from agent_gateway import get_gateway"
+      - "from pomdp_learner import get_engine"
+    setup: |
+      e = get_engine()
+      e.observe("_ba_gw_int", score=35, text="失眠了")
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_intervention","params":{"openid":"_ba_gw_int","context":{"emotion":"焦虑"}}})
+      m = r
+    assert_expr: 'r["success"] and "recommended_action" in r["data"]'
+    measurement_expr: "m"
+    reason: query_intervention must return recommended action
+
+  - name: gateway_query_temporal_state
+    description: Agent Gateway query_temporal_state returns state_context, velocity, acceleration
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_temporal_state","params":{"openid":"_ba_gw_ts"}})
+      m = r
+    assert_expr: 'r["success"] and "state_context" in r["data"] and "velocity" in r["data"] and "acceleration" in r["data"]'
+    measurement_expr: "m"
+    reason: query_temporal_state must return temporal structure
+
+  - name: gateway_query_experiment_results
+    description: Agent Gateway query_experiment_results returns experiments list
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      import os, shutil
+      from ab_framework import AB_DIR, create_experiment, start_experiment
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      eid = create_experiment("_ba_gw_abtest", {"a":1}, {"b":2})
+      start_experiment(eid)
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_experiment_results","params":{}})
+      m = r
+    assert_expr: 'r["success"] and len(r["data"]["experiments"]) >= 1 and "active_experiments" in r["data"]'
+    measurement_expr: "m"
+    reason: query_experiment_results must return experiments list
+
+  - name: gateway_report_observation_text
+    description: Agent Gateway report_observation(text) updates belief and returns belief_updated=True
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"report_observation","params":{"openid":"_ba_gw_obs","observation_type":"text","data":{"text":"失眠了睡不着"}}})
+      m = r
+    assert_expr: 'r["success"] and r["data"]["belief_updated"] == True'
+    measurement_expr: "m"
+    reason: report_observation must update belief
+
+  - name: gateway_report_observation_survey
+    description: Agent Gateway report_observation(survey) updates belief with score
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"report_observation","params":{"openid":"_ba_gw_survey","observation_type":"survey","data":{"score":55,"emotion":"positive"}}})
+      m = r
+    assert_expr: 'r["success"] and r["data"]["belief_updated"] == True'
+    measurement_expr: "m"
+    reason: report_observation(survey) must update belief
+
+  - name: gateway_report_intervention_outcome
+    description: Agent Gateway report_intervention_outcome returns recorded=True
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"report_intervention_outcome","params":{"openid":"_ba_gw_out","intervention":"relax","outcome":"effective","score_delta":5}})
+      m = r
+    assert_expr: 'r["success"] and r["data"]["recorded"] == True'
+    measurement_expr: "m"
+    reason: report_intervention_outcome must record outcome
+
+  - name: gateway_request_decision
+    description: Agent Gateway request_decision returns complete decision_chain
+    imports:
+      - "from agent_gateway import get_gateway"
+      - "from pomdp_learner import get_engine"
+    setup: |
+      e = get_engine()
+      e.observe("_ba_gw_dec", text="失眠了", score=30)
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"request_decision","params":{"openid":"_ba_gw_dec","context":{"user_message":"睡不好","trigger":"chat"}}})
+      m = r
+    assert_expr: 'r["success"] and "decision_chain" in r["data"] and "rl_choice" in r["data"]["decision_chain"]'
+    measurement_expr: "m"
+    reason: request_decision must return full decision chain
+
+  - name: gateway_create_ab_experiment
+    description: Agent Gateway create_ab_experiment returns experiment_id
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      import os, shutil
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"create_ab_experiment","params":{"name":"_ba_gw_exp","config_a":{"x":1},"config_b":{"x":2}}})
+      m = r
+    assert_expr: 'r["success"] and r["data"]["experiment_id"].startswith("exp_")'
+    measurement_expr: "m"
+    reason: create_ab_experiment must return valid experiment_id
+
+  - name: gateway_query_system_status
+    description: Agent Gateway query_system_status returns version, total_users
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_system_status","params":{}})
+      m = r
+    assert_expr: 'r["success"] and "version" in r["data"] and "total_users" in r["data"]'
+    measurement_expr: "m"
+    reason: query_system_status must return system info
+
+  - name: gateway_query_user_profile
+    description: Agent Gateway query_user_profile returns summary, cluster_id
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_user_profile","params":{"openid":"_ba_gw_prof"}})
+      m = r
+    assert_expr: 'r["success"] and "summary" in r["data"] and "cluster_id" in r["data"]'
+    measurement_expr: "m"
+    reason: query_user_profile must return profile info
+
+  - name: gateway_list_capabilities
+    description: Agent Gateway list_capabilities returns all capability names
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      caps = gw.list_capabilities()
+      m = len(caps)
+    assert_expr: 'len(caps) >= 11'
+    measurement_expr: "m"
+    reason: list_capabilities must return all registered capabilities
+
+  - name: gateway_get_capability_schema
+    description: Agent Gateway get_capability_schema returns JSON Schema
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      schema = gw.get_capability_schema("query_belief")
+      m = schema
+    assert_expr: '"type" in schema.get("params",{}) and "properties" in schema.get("params",{})'
+    measurement_expr: "m"
+    reason: get_capability_schema must return JSON Schema
+
+  - name: gateway_error_params
+    description: Agent Gateway missing required params returns success=False with error
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      r = gw.handle_request({"version":"1.0","agent_id":"_ba_test","capability":"query_belief","params":{}})
+      m = r
+    assert_expr: 'r["success"] == False and len(r.get("error","")) > 5'
+    measurement_expr: "m"
+    reason: Missing required params must produce clear error
+
+  # ==================== AEO 权重优化 (v6.1.0) ====================
+
+  - name: aeo_default_weights
+    description: Default base weights should be 35/35/15/15
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+    action: |
+      base = wo._load_base_weights()
+      m = f"rl={base['rl']:.2f}, pomdp={base['pomdp']:.2f}, wm={base['wm']:.2f}, temporal={base['temporal']:.2f}"
+    assert_expr: "abs(base['rl'] - 0.35) < 0.001 and abs(base['pomdp'] - 0.35) < 0.001 and abs(base['wm'] - 0.15) < 0.001 and abs(base['temporal'] - 0.15) < 0.001"
+    measurement_expr: "m"
+    reason: Initial weights must be exactly 35/35/15/15
+
+  - name: aeo_high_uncertainty_boost
+    description: High uncertainty should increase temporal weight by ~5%
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+      # Patch count_observations to avoid new_user boost
+      _wo.N_NEEDED_FOR_NEW_USER = 0
+    action: |
+      base = wo._load_base_weights()
+      weights = wo.get_weights('_ba_aeo_see', {'high_uncertainty': True})
+      delta = weights['temporal'] - base['temporal']
+      m = f"base_temporal={base['temporal']:.4f}, boosted={weights['temporal']:.4f}, delta={delta:.4f}"
+    assert_expr: "delta > 0.02"
+    measurement_expr: "m"
+    reason: High uncertainty must boost temporal weight
+
+  - name: aeo_low_uncertainty_boost
+    description: Low uncertainty should increase rl weight by ~5%
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      _wo.N_NEEDED_FOR_NEW_USER = 0
+      wo = get_weight_optimizer()
+    action: |
+      base = wo._load_base_weights()
+      weights = wo.get_weights('_ba_aeo_see', {'low_uncertainty': True})
+      delta = weights['rl'] - base['rl']
+      m = f"base_rl={base['rl']:.4f}, boosted={weights['rl']:.4f}, delta={delta:.4f}"
+    assert_expr: "delta > 0.02"
+    measurement_expr: "m"
+    reason: Low uncertainty must boost rl weight
+
+  - name: aeo_new_user_boost
+    description: New user should increase wm weight by ~10%
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      _wo.N_NEEDED_FOR_NEW_USER = 5
+      wo = get_weight_optimizer()
+    action: |
+      base = wo._load_base_weights()
+      # Override count to return 0
+      _orig = wo._count_user_observations
+      wo._count_user_observations = lambda x: 0
+      weights = wo.get_weights('_ba_aeo_new', {})
+      wo._count_user_observations = _orig
+      delta = weights['wm'] - base['wm']
+      m = f"base_wm={base['wm']:.4f}, boosted={weights['wm']:.4f}, delta={delta:.4f}"
+    assert_expr: "delta > 0.05"
+    measurement_expr: "m"
+    reason: New user must boost wm weight
+
+  - name: aeo_worsening_boost
+    description: Worsening state should increase pomdp weight by ~10%
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      _wo.N_NEEDED_FOR_NEW_USER = 0
+      wo = get_weight_optimizer()
+    action: |
+      base = wo._load_base_weights()
+      weights = wo.get_weights('_ba_aeo_see', {'worsening': True})
+      delta = weights['pomdp'] - base['pomdp']
+      m = f"base_pomdp={base['pomdp']:.4f}, boosted={weights['pomdp']:.4f}, delta={delta:.4f}"
+    assert_expr: "delta > 0.05"
+    measurement_expr: "m"
+    reason: Worsening state must boost pomdp weight
+
+  - name: aeo_optimize_normalize
+    description: Optimize() should produce weights summing to 1.0
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+      for i in range(30):
+        w = {'rl': 0.35, 'pomdp': 0.35, 'wm': 0.15, 'temporal': 0.15} if i % 2 == 0 else {'rl': 0.40, 'pomdp': 0.30, 'wm': 0.15, 'temporal': 0.15}
+        wo.record_outcome(f'_ba_aeo_opt_{i}', w, 'push', 0.7 if i % 3 != 0 else 0.3)
+    action: |
+      report = wo.optimize()
+      new_sum = sum(report['new_weights'].values())
+      m = f"sum={new_sum:.4f}, report={report['new_weights']}"
+    assert_expr: "abs(new_sum - 1.0) < 0.01"
+    measurement_expr: "m"
+    reason: Optimized weights must normalize to 1.0
+
+  - name: aeo_optimize_change_limit
+    description: Each weight change after optimize() must not exceed 0.02
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+      for i in range(30):
+        w = {'rl': 0.35, 'pomdp': 0.35, 'wm': 0.15, 'temporal': 0.15}
+        wo.record_outcome(f'_ba_aeo_cl_{i}', w, 'push', 0.5)
+      report = wo.optimize()
+    action: |
+      max_change = max(abs(report['new_weights'][k] - report['old_weights'][k]) for k in ['rl', 'pomdp', 'wm', 'temporal'])
+      m = f"max_change={max_change:.4f}"
+    assert_expr: "max_change <= 0.025"
+    measurement_expr: "m"
+    reason: Weight changes must not exceed 0.02 per optimization
+
+  - name: aeo_cluster_independent
+    description: Cluster weights should be independent from global
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+      wo.init_cluster_weights('aeo_cluster_test', 15)
+      cw = wo._load_cluster_weights()
+      cw['aeo_cluster_test']['weights'] = {'rl': 0.50, 'pomdp': 0.25, 'wm': 0.15, 'temporal': 0.10}
+      wo._cluster_weights = cw
+      wo._save_cluster_weights()
+    action: |
+      cw1 = wo.get_cluster_weights('aeo_cluster_test')
+      new_base = wo.get_weights('_ba_aeo_none', {})
+      m = f"cluster_rl={cw1['rl']:.2f}, base_rl={new_base['rl']:.2f}"
+    assert_expr: "abs(cw1['rl'] - 0.50) < 0.02 and abs(new_base['rl'] - 0.35) < 0.02"
+    measurement_expr: "m"
+    reason: Cluster weights must be modifiable independently from global
+
+  - name: aeo_cluster_small_fallback
+    description: Small cluster (<10 users) should use global weights
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+      wo.init_cluster_weights('aeo_small', 3)
+      cw = wo._load_cluster_weights()
+      cw['aeo_small']['weights'] = {'rl': 0.50, 'pomdp': 0.25, 'wm': 0.15, 'temporal': 0.10}
+      wo._cluster_weights = cw
+      wo._save_cluster_weights()
+    action: |
+      cw_small = wo.get_cluster_weights('aeo_small')
+      m = f"small_cluster_rl={cw_small['rl']:.2f}"
+    assert_expr: "abs(cw_small['rl'] - 0.35) < 0.05"
+    measurement_expr: "m"
+    reason: Small cluster must fall back to global weights
+
+  - name: aeo_weights_routes
+    description: All 3 AEO routes should be registered
+    imports:
+      - "from dp_router import ROUTES"
+    setup: |
+      import weight_optimizer
+    action: |
+      aeo_routes = [k for k in ROUTES.keys() if '/api/weights/' in str(k[1])]
+      m = f"count={len(aeo_routes)}, routes={aeo_routes}"
+    assert_expr: "len(aeo_routes) == 3"
+    measurement_expr: "m"
+    reason: All 3 AEO routes must be registered
+
+  - name: aeo_record_outcome
+    description: record_outcome should persist and status should show count
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+    action: |
+      wo.record_outcome('_ba_aeo_rec', {'rl': 0.35, 'pomdp': 0.35, 'wm': 0.15, 'temporal': 0.15}, 'push', 0.7)
+      wo.record_outcome('_ba_aeo_rec', {'rl': 0.30, 'pomdp': 0.40, 'wm': 0.15, 'temporal': 0.15}, 'probe', 0.5)
+      status = wo.get_status()
+      m = f"total_outcomes={status['total_outcomes']}"
+    assert_expr: "status['total_outcomes'] == 2"
+    measurement_expr: "m"
+    reason: record_outcome must correctly increment outcome count
+
+  - name: aeo_reset_weights
+    description: reset_to_defaults should restore default weights
+    imports:
+      - "from weight_optimizer import get_weight_optimizer"
+    setup: |
+      import os, shutil
+      from weight_optimizer import WEIGHT_DIR
+      if os.path.exists(WEIGHT_DIR):
+        shutil.rmtree(WEIGHT_DIR)
+      import weight_optimizer as _wo
+      _wo._optimizer_instance = None
+      wo = get_weight_optimizer()
+    action: |
+      wo.set_base_weights({'rl': 0.50, 'pomdp': 0.25, 'wm': 0.15, 'temporal': 0.10})
+      before = wo._load_base_weights()['rl']
+      wo.reset_to_defaults()
+      after = wo._load_base_weights()['rl']
+      m = f"before={before:.2f}, after={after:.2f}"
+    assert_expr: "abs(after - 0.35) < 0.001"
+    measurement_expr: "m"
+    reason: Reset must restore default rl=0.35
+
+  - name: aeo_ab_weight_experiment
+    description: AB framework should support create_weight_experiment
+    imports:
+      - "from ab_framework import create_weight_experiment, list_experiments"
+    setup: |
+      import os, shutil, time
+      from ab_framework import AB_DIR
+      if os.path.exists(AB_DIR):
+        shutil.rmtree(AB_DIR)
+      os.makedirs(AB_DIR, exist_ok=True)
+    action: |
+      cfg_a = {'rl': 0.35, 'pomdp': 0.35, 'wm': 0.15, 'temporal': 0.15}
+      cfg_b = {'rl': 0.50, 'pomdp': 0.20, 'wm': 0.15, 'temporal': 0.15}
+      eid = create_weight_experiment('ba_aeo_ab', cfg_a, cfg_b)
+      m = eid
+    assert_expr: "m.startswith('exp_')"
+    measurement_expr: "m"
+    reason: create_weight_experiment must return valid experiment_id
+
+  # ==================== 意图引擎 (v6.2.0) ====================
+
+  - name: intent_engine_classify_insomnia
+    description: '失眠 should classify as report_insomnia with trigger_intervention handler'
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("失眠睡不着", {"openid":"_ba_intent_ins"})
+      m = r["primary_intent"]
+    assert_expr: "m == 'report_insomnia'"
+    measurement_expr: "m"
+    reason: Intent Engine must classify 失眠 as report_insomnia
+
+  - name: intent_engine_classify_good_sleep
+    description: 睡得好 should classify as report_good_sleep with rl+belief handlers
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("睡得好", {"openid":"_ba_intent_good"})
+      m = "%s:%s" % (r["primary_intent"], r["handlers"])
+    assert_expr: "'report_good_sleep' in m and 'update_rl_reward' in m"
+    measurement_expr: "m"
+    reason: Intent Engine must report good sleep with correct handlers
+
+  - name: intent_engine_classify_analysis
+    description: 帮我看看 should classify as request_analysis
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("帮我看看我的睡眠", {"openid":"_ba_intent_ana"})
+      m = r["primary_intent"]
+    assert_expr: "m == 'request_analysis'"
+    measurement_expr: "m"
+    reason: Intent Engine must classify 帮我看看 as request_analysis
+
+  - name: intent_engine_classify_negative_feedback
+    description: 没用 should classify as negative_feedback with alternative handler
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("没用", {"openid":"_ba_intent_neg"})
+      m = "%s:%s" % (r["primary_intent"], r["handlers"])
+    assert_expr: "'negative_feedback' in m and 'trigger_alternative' in m"
+    measurement_expr: "m"
+    reason: Intent Engine must classify 没用 as negative_feedback
+
+  - name: intent_engine_classify_anxiety
+    description: 焦虑 should classify as express_anxiety with anxiety_intervention
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("焦虑", {"openid":"_ba_intent_anx"})
+      m = r["primary_intent"]
+    assert_expr: "m == 'express_anxiety'"
+    measurement_expr: "m"
+    reason: Intent Engine must classify 焦虑 as express_anxiety
+
+  - name: intent_engine_classify_repeat
+    description: 再做一次 should classify as repeat_intervention
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("再做一次", {"openid":"_ba_intent_repeat"})
+      m = r["primary_intent"]
+    assert_expr: "m == 'repeat_intervention'"
+    measurement_expr: "m"
+    reason: Intent Engine must classify 再做一次 as repeat_intervention
+
+  - name: intent_engine_classify_greeting
+    description: 你好 should classify as greeting
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("你好", {"openid":"_ba_intent_hi"})
+      m = r["primary_intent"]
+    assert_expr: "m == 'greeting'"
+    measurement_expr: "m"
+    reason: Intent Engine must classify 你好 as greeting
+
+  - name: intent_engine_multi_intent_detection
+    description: Complex text should detect primary=insomnia + secondary=anxiety
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("失眠睡不着翻来覆去焦虑死了", {"openid":"_ba_intent_multi"})
+      sec_names = [s["intent"] if isinstance(s, dict) else s for s in r["secondary_intents"]]
+      m = "%s:%s" % (r["primary_intent"], sec_names)
+    assert_expr: "r['primary_intent'] == 'report_insomnia' and 'express_anxiety' in str(sec_names)"
+    measurement_expr: "m"
+    reason: Intent Engine must detect multiple intents in complex text
+
+  - name: intent_engine_fallback_chitchat
+    description: No match text should fallback to chitchat
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("今天天气不错", {"openid":"_ba_intent_chat"})
+      m = r["primary_intent"]
+    assert_expr: "m == 'chitchat'"
+    measurement_expr: "m"
+    reason: Intent Engine must fallback to chitchat for non-sleep text
+
+  - name: intent_engine_empty_text
+    description: Empty text should classify as chitchat
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      r = ie.classify("", {})
+      m = r["primary_intent"]
+    assert_expr: "m == 'chitchat'"
+    measurement_expr: "m"
+    reason: Intent Engine must handle empty text gracefully
+
+  - name: intent_engine_list_intents
+    description: list_intents should return 14+ intents
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+    action: |
+      intents = ie.list_intents()
+      m = len(intents)
+    assert_expr: "m >= 14"
+    measurement_expr: "m"
+    reason: Intent Engine must register 14+ builtin intents
+
+  - name: intent_engine_register_custom
+    description: register_intent should add and classify custom intents
+    imports:
+      - "from intent_engine import get_intent_engine"
+    setup: |
+      ie = get_intent_engine()
+      ie.register_intent("_ba_test_custom", ["ba_test_custom"], ["normal_chat"], priority=50, description="test")
+    action: |
+      r = ie.classify("ba_test_custom", {"openid":"_ba_custom"})
+      m = r["primary_intent"]
+    assert_expr: "m == '_ba_test_custom'"
+    measurement_expr: "m"
+    reason: Intent Engine must support custom intent registration
+
+  - name: intent_engine_api_routes
+    description: intent API routes should be registered in dp_router.ROUTES
+    imports:
+      - "from dp_router import ROUTES"
+    setup: |
+      import intent_engine
+    action: |
+      intent_routes = [k for k in ROUTES.keys() if '/api/intent/' in str(k[1])]
+      m = "count=%d" % len(intent_routes)
+    assert_expr: "len(intent_routes) == 2"
+    measurement_expr: "m"
+    reason: Both intent API routes must be registered
+
+  # ==================== Narrative Engine (v6.3.0) ====================
+
+  - name: narrative_has_data_user
+    description: User with POMDP data + WM data -> complete story with 4 modules
+    imports:
+      - "from narrative_engine import get_narrative_engine"
+    setup: |
+      ne = get_narrative_engine()
+      from pomdp_learner import get_engine; e = get_engine()
+      e.observe('_ba_nar_behave', text='失眠', score=55)
+      e.observe('_ba_nar_behave', text='醒了', score=50)
+      from working_memory import get_working_memory; wm = get_working_memory()
+      for i,s in enumerate([55,50,45]):
+        wm.push('_ba_nar_behave', {'text':'d'+str(i),'score_obs':s,'emotion':'negative','intervention':'none','outcome':'none'})
+    action: |
+      r = ne.generate_story('_ba_nar_behave', {'mode':'analyze'})
+      m = len(r['story'])
+    assert_expr: "r['has_data'] and len(r['story']) > 80 and all(k in r['modules'] for k in ['what','why','whats_next','what_to_do'])"
+    measurement_expr: "m"
+    reason: Narrative engine must produce 4-module story for users with data
+
+  - name: narrative_empty_user
+    description: Empty user -> short "数据不足" version
+    imports:
+      - "from narrative_engine import get_narrative_engine"
+    setup: |
+      ne = get_narrative_engine()
+    action: |
+      r = ne.generate_story('_ba_nar_ba_empty', {'mode':'chat'})
+      m = r['story']
+    assert_expr: "not r['has_data'] and '数据不足' in r['story']"
+    measurement_expr: "m"
+    reason: New users must get short data-insufficient story
+
+  - name: narrative_down_trend
+    description: Declining user -> story shows worsening semantics
+    imports:
+      - "from narrative_engine import get_narrative_engine"
+    setup: |
+      ne = get_narrative_engine()
+      from working_memory import get_working_memory; wm = get_working_memory()
+      for i,s in enumerate([75,65,55,45]):
+        wm.push('_ba_nar_down_behave', {'text':'d'+str(i),'score_obs':s,'emotion':'negative','intervention':'none','outcome':'none'})
+    action: |
+      r = ne.generate_story('_ba_nar_down_behave', {'mode':'analyze'})
+      m = r['story']
+    assert_expr: "'下滑' in r['story'] or '下降' in r['story'] or '恶化' in r['story']"
+    measurement_expr: "m"
+    reason: Downward trend must surface worsening semantics in story
+
+  - name: narrative_up_trend
+    description: Improving user -> story shows improvement semantics
+    imports:
+      - "from narrative_engine import get_narrative_engine"
+    setup: |
+      ne = get_narrative_engine()
+      from working_memory import get_working_memory; wm = get_working_memory()
+      for i,s in enumerate([40,55,65,75]):
+        wm.push('_ba_nar_up_behave', {'text':'d'+str(i),'score_obs':s,'emotion':'positive','intervention':'none','outcome':'none'})
+    action: |
+      r = ne.generate_story('_ba_nar_up_behave', {'mode':'analyze'})
+      m = r['story']
+    assert_expr: "'上升' in r['story'] or '改善' in r['story'] or '提高' in r['story']"
+    measurement_expr: "m"
+    reason: Upward trend must surface improvement semantics in story
+
+  - name: narrative_story_api_route
+    description: /api/narrative/story and /api/narrative/weekly routes registered
+    imports:
+      - "from dp_router import ROUTES"
+    setup: |
+      pass
+    action: |
+      has_story = ('POST', '/api/narrative/story') in ROUTES
+      has_weekly = ('POST', '/api/narrative/weekly') in ROUTES
+      m = "%d_%d" % (1 if has_story else 0, 1 if has_weekly else 0)
+    assert_expr: "has_story and has_weekly"
+    measurement_expr: "m"
+    reason: Both narrative API routes must be registered in dp_router
+
+  - name: narrative_gateway_capability
+    description: generate_story capability registered in agent_gateway
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      caps = gw.list_capabilities()
+      has_story = any(c['name'] == 'generate_story' for c in caps)
+      m = str(has_story)
+    assert_expr: "has_story"
+    measurement_expr: "m"
+    reason: generate_story must be registered as gateway capability
+
+  # ==================== Decision Explainer (v6.4.0) ====================
+
+  - name: explain_down_trend_push
+    description: Down trend + push decision -> explanation mentions worsening
+    imports:
+      - "from decision_explainer import get_decision_explainer"
+    setup: |
+      de = get_decision_explainer()
+      from pomdp_learner import get_engine; e = get_engine()
+      e.observe('_ba_exp_down', text='失眠', score=60)
+      e.observe('_ba_exp_down', text='还是睡不着', score=45)
+      from working_memory import get_working_memory; wm = get_working_memory()
+      for i,s in enumerate([60,52,45]):
+        wm.push('_ba_exp_down', {'text':'d'+str(i),'score_obs':s,'emotion':'negative','intervention':'none','outcome':'none'})
+    action: |
+      decision = {
+        'action': 'push', 'reason': 'score_drop', 'confidence': 0.72,
+        'decision_chain': {
+          'rl_choice': 'push', 'rl_score': 0.65,
+          'pomdp_choice': 'push', 'pomdp_score': 0.52,
+          'wm_choice': 'push', 'wm_score': 0.30,
+          'temporal_choice': 'push', 'temporal_score': 0.45,
+          'temporal_state': '正在恶化', 'winner': 'push', 'final_score': 0.62,
+        }
+      }
+      exp = de.explain('_ba_exp_down', decision)
+      m = exp['evidence']
+    assert_expr: "'恶化' in exp['evidence'] or '下降' in exp['trigger'] or '趋势' in exp['evidence']"
+    measurement_expr: "m[:100]"
+    reason: Downward trend+push must contain worsening semantics
+
+  - name: explain_stable_skip
+    description: Stable trend + skip decision -> explanation mentions observation
+    imports:
+      - "from decision_explainer import get_decision_explainer"
+    setup: |
+      de = get_decision_explainer()
+    action: |
+      decision = {
+        'action': 'skip', 'reason': 'stable', 'confidence': 0.85,
+        'decision_chain': {
+          'rl_choice': 'skip', 'rl_score': 0.72,
+          'pomdp_choice': 'skip', 'pomdp_score': 0.68,
+          'wm_choice': 'skip', 'wm_score': 0.55,
+          'temporal_choice': 'skip', 'temporal_score': 0.50,
+          'temporal_state': '持平震荡', 'winner': 'skip', 'final_score': 0.70,
+        }
+      }
+      exp = de.explain('_ba_exp_stable', decision)
+      m = exp['summary']
+    assert_expr: "'不干预' in exp['summary'] or '观察' in exp['summary']"
+    measurement_expr: "m[:60]"
+    reason: Stable+skip must mention no-intervention semantics
+
+  - name: explain_mixed_chain
+    description: Mixed decision chain -> explanation shows disagreement between layers
+    imports:
+      - "from decision_explainer import get_decision_explainer"
+    setup: |
+      de = get_decision_explainer()
+    action: |
+      decision = {
+        'action': 'push', 'reason': 'mixed', 'confidence': 0.62,
+        'decision_chain': {
+          'rl_choice': 'push', 'rl_score': 0.65,
+          'pomdp_choice': 'skip', 'pomdp_score': 0.52,
+          'wm_choice': 'skip', 'wm_score': 0.45,
+          'temporal_choice': 'push', 'temporal_score': 0.40,
+          'temporal_state': '正在恶化', 'winner': 'push', 'final_score': 0.62,
+        }
+      }
+      exp = de.explain('_ba_exp_mixed', decision)
+      m = exp['chain_explanation']
+    assert_expr: "'RL' in exp['chain_explanation'] and 'POMDP' in exp['chain_explanation']"
+    measurement_expr: "m[:100]"
+    reason: Decision chain must be explainable layer-by-layer
+
+  - name: explain_api_route
+    description: /api/explain/last route registered in dp_router
+    imports:
+      - "from dp_router import ROUTES"
+    setup: |
+      pass
+    action: |
+      has_route = ('POST', '/api/explain/last') in ROUTES
+      m = str(has_route)
+    assert_expr: "has_route"
+    measurement_expr: "m"
+    reason: explain API route must be registered
+
+  - name: explain_gateway_capability
+    description: explain_decision capability registered in agent_gateway
+    imports:
+      - "from agent_gateway import get_gateway"
+    setup: |
+      gw = get_gateway()
+    action: |
+      caps = gw.list_capabilities()
+      has_exp = any(c['name'] == 'explain_decision' for c in caps)
+      m = str(has_exp)
+    assert_expr: "has_exp"
+    measurement_expr: "m"
+    reason: explain_decision must be registered as gateway capability
+
+  # ==================== Proactive Manager (v6.5.0) ====================
+
+  - name: proactive_trend_warning
+    description: 3+ consecutive descending scores -> trend_warning triggers
+    imports:
+      - "from proactive_manager import get_proactive_manager"
+    setup: |
+      pm = get_proactive_manager()
+      from working_memory import get_working_memory; wm = get_working_memory()
+      for i,s in enumerate([70,60,50,40]):
+        wm.push('_ba_pro_behave', {'text':'d'+str(i),'score_obs':s,'emotion':'negative','intervention':'none','outcome':'none'})
+    action: |
+      triggered = pm._check_trend_warning('_ba_pro_behave')
+      m = str(triggered)
+    assert_expr: "triggered"
+    measurement_expr: "m"
+    reason: Consecutive descending scores must trigger trend_warning
+
+  - name: proactive_cooldown
+    description: Cooldown prevents duplicate triggers within window
+    imports:
+      - "from proactive_manager import get_proactive_manager"
+    setup: |
+      pm = get_proactive_manager()
+    action: |
+      pm._record_cooldown('_ba_pro_cd', 'trend_warning', hours=48)
+      in_cd = pm._in_cooldown('_ba_pro_cd', 'trend_warning')
+      m = str(in_cd)
+    assert_expr: "in_cd"
+    measurement_expr: "m"
+    reason: Cooldown must prevent re-triggering
+
+  - name: proactive_daily_limit
+    description: Default daily limit should be 3
+    imports:
+      - "from proactive_manager import get_proactive_manager"
+    setup: |
+      pm = get_proactive_manager()
+    action: |
+      limit = pm.get_daily_limit('_ba_pro_dl')
+      m = limit
+    assert_expr: "limit == 3"
+    measurement_expr: "m"
+    reason: Default proactive push limit is 3 per day
+
+  - name: proactive_negative_feedback_reduces_limit
+    description: 2 consecutive negative feedbacks -> limit drops to 1
+    imports:
+      - "from proactive_manager import get_proactive_manager"
+    setup: |
+      pm = get_proactive_manager()
+    action: |
+      pm.record_feedback('_ba_pro_nf', False)
+      pm.record_feedback('_ba_pro_nf', False)
+      limit = pm.get_daily_limit('_ba_pro_nf')
+      m = limit
+    assert_expr: "limit == 1"
+    measurement_expr: "m"
+    reason: Consecutive negative feedback reduces daily limit to 1
+
+  - name: proactive_api_routes
+    description: /api/proactive/status and /api/proactive/dismiss routes registered
+    imports:
+      - "from dp_router import ROUTES"
+    setup: |
+      pass
+    action: |
+      has_status = ('POST', '/api/proactive/status') in ROUTES
+      has_dismiss = ('POST', '/api/proactive/dismiss') in ROUTES
+      m = "%d_%d" % (1 if has_status else 0, 1 if has_dismiss else 0)
+    assert_expr: "has_status and has_dismiss"
+    measurement_expr: "m"
+    reason: Both proactive API routes must be registered

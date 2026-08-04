@@ -1,0 +1,40 @@
+{
+  "project": "AISleepGen",
+  "phase": "Phase Two - Algorithm Optimization",
+  "model_name": "sleep_stage_classifier_phase_two",
+  "performance": {
+    "best_accuracy": 0.995,
+    "validation_accuracy": 0.985,
+    "real_eeg_accuracy": 0.588,
+    "cross_validation_mean": 0.984,
+    "cross_validation_std": 0.006
+  },
+  "training_info": {
+    "epochs": 50,
+    "dataset_size": 2000,
+    "input_dim": 32,
+    "output_classes": 5,
+    "class_names": [
+      "Wake",
+      "N1",
+      "N2",
+      "N3",
+      "REM"
+    ],
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "dropout_rates": [
+      0.3,
+      0.2
+    ]
+  },
+  "validation_results": {
+    "simple_data_performance": 0.985,
+    "hard_data_performance": 0.428,
+    "real_eeg_performance": 0.588,
+    "overfitting_gap": 0.009,
+    "stability_rating": "excellent"
+  },
+  "timestamp": "20260217_212345",
+  "saved_by": "Phase Two Optimization System"
+}

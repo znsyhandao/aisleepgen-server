@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-05-27 08:21:26",
+  "results": [
+    {
+      "name": "📊 数据科学专家 (align_data_sources)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🏋️ 模型训练专家 (migrate_to_lgb)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🌓 Shadow Bridge 健康检查 (shadow_model_bridge)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🏛️ Ridge 旧管线 (retrain_model)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🛡️ 安全防御专家 (ai_defender)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🛡️ 安全回归测试 (security_regression)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "📊 数据分析师 (mood_from_sleep)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "📋 用工报告 (staff_org_chart)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🖥️ SRE运维专家 (sre_watchdog)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🏷️ 标注团队 (label_team)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "📋 产品经理 (product_manager)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🧑‍⚖️ 医疗合规官 (compliance_officer)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🔐 数据隐私官 (privacy_officer)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🔬 A/B测试工程师 (ab_test_engineer)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🔑 数据加密脱敏 (data_encryptor)",
+      "status": "ok",
+      "output_preview": ""
+    },
+    {
+      "name": "🎯 提示词工程师 (prompt_engineer)",
+      "status": "ok",
+      "output_preview": ""
+    }
+  ],
+  "summary": {
+    "ok": 16,
+    "fail": 0,
+    "skip": 0
+  }
+}
