@@ -261,7 +261,21 @@
       </view>
     </view>
 
-    <!-- ===== 冥想库入口 ===== -->
+        <!-- ===== AI 算法实验室入口 ===== -->
+    <view class="section-card" style="margin:20rpx;" bindtap="goAlgoLab" cursor="pointer">
+      <view style="display:flex;align-items:center;padding:24rpx;">
+        <text style="font-size:40rpx;margin-right:20rpx;">🧬</text>
+        <view style="flex:1;">
+          <text style="font-size:28rpx;font-weight:600;color:#e0d8f0;display:block;">AI 算法实验室</text>
+          <text style="font-size:22rpx;color:#888;display:block;margin-top:4rpx;">
+            进化引擎算法 · 点击运行探索
+          </text>
+        </view>
+        <text style="font-size:28rpx;color:#667eea;">›</text>
+      </view>
+    </view>
+
+<!-- ===== 冥想库入口 ===== -->
     <view class="section-card" style="margin:20rpx;" bindtap="goMeditationLibrary" cursor="pointer">
       <view style="display:flex;align-items:center;padding:24rpx;">
         <text style="font-size:40rpx;margin-right:20rpx;">🧘</text>

@@ -332,5 +332,10 @@ Page({
         wx.showToast({ title: '网络错误', icon: 'none' });
       }
     });
-  }
+  },
+
+  // AI 算法实验室入口 (Nexus 注入算法消费通道)
+  goAlgoLab: function() {
+    wx.navigateTo({ url: '/pages/algo-lab/algo-lab' });
+  },
 });

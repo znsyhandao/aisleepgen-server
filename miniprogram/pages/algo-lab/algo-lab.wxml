@@ -1,0 +1,49 @@
+<!-- pages/algo-lab/algo-lab.wxml - AI 算法实验室 (Nexus 进化引擎注入算法) -->
+<view class="page">
+  <!-- 头部说明 -->
+  <view class="header">
+    <view class="header-title">🧬 AI 算法实验室</view>
+    <view class="header-sub">由进化引擎自动生成并注入的睡眠算法，点击即可运行探索</view>
+  </view>
+
+  <!-- 精选推荐 -->
+  <view class="section" wx:if="{{featured.length > 0}}">
+    <view class="section-title">✨ 精选推荐</view>
+    <view class="algo-card featured" wx:for="{{featured}}" wx:key="algo" bindtap="runAlgo" data-algo="{{item.algo}}">
+      <view class="algo-name">{{item.algo}}</view>
+      <view class="algo-meta">来源: {{item.file}}</view>
+      <view class="run-hint">点击运行 ▶</view>
+    </view>
+  </view>
+
+  <!-- 搜索 -->
+  <view class="search-box">
+    <input class="search-input" placeholder="搜索算法名称..." bindinput="onSearch" value="{{keyword}}" />
+  </view>
+
+  <!-- 算法列表 -->
+  <view class="section">
+    <view class="section-title">全部算法 ({{total}})</view>
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    <view wx:elif="{{algos.length === 0}}" class="loading">未找到匹配算法</view>
+    <view class="algo-card" wx:for="{{algos}}" wx:key="algo" bindtap="runAlgo" data-algo="{{item.algo}}">
+      <view class="algo-name">{{item.algo}}</view>
+      <view class="algo-meta">来源: {{item.file}}</view>
+    </view>
+    <view class="load-more" wx:if="{{hasMore}}" bindtap="loadMore">加载更多 ({{shown}}/{{total}})</view>
+  </view>
+
+  <!-- 运行结果 -->
+  <view class="result-mask" wx:if="{{running || result}}">
+    <view class="result-panel">
+      <view class="result-title" wx:if="{{running}}">⏳ 运行中: {{currentAlgo}}</view>
+      <view class="result-title" wx:elif="{{result}}">📊 运行结果: {{currentAlgo}}</view>
+      <view class="result-interpret" wx:if="{{interpret}}">{{interpret}}</view>
+      <scroll-view scroll-y class="result-body">
+        <text class="result-json">{{resultText}}</text>
+      </scroll-view>
+      <view class="result-error" wx:if="{{resultError}}">{{resultError}}</view>
+      <view class="result-close" bindtap="closeResult">关闭</view>
+    </view>
+  </view>
+</view>

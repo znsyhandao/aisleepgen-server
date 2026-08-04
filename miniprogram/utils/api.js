@@ -859,3 +859,25 @@ module.exports = {
     return _request(API_BASE + '/api/sleep/isi-submit', data, 'POST', 10000);
   },
 };
+
+// ===== 算法实验室 (Nexus 进化引擎注入算法) =====
+/**
+ * 获取注入算法列表
+ * @returns {Promise<Object>} { success, count, algos: [{algo, file, func}] }
+ */
+function listAlgos() {
+  return _request(API_BASE + '/api/sleep/algo-list', {}, 'POST', 15000);
+}
+
+/**
+ * 运行注入算法
+ * @param {string} algo - 算法名
+ * @param {Object} args - 参数 (可选)
+ * @returns {Promise<Object>} { success, algo, result, error }
+ */
+function runAlgo(algo, args) {
+  return _request(API_BASE + '/api/sleep/algo-run', { algo: algo, args: args || {} }, 'POST', 60000);
+}
+
+module.exports.listAlgos = listAlgos;
+module.exports.runAlgo = runAlgo;
