@@ -17560,9 +17560,27 @@ def _handle_algo_list(self):
         self.wfile.write(_json.dumps({'error': str(_e)[:200]}, ensure_ascii=False).encode('utf-8'))
 
 
+def _log_algo_call(algo, args, ok, dur_ms, err=''):
+    """算法调用留痕: core_dev/algo_call_log.jsonl 单行 JSONL 原子追加 (失败不影响主流程)"""
+    import json as _j, os as _o, time as _t
+    try:
+        rec = {'ts': _t.strftime('%Y-%m-%d %H:%M:%S'), 'algo': algo,
+               'args_keys': sorted((args or {}).keys()), 'success': ok,
+               'duration_ms': int(dur_ms), 'error': (err or '')[:200]}
+        p = _o.path.join(_o.path.dirname(_o.path.abspath(__file__)), 'core_dev', 'algo_call_log.jsonl')
+        with open(p, 'a', encoding='utf-8') as f:
+            f.write(_j.dumps(rec, ensure_ascii=False) + '\n')
+    except Exception:
+        pass
+
+
 def _handle_algo_run(self, data):
     """POST /api/sleep/algo-run {algo, args} -> subprocess 隔离执行落地算法"""
     import json as _json
+    import time as _time
+    algo = ''
+    args = {}
+    _t0 = _time.time()
     try:
         algo = (data or {}).get('algo', '')
         args = (data or {}).get('args', {})
@@ -17575,12 +17593,15 @@ def _handle_algo_run(self, data):
         _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
         from core_dev.algo_runner import run_algo
         result = run_algo(algo, args)
+        ok = result.get('ok', False)
+        _log_algo_call(algo, args, ok, (_time.time() - _t0) * 1000, result.get('error', ''))
         self._set_headers(200)
-        self.wfile.write(_json.dumps({'success': result.get('ok', False), 'algo': algo,
+        self.wfile.write(_json.dumps({'success': ok, 'algo': algo,
                                       'result': result.get('result'),
                                       'error': result.get('error', '')},
                                      ensure_ascii=False).encode('utf-8'))
     except Exception as _e:
+        _log_algo_call(algo, args, False, (_time.time() - _t0) * 1000, str(_e))
         import traceback; traceback.print_exc()
         self._set_headers(500)
         self.wfile.write(_json.dumps({'error': str(_e)[:200]}, ensure_ascii=False).encode('utf-8'))
