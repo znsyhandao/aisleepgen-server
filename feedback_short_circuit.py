@@ -1,5 +1,6 @@
 import sys
 if hasattr(sys, "stdout") and hasattr(sys.stdout, "reconfigure"):
+    pass
 
 def _safe_print(*args, sep=' ', **kwargs):
     """GBK安全打印"""

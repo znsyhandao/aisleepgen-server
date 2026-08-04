@@ -71,6 +71,7 @@ def get_next_milestone(profile: Dict) -> Dict:
             uid = profile.get('openid', '')
             has_feedback = any(fb.get('openid', '')[:16] == uid[:16] for fb in fbs)
     except Exception:
+        pass
     if has_feedback:
         milestones_passed.append(2)
     if unique_days >= 2:

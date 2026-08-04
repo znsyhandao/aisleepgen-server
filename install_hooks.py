@@ -114,6 +114,7 @@ def main():
             if r.returncode != 0:
                 all_ok = check(False, '版本号不一致 (python version_sync.py --fix)')
         except Exception:
+            pass
     # ── 4. 部署检查：只在 dp_router/asyncio_server 被修改时触发 ──
     deploy_py_path = os.path.join(REPO_ROOT, 'deploy_check.py')
     if os.path.exists(deploy_py_path):
@@ -182,6 +183,7 @@ def main():
             if r.returncode != 0:
                 all_ok = check(False, '安全声明与代码行为不一致')
         except Exception:
+            pass
     # ── 9. 微信登录检测 ──
     auth_path = os.path.join(REPO_ROOT, 'auth_check.py')
     if os.path.exists(auth_path):
@@ -197,6 +199,7 @@ def main():
             if r.returncode != 0:
                 all_ok = check(False, '本地服务故障')
         except Exception:
+            pass
     print()
     if all_ok:
         print('[OK] 提交通过')

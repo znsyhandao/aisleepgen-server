@@ -186,6 +186,7 @@ def report_to_calibration(pulse: Dict):
         with open(cal_path, 'w', encoding='utf-8') as f:
             json.dump(cal, f, ensure_ascii=False, indent=2)
     except Exception:
+        pass
 if __name__ == '__main__':
     pulse = measure_system_pulse()
     print(f'健康评分: {pulse["health_score"]}/100 ({pulse["health_label"]})')
