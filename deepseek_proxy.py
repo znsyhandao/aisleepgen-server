@@ -544,6 +544,8 @@ MAX_BACKUPS = 5  # 保留最近5份备份
 def _sanitize_profile_scores(all_profiles):
     """清洗画像中的脏评分: 评分必须在 0-100 (历史出现过 3520 异常分)
     就地修改, 只修 latest.score / history[].wm_score / daily_scores[].score
+    脏值置为 None (缺失语义) 而非伪造占位分 — 趋势分析只基于真实评分,
+    宁缺毋假, 避免 '80→50' 这类假趋势误导用户
     不动其他字段, 纯内存清洗 (文件本身不清, 保留溯源)"""
     if not isinstance(all_profiles, dict):
         return
@@ -555,7 +557,7 @@ def _sanitize_profile_scores(all_profiles):
         if isinstance(_lat, dict):
             _sc = _lat.get('score')
             if isinstance(_sc, (int, float)) and not (0 <= _sc <= 100):
-                _lat['score'] = 50  # 脏值回退到中性分, 不误导
+                _lat['score'] = None  # 脏值 -> 缺失
         # history[].wm_score
         _hist = _prof.get('history')
         if isinstance(_hist, list):
@@ -563,7 +565,7 @@ def _sanitize_profile_scores(all_profiles):
                 if isinstance(_e, dict):
                     _w = _e.get('wm_score')
                     if isinstance(_w, (int, float)) and not (0 <= _w <= 100):
-                        _e['wm_score'] = 50
+                        _e['wm_score'] = None
         # daily_scores[].score
         _ds = _prof.get('daily_scores')
         if isinstance(_ds, list):
@@ -571,7 +573,7 @@ def _sanitize_profile_scores(all_profiles):
                 if isinstance(_d, dict):
                     _s = _d.get('score')
                     if isinstance(_s, (int, float)) and not (0 <= _s <= 100):
-                        _d['score'] = 50
+                        _d['score'] = None
 
 
 def _load_all_profiles():
@@ -2556,18 +2558,35 @@ def _trend_analysis(profile):
 
     scores = []
 
+    missing_dates = []
+
     for d in dates:
 
         sc = daily[d].get('wm_score', 0)
 
         # 脏值防护: 评分必须 0-100 (历史出现过 3520 异常分污染趋势分析)
+        # 异常分/缺失分视为数据缺失, 不参与趋势计算 (宁缺毋假)
         if sc and 0 < sc <= 100:
 
             scores.append((d, sc))
 
+        else:
+
+            missing_dates.append(d)
+
 
 
     if len(scores) < 2:
+
+        if missing_dates:
+
+            return (f"\n===== 跨日趋势分析 =====\n"
+
+                    f"  有效评分记录不足2条, 无法计算趋势\n"
+
+                    f"  注: {len(missing_dates)} 个日期评分数据缺失或异常({', '.join(missing_dates[:3])}{'...' if len(missing_dates)>3 else ''}), 已排除\n"
+
+                    f"==========================\n")
 
         return ''
 
@@ -2761,7 +2780,7 @@ def _build_history_context(openid='default'):
 
                 break
 
-        lines.append(f"{prefix}用户说：{last.get('user_said', '')}，评分{last.get('wm_score', '?')}，我的回复摘要：{my_reply[:60]}")
+        lines.append(f"{prefix}用户说：{last.get('user_said', '')}，评分{last.get('wm_score', '?') if isinstance(last.get('wm_score'), (int, float)) and 0 < last.get('wm_score', 0) <= 100 else '数据缺失'}，我的回复摘要：{my_reply[:60]}")
 
 
 
@@ -2793,7 +2812,7 @@ def _build_history_context(openid='default'):
 
                     break
 
-            lines.append(f"{label}用户说：{e.get('user_said', '')}，评分{e.get('wm_score', '?')}，我的回复摘要：{my_reply_hist[:60]}")
+            lines.append(f"{label}用户说：{e.get('user_said', '')}，评分{e.get('wm_score', '?') if isinstance(e.get('wm_score'), (int, float)) and 0 < e.get('wm_score', 0) <= 100 else '数据缺失'}，我的回复摘要：{my_reply_hist[:60]}")
 
 
 
@@ -2809,7 +2828,8 @@ def _build_history_context(openid='default'):
 
             s = entry.get('wm_score', 0)
 
-            if s and s > 0:
+            # 脏值防护: 评分必须 0-100 (历史出现过 3520 异常分污染对比叙事)
+            if s and 0 < s <= 100:
 
                 scores.append((entry['date'], s, entry.get('user_said', '')[:30]))
 
