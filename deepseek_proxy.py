@@ -2995,7 +2995,28 @@ def _build_history_context(openid='default'):
 
                 vitality = min(100, round((10 - fi) * 10))
 
-                face_data_lines.append(f"【最新面容分析】活力值 {vitality}/100 · 疲劳等级：{face_level}（越高越精神）")
+                # 面容数据时效标注: 无日期或过旧必须明示, 防止 AI 把历史数据当"最新"
+                _face_ts = latest_face.get('ts', '') or latest_face.get('date', '')
+                _face_date_str = ''
+                if _face_ts:
+                    try:
+                        _face_date_str = _face_ts[:10]  # YYYY-MM-DD
+                    except Exception:
+                        _face_date_str = ''
+                _stale_note = ''
+                if _face_date_str:
+                    try:
+                        from datetime import datetime as _dt2
+                        _days_old = (_dt2.now() - _dt2.strptime(_face_date_str, '%Y-%m-%d')).days
+                        if _days_old > 7:
+                            _stale_note = f'（注意：这是{_days_old}天前的历史面容数据，非最新）'
+                        else:
+                            _stale_note = f'（{_face_date_str}）'
+                    except Exception:
+                        _stale_note = f'（{_face_date_str}）'
+                else:
+                    _stale_note = '（面容数据未记录日期，时效未知）'
+                face_data_lines.append(f"【面容分析{_stale_note}】活力值 {vitality}/100 · 疲劳等级：{face_level}（越高越精神）")
 
                 # 趋势
 
@@ -3005,7 +3026,7 @@ def _build_history_context(openid='default'):
 
                     avg_bed = sum(r['fatigue'] for r in bedtime) / len(bedtime)
 
-                    face_data_lines.append(f"近{len(bedtime)}次睡前平均疲劳 {avg_bed:.1f}/10")
+                    face_data_lines.append(f"近{len(bedtime)}次睡前平均疲劳 {avg_bed:.1f}/10（同为历史数据）")
 
         except Exception:
 
@@ -3044,6 +3065,8 @@ def _build_history_context(openid='default'):
 【用户画像概览】已记录{total_entries}天 · 平均评分{avg_score}/100{face_ctx}
 
 【不要从零提问】用户已有{total_entries}条历史记录。即使当前消息没有提供具体数据，也不要从"大概几点睡、几点醒"开始问起。直接基于已有数据提供分析、提问具体问题（如"昨晚和之前比有变化吗？"）或建议。只有在所有历史数据都不包含入睡和起床时间时才询问。
+
+【数字引用铁律】回复中出现的所有具体数字（评分、疲劳值、次数、百分比、增减量）必须来自上面提供的数据，严禁编造或推算不存在的数据。如果上面没有某数字，就定性描述（如"疲劳程度偏高"），绝不要凭空给出"上升了1.3点""增加了X%"这类具体数值。标注"历史数据"的信息不得描述为"最近/最新"。
 
 {ctx}
 
@@ -10566,6 +10589,8 @@ AI不应该是被动问答机。每次回复都要推动对话往前走：
 规则2: 当前消息没有数据→不展示评分。历史评分可引用回顾，但不作为当前评分。
 
 规则3: 用户纠正时以最新说法为准。{correction_note}
+
+规则4: 回复中所有具体数字（评分、疲劳值、次数、百分比、增减量、天数）必须来自上下文提供的数据。上下文没有的数字严禁编造或推算——没有就定性描述（如"疲劳程度偏高"），绝不凭空给出"上升了1.3点""增加了X%"这类数值。标注"历史数据"或"X天前"的信息，不得描述为"最近/最新"。
 
 
 
