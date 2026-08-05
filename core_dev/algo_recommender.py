@@ -50,9 +50,14 @@ def _extract_features(profile):
     hist = profile.get('history') or []
     # 最近一条有 wm_score 的历史 (fallback)
     last_scores = [h.get('wm_score') for h in hist if isinstance(h, dict) and h.get('wm_score')]
+    score = _to_num(lat.get('score'))
+    # 脏数据过滤: 评分应为 0-100, 异常值视为缺失
+    if score is not None and not (0 <= score <= 100):
+        score = None
+    if score is None and last_scores:
+        score = float(last_scores[-1])
     feat = {
-        'score': _to_num(lat.get('score')) if _to_num(lat.get('score')) is not None else (
-            float(last_scores[-1]) if last_scores else None),
+        'score': score,
         'latency_min': _to_num(sd.get('sleep_latency')),
         'awake_times': _to_num(sd.get('awake_times')),
         'stress': _to_num(lat.get('stress')) if _to_num(lat.get('stress')) is not None else _to_num(ui.get('stress_level')),
@@ -136,13 +141,14 @@ def recommend(profile, registry_algos, top_n=3):
             chosen.append(picked)
         if len(chosen) >= top_n:
             return {'features': feat, 'recommendations': chosen}
-    # 不足则补双过程/临界 (每个补一个)
+    # 不足则补双过程/临界 (每个补一个, 用通用理由)
+    _FALLBACK_REASON = '推荐这款通用节律模型类算法，从稳态压力与昼夜节律两个维度持续跟踪你的睡眠。'
     for a in registry_algos:
         name = a.get('algo', '')
         if name in used:
             continue
         if '双过程' in name or '临界' in name:
-            chosen.append({'algo': name, 'reason': matched[0][1] if matched else '',
+            chosen.append({'algo': name, 'reason': _FALLBACK_REASON,
                            'func': a.get('func', '')})
             used.add(name)
             if len(chosen) >= top_n:
