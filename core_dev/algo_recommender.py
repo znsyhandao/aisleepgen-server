@@ -55,7 +55,15 @@ def _extract_features(profile):
     if score is not None and not (0 <= score <= 100):
         score = None
     if score is None and last_scores:
-        score = float(last_scores[-1])
+        # fallback 同样要过滤脏值
+        for s in reversed(last_scores):
+            try:
+                fs = float(s)
+            except Exception:
+                continue
+            if 0 <= fs <= 100:
+                score = fs
+                break
     feat = {
         'score': score,
         'latency_min': _to_num(sd.get('sleep_latency')),
