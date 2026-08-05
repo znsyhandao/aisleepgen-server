@@ -541,6 +541,39 @@ MAX_BACKUPS = 5  # 保留最近5份备份
 
 
 
+def _sanitize_profile_scores(all_profiles):
+    """清洗画像中的脏评分: 评分必须在 0-100 (历史出现过 3520 异常分)
+    就地修改, 只修 latest.score / history[].wm_score / daily_scores[].score
+    不动其他字段, 纯内存清洗 (文件本身不清, 保留溯源)"""
+    if not isinstance(all_profiles, dict):
+        return
+    for _openid, _prof in all_profiles.items():
+        if not isinstance(_prof, dict):
+            continue
+        # latest.score
+        _lat = _prof.get('latest')
+        if isinstance(_lat, dict):
+            _sc = _lat.get('score')
+            if isinstance(_sc, (int, float)) and not (0 <= _sc <= 100):
+                _lat['score'] = 50  # 脏值回退到中性分, 不误导
+        # history[].wm_score
+        _hist = _prof.get('history')
+        if isinstance(_hist, list):
+            for _e in _hist:
+                if isinstance(_e, dict):
+                    _w = _e.get('wm_score')
+                    if isinstance(_w, (int, float)) and not (0 <= _w <= 100):
+                        _e['wm_score'] = 50
+        # daily_scores[].score
+        _ds = _prof.get('daily_scores')
+        if isinstance(_ds, list):
+            for _d in _ds:
+                if isinstance(_d, dict):
+                    _s = _d.get('score')
+                    if isinstance(_s, (int, float)) and not (0 <= _s <= 100):
+                        _d['score'] = 50
+
+
 def _load_all_profiles():
 
     """加载所有用户的画像数据。直接读文件，安全解析。"""
@@ -554,7 +587,7 @@ def _load_all_profiles():
                 raw = json.load(f)
 
             if isinstance(raw, dict):
-
+                _sanitize_profile_scores(raw)
                 return raw
 
         except Exception as e:
@@ -566,7 +599,7 @@ def _load_all_profiles():
                     _raw2 = json.load(f)
 
                 if isinstance(_raw2, dict):
-
+                    _sanitize_profile_scores(_raw2)
                     return _raw2
 
             except Exception as _ee: print(f"[except] L{0}: {_ee}".format(225))
@@ -2524,7 +2557,8 @@ def _trend_analysis(profile):
 
         sc = daily[d].get('wm_score', 0)
 
-        if sc and sc > 0:
+        # 脏值防护: 评分必须 0-100 (历史出现过 3520 异常分污染趋势分析)
+        if sc and 0 < sc <= 100:
 
             scores.append((d, sc))
 
