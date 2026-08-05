@@ -4857,6 +4857,11 @@ class ProxyHandler(BaseHTTPRequestHandler):
             self._handle_algo_run(data)
             return
 
+        elif path == '/api/sleep/algo-recommend':
+            """POST /api/sleep/algo-recommend {openid} -> 个性化推荐 (生产轻聚合: 纯规则只读)"""
+            self._handle_algo_recommend(data)
+            return
+
         elif path.startswith('/api/'):
 
             # Fallback to dp_router dispatch for unhandled API routes
@@ -17607,8 +17612,36 @@ def _handle_algo_run(self, data):
         self.wfile.write(_json.dumps({'error': str(_e)[:200]}, ensure_ascii=False).encode('utf-8'))
 
 
+def _handle_algo_recommend(self, data):
+    """POST /api/sleep/algo-recommend {openid} -> 个性化推荐 (只读, 纯规则, 零进化逻辑)"""
+    import json as _json
+    try:
+        import sys as _sys
+        import os as _os
+        _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+        oid = (data or {}).get('openid', 'default') or 'default'
+        from core_dev.algo_recommender import recommend_for
+        out = recommend_for(oid, base=_os.path.dirname(_os.path.abspath(__file__)))
+        if out.get('error') == 'no_profile':
+            self._set_headers(200)
+            self.wfile.write(_json.dumps({'success': True, 'openid': oid,
+                                          'recommendations': [], 'features': {},
+                                          'note': 'no_profile'}, ensure_ascii=False).encode('utf-8'))
+            return
+        self._set_headers(200)
+        self.wfile.write(_json.dumps({'success': True, 'openid': oid,
+                                      'recommendations': out.get('recommendations', []),
+                                      'features': out.get('features', {})},
+                                     ensure_ascii=False).encode('utf-8'))
+    except Exception as _e:
+        import traceback; traceback.print_exc()
+        self._set_headers(500)
+        self.wfile.write(_json.dumps({'error': str(_e)[:200]}, ensure_ascii=False).encode('utf-8'))
+
+
 ProxyHandler._handle_algo_list = _handle_algo_list
 ProxyHandler._handle_algo_run = _handle_algo_run
+ProxyHandler._handle_algo_recommend = _handle_algo_recommend
 
 
 

@@ -16,6 +16,18 @@
     </view>
   </view>
 
+  <!-- 为你推荐 (v3: 按睡眠画像个性化) -->
+  <view class="section" wx:if="{{recommendations.length > 0}}">
+    <view class="section-title">🎯 为你推荐</view>
+    <view class="reco-card" wx:for="{{recommendations}}" wx:key="algo" bindtap="runRecommended" data-algo="{{item.algo}}">
+      <view class="reco-algo">{{item.algo}}</view>
+      <view class="reco-reason">{{item.reason}}</view>
+      <view class="run-hint">点击运行 ▶</view>
+    </view>
+  </view>
+  <view class="reco-loading" wx:if="{{recoLoading}}">推荐加载中...</view>
+  <view class="reco-error" wx:if="{{recoError}}">{{recoError}}</view>
+
   <!-- 搜索 -->
   <view class="search-box">
     <input class="search-input" placeholder="搜索算法名称..." bindinput="onSearch" value="{{keyword}}" />

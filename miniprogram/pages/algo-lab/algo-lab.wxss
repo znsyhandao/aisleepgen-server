@@ -68,6 +68,43 @@
   margin-top: 10rpx;
 }
 
+/* 为你推荐 (v3) */
+.reco-card {
+  background: rgba(255, 183, 77, 0.08);
+  border: 1px solid rgba(255, 183, 77, 0.35);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.reco-algo {
+  font-size: 28rpx;
+  color: #ffd591;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.reco-reason {
+  font-size: 24rpx;
+  color: #b8b0d0;
+  margin-top: 8rpx;
+  line-height: 1.5;
+}
+
+.reco-loading {
+  text-align: center;
+  color: #666;
+  padding: 20rpx 0;
+  font-size: 24rpx;
+}
+
+.reco-error {
+  text-align: center;
+  color: #888;
+  padding: 20rpx 0;
+  font-size: 24rpx;
+}
+
 .search-box {
   padding: 0 32rpx 10rpx;
 }

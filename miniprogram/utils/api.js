@@ -879,5 +879,15 @@ function runAlgo(algo, args) {
   return _request(API_BASE + '/api/sleep/algo-run', { algo: algo, args: args || {} }, 'POST', 60000);
 }
 
+/**
+ * 个性化推荐算法 (v3: 按用户睡眠画像规则映射, 生产轻聚合只读)
+ * @param {string} openid - 用户标识 (可选, 默认 default)
+ * @returns {Promise<Object>} { success, recommendations: [{algo, reason, func}], features }
+ */
+function recommendAlgos(openid) {
+  return _request(API_BASE + '/api/sleep/algo-recommend', { openid: openid || '' }, 'POST', 15000);
+}
+
 module.exports.listAlgos = listAlgos;
 module.exports.runAlgo = runAlgo;
+module.exports.recommendAlgos = recommendAlgos;

@@ -13,6 +13,10 @@ Page({
     total: 0,
     shown: 0,
     hasMore: false,
+    // 个性化推荐 (v3)
+    recommendations: [],
+    recoLoading: false,
+    recoError: '',
     // 运行状态
     running: false,
     currentAlgo: '',
@@ -26,6 +30,7 @@ Page({
 
   onLoad() {
     this.loadAlgos();
+    this.loadRecommendations();
   },
 
   loadAlgos() {
@@ -39,6 +44,46 @@ Page({
     }).catch(err => {
       this.setData({ loading: false, total: 0 });
       wx.showToast({ title: '算法列表加载失败', icon: 'none' });
+    });
+  },
+
+  // v3: 个性化推荐 (只读规则映射, 失败不阻塞主列表)
+  loadRecommendations() {
+    this.setData({ recoLoading: true, recoError: '' });
+    const openid = wx.getStorageSync('openid') || '';
+    api.recommendAlgos(openid).then(res => {
+      const recs = (res && res.recommendations) || [];
+      this.setData({ recommendations: recs, recoLoading: false });
+    }).catch(err => {
+      this.setData({ recoLoading: false, recoError: '推荐加载失败' });
+    });
+  },
+
+  runRecommended(e) {
+    const algo = e.currentTarget.dataset.algo;
+    if (!algo) return;
+    this.setData({ keyword: algo, });
+    this._applyFilter();
+    // 滚动到列表并高亮
+    this.runAlgoByName(algo);
+  },
+
+  runAlgoByName(algo) {
+    this.setData({ running: true, currentAlgo: algo, result: null, resultText: '', resultError: '', interpret: '' });
+    api.runAlgo(algo, {}).then(res => {
+      if (res && res.success) {
+        const result = res.result || {};
+        this.setData({
+          running: false,
+          result: result,
+          resultText: JSON.stringify(result, null, 2),
+          interpret: this._interpret(algo, result),
+        });
+      } else {
+        this.setData({ running: false, result: {}, resultText: '', resultError: (res && res.error) || '运行失败' });
+      }
+    }).catch(err => {
+      this.setData({ running: false, result: {}, resultText: '', resultError: '请求失败: ' + (err.errMsg || '网络错误') });
     });
   },
 
