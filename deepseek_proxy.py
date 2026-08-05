@@ -1018,6 +1018,9 @@ def _save_user_profile(profile, openid='default'):
 
                     except Exception as _ee: print(f"[except] L{0}: {_ee}".format(419))
 
+        # 写入前清洗: 评分必须 0-100 (历史出现过 3520 异常分, 防止脏值再次落盘)
+        _sanitize_profile_scores({openid: profile})
+
         all_profiles[openid] = profile
 
         _save_all_profiles(all_profiles)
