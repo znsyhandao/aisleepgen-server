@@ -1563,6 +1563,7 @@ def handle_sleep_analyze(data):
     """睡眠分析（带世界模型缓存 + 趋势注入 + NLP 字段提取）"""
     openid = data.get('openid', 'default')
     data_msg = data.get('message', '')
+    _survey_exp_id = None  # 拒识层: 评分分支外兜底初始化, 防拒识后 NameError
     for h in data.get('history', []):
         if isinstance(h, dict) and h.get('content'):
             data_msg += ' ' + h['content']
@@ -1609,9 +1610,11 @@ def handle_sleep_analyze(data):
         offset = max(-10, min(10, net * 3))
         if offset != 0:
             old_score = result.get('total_score', 0)
-            result['total_score'] = max(10, min(100, old_score + offset))
-            result['score_calibrated'] = True
-            result['score_offset'] = offset
+            # 拒识层: total_score=None(拒识) 时不做校准偏移, 防 None 崩溃
+            if isinstance(old_score, (int, float)):
+                result['total_score'] = max(10, min(100, old_score + offset))
+                result['score_calibrated'] = True
+                result['score_offset'] = offset
 
     # 评估 pending 建议
     current_score = result.get('total_score', 0)
@@ -1913,7 +1916,7 @@ def handle_sleep_analyze(data):
         try:
             from experiment_log import get_log
             get_log().record_concluded(_survey_exp_id, {
-                'positive': bool(isinstance(result, dict) and result.get('total_score', 0) > 60),
+                'positive': bool(isinstance(result, dict) and isinstance(result.get('total_score'), (int, float)) and result.get('total_score', 0) > 60),
                 'score_change': current_score,
                 'detail': 'survey_completed'
             }, f'survey实验concluded')

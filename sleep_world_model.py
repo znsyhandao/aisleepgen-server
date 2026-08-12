@@ -2763,6 +2763,33 @@ class WorldModelEngine:
         except Exception:
             pass
 
+        # ===== 拒识层 v1 (2026-08-12, 3520 事故防线) =====
+        # 3520 根因: total_score = adjusted_score*100 无 0-100 钳制 + 数据不足时仍硬出分
+        # 最佳实践: 非法评分/数据不足 → explicit unknown (None) + rejection 原因, 不硬出假精确分数
+        _raw_score = result.get('total_score')
+        _score_valid = (
+            isinstance(_raw_score, (int, float))
+            and math.isfinite(_raw_score)
+            and 0 <= _raw_score <= 100
+        )
+        if not _score_valid:
+            result['total_score'] = None
+            result['quality'] = '数据不足'
+            result['rejection'] = {
+                'code': 'SCORE_INVALID',
+                'reason': f'total_score={_raw_score!r} 非法(期望 0-100 有限数)',
+                'guard': 'score_rejection_v1',
+            }
+        elif _data_insufficient:
+            # 数据不足但分数合法 → 同样拒识出分(降权50分是假精确), 分析文本仍保留
+            result['total_score'] = None
+            result['quality'] = '数据不足'
+            result['rejection'] = {
+                'code': 'DATA_INSUFFICIENT',
+                'reason': f'仅{_insufficient_fields}个数据字段, 不足以评分(需至少3个: 如入睡时间/起床时间/时长)',
+                'guard': 'score_rejection_v1',
+            }
+
         return result
 
     @staticmethod
