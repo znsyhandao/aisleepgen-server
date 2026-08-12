@@ -101,3 +101,9 @@ _eco_history.json
 
 # 模型缓存
 .toto_cache/
+
+# 敏感文件: 本地运行必需但严禁入库 (2026-08-12 filter-repo 清除后补防)
+.env
+dev_tools/archive/_gh_*.py
+dev_tools/archive/_github_push.py
+dev_tools/archive/_push_profile.py
